@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Khoa An</title>
+<meta name="theme-color" content="#1b0d27" />
+<meta name="description" content="Bio link phong cách hồng vũ trụ" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='52'%3E%F0%9F%92%96%3C/text%3E%3C/svg%3E" />
+<style>
+:root{
+  --bg:#090511;
+  --bg-2:#14091f;
+  --fg:#fff2fb;
+  --muted:#f8d7f0;
+  --pink:#ff84df;
+  --pink-2:#ffc7ee;
+  --pink-3:#ffdff5;
+  --line:rgba(255,199,238,.18);
+  --card:rgba(34,12,46,.62);
+  --card-2:rgba(51,17,67,.52);
+  --shadow:0 22px 60px rgba(0,0,0,.52), 0 0 50px rgba(255,132,223,.18);
+  --shadow-strong:0 28px 80px rgba(0,0,0,.68), 0 0 80px rgba(255,132,223,.30), 0 0 140px rgba(255,199,238,.18);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  min-height:100%;
+  color:var(--fg);
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,150,225,.16), transparent 28%),
+    radial-gradient(circle at 85% 18%, rgba(255,199,238,.09), transparent 22%),
+    radial-gradient(circle at 50% 78%, rgba(183,104,255,.10), transparent 28%),
+    linear-gradient(180deg, var(--bg), var(--bg-2));
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(120deg, rgba(255,255,255,.03), transparent 35%),
+    radial-gradient(circle at center, rgba(255,255,255,.03), transparent 55%);
+  pointer-events:none;
+  z-index:0;
+}
+#galaxy,
+#nebula{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+#nebula{z-index:0; filter:blur(8px) saturate(120%); opacity:.95}
+#galaxy{z-index:1}
+.wrap{
+  position:relative;
+  z-index:2;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:34px 18px;
+}
+.shell{
+  width:min(1120px,100%);
+  display:grid;
+  grid-template-columns:1.08fr .92fr;
+  gap:26px;
+}
+@media (max-width:930px){
+  .shell{grid-template-columns:1fr; gap:20px}
+  .wrap{padding:20px 14px}
+}
+.panel{
+  position:relative;
+  overflow:hidden;
+  padding:24px;
+  border-radius:26px;
+  background:linear-gradient(155deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px) saturate(140%);
+  transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+}
+.panel::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.11), transparent 24%),
+    radial-gradient(circle at top right, rgba(255,199,238,.12), transparent 32%);
+  pointer-events:none;
+}
+.panel::after{
+  content:"";
+  position:absolute;
+  inset:1px;
+  border-radius:24px;
+  background:linear-gradient(160deg, var(--card), var(--card-2));
+  z-index:-1;
+}
+.panel:hover{
+  transform:translateY(-8px) scale(1.01);
+  box-shadow:var(--shadow-strong);
+  border-color:rgba(255,199,238,.32);
+}
+.head{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  margin-bottom:14px;
+}
+.avatar{
+  position:relative;
+  width:104px;
+  height:104px;
+  border-radius:50%;
+  overflow:hidden;
+  flex:0 0 auto;
+  border:2px solid rgba(255,199,238,.60);
+  box-shadow:0 0 30px rgba(255,132,223,.32), 0 0 65px rgba(255,199,238,.16);
+  cursor:pointer;
+  transition:transform .3s ease, box-shadow .3s ease;
+}
+.avatar::before{
+  content:"";
+  position:absolute;
+  inset:-7px;
+  border-radius:50%;
+  background:conic-gradient(from 0deg, rgba(255,132,223,.12), rgba(255,199,238,.45), rgba(255,132,223,.12));
+  filter:blur(14px);
+  z-index:-1;
+  animation:spin 8s linear infinite;
+}
+.avatar:hover{
+  transform:scale(1.04);
+  box-shadow:0 0 34px rgba(255,132,223,.5), 0 0 85px rgba(255,199,238,.26);
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.online{
+  position:absolute;
+  right:8px;
+  bottom:8px;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:linear-gradient(135deg, #ffd4f5, #ff8adf);
+  box-shadow:0 0 16px rgba(255,199,238,.95);
+  border:2px solid rgba(18,7,26,.8);
+}
+.title h1{
+  margin:0;
+  font-size:clamp(1.45rem,2vw,1.9rem);
+  line-height:1.15;
+  letter-spacing:.2px;
+  color:var(--pink-3);
+  text-shadow:0 0 18px rgba(255,132,223,.36);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.badge-verify{display:inline-flex; width:22px; height:22px}
+.sub{
+  margin-top:8px;
+  color:var(--muted);
+  opacity:.92;
+  letter-spacing:.3px;
+}
+.badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:16px 0 10px;
+}
+.badge{
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:.93rem;
+  color:var(--fg);
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,199,238,.22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07);
+}
+.bio{
+  margin:14px 0 18px;
+  padding:14px 16px;
+  line-height:1.65;
+  color:#fff6fc;
+  border-radius:18px;
+  background:linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+  border:1px solid rgba(255,199,238,.12);
+}
+.quick-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:14px;
+}
+.quick-stats .stat{
+  padding:12px 10px;
+  border-radius:16px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,199,238,.12);
+  text-align:center;
+}
+.quick-stats .stat b{
+  display:block;
+  font-size:1rem;
+  color:#fff8fd;
+}
+.quick-stats .stat span{
+  font-size:.82rem;
+  color:var(--muted);
+}
+@media (max-width:560px){
+  .quick-stats{grid-template-columns:1fr}
+}
+.actions{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:12px;
+}
+@media (max-width:520px){
+  .actions{grid-template-columns:1fr}
+}
+.btn,
+.tile{
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  min-height:52px;
+  padding:14px 14px;
+  border-radius:16px;
+  text-decoration:none;
+  font-weight:700;
+  transition:transform .26s ease, box-shadow .26s ease, border-color .26s ease, background .26s ease;
+}
+.btn::before,
+.tile::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.12) 45%, transparent 75%);
+  transform:translateX(-120%);
+  transition:transform .6s ease;
+}
+.btn:hover::before,
+.tile:hover::before{transform:translateX(120%)}
+.btn{
+  border:1px solid rgba(255,199,238,.35);
+  color:#2c0823;
+  background:linear-gradient(135deg, #ffd6f4, #ff9fe5 58%, #ffb9ec);
+  box-shadow:0 12px 28px rgba(255,132,223,.22);
+  cursor:pointer;
+}
+.btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 18px 36px rgba(255,132,223,.34), 0 0 26px rgba(255,199,238,.25);
+}
+.tile{
+  color:var(--fg);
+  background:linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.028));
+  border:1px solid rgba(255,199,238,.16);
+}
+.tile:hover{
+  transform:translateY(-3px);
+  border-color:rgba(255,199,238,.35);
+  box-shadow:0 16px 34px rgba(0,0,0,.28), 0 0 32px rgba(255,132,223,.18);
+}
+.section{
+  margin:6px 0 16px;
+  padding-bottom:12px;
+  font-size:1.04rem;
+  color:var(--pink-3);
+  font-weight:800;
+  text-shadow:0 0 12px rgba(255,132,223,.28);
+  position:relative;
+}
+.section::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:88px;
+  height:3px;
+  border-radius:999px;
+  background:linear-gradient(90deg, #ff8edf, #ffd2f2);
+}
+.stack{
+  display:grid;
+  gap:12px;
+}
+.social-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+@media (max-width:520px){
+  .social-grid{grid-template-columns:1fr}
+}
+.footer{
+  margin-top:18px;
+  padding-top:14px;
+  text-align:center;
+  color:var(--muted);
+  border-top:1px solid rgba(255,199,238,.12);
+}
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:22px;
+  transform:translateX(-50%);
+  padding:11px 16px;
+  border-radius:999px;
+  color:#2a0721;
+  background:linear-gradient(135deg, #ffd9f6, #ff9ee5);
+  box-shadow:0 12px 34px rgba(255,132,223,.35);
+  font-weight:800;
+  display:none;
+  z-index:10;
+}
+.music-fab{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:9;
+  width:58px;
+  height:58px;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  color:#330a2a;
+  background:linear-gradient(135deg, #ffe0f8, #ff95e2);
+  box-shadow:0 18px 38px rgba(255,132,223,.34), 0 0 24px rgba(255,199,238,.25);
+  font-size:1.2rem;
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.music-fab:hover{transform:translateY(-3px) scale(1.04)}
+.focus-ring:focus-visible,
+.btn:focus-visible,
+.tile:focus-visible,
+.music-fab:focus-visible,
+.avatar:focus-visible{
+  outline:2px solid #ffd8f5;
+  outline-offset:3px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+}
+</style>
+</head>
+<body>
+<canvas id="nebula" aria-hidden="true"></canvas>
+<canvas id="galaxy" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <div class="shell">
+    <section class="panel" aria-label="Hồ sơ">
+      <div class="head">
+        <div class="avatar focus-ring" id="avatar" title="Nhấn để thả tim" tabindex="0">
+          <img src="https://sf-static.upanhlaylink.com/img/image_202603128fd39969f888ec60ceacd26c37570991.jpg" alt="Avatar" loading="lazy" />
+          <span class="online" aria-hidden="true"></span>
+        </div>
+        <div class="title">
+          <h1>Khoa An 
+            <span class="badge-verify" title="Verified">
+              <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <linearGradient id="verifyGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#ffd7f5"/>
+                    <stop offset="1" stop-color="#ff86df"/>
+                  </linearGradient>
+                </defs>
+                <path d="M12 2l2.3 1.3 2.6-.1 1.7 2 .1 2.6L20 10l1.7 2.2-.1 2.6-1.7 2-2.6-.1L12 22l-2.3-1.3-2.6.1-1.7-2-.1-2.6L4 12l-1.7-2.2.1-2.6 1.7-2 2.6.1L12 2z" fill="url(#verifyGrad)"/>
+                <path d="M10.2 13.3l-2-2 1.4-1.4 1.3 1.3 3.5-3.5 1.4 1.4-4.9 5.2z" fill="#3a0c2f"/>
+              </svg>
+            </span>
+          </h1>
+          <div class="sub">Coder • Reverse • 36xSec</div>
+        </div>
+      </div>
+
+      <div class="badges">
+        <span class="badge">🇻🇳 Việt Nam</span>
+        <span class="badge">☎ 098223186</span>
+        <span class="badge">✉ Khoaansuperhero@gmail.com</span>
+      </div>
+
+      <p class="bio">CHÀO MỪNG CÁC BẠN ĐẾN VỚI BIO CỦA MÌNH 💕 </p>
+
+      <div class="quick-stats" aria-label="Thông tin nhanh">
+        <div class="stat"><b>VIP</b><span>Pink Galaxy</span></div>
+        <div class="stat"><b>Glow</b><span>Glass UI</span></div>
+        <div class="stat"><b>Music</b><span>Auto + Toggle</span></div>
+      </div>
+
+      <div class="actions">
+        <a class="tile" href="https://www.facebook.com/Kem11th6" target="_blank" rel="noopener">📘 <strong>Liên Hệ 1</strong></a>
+        <a class="tile" href="http://zalo.me/098223186" target="_blank" rel="noopener">💬 <strong>Liên Hệ 2</strong></a>
+        <button class="btn" id="toggleMusicBtn" aria-pressed="true">🔊 Tắt nhạc</button>
+        <button class="tile" id="copyPhone" type="button">📋 <strong>Copy SĐT</strong></button>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="Liên kết & mạng xã hội">
+      <div class="section">Tài Nguyên</div>
+      <div class="stack">
+        <a class="tile" href="https://sublikevip.online" target="_blank" rel="noopener">🚀 <strong>Web Tăng Tương Tác MXH</strong></a>
+        <a class="tile" href="https://www.facebook.com/vantruonggg.08" target="_blank" rel="noopener">✨ <strong>Trang Cá Nhân Facebook</strong></a>
+      </div>
+
+      <div class="section" style="margin-top:20px">Thông tin liên hệ</div>
+      <div class="social-grid">
+        <a class="tile" href="https://www.facebook.com/Kem11th6" target="_blank" rel="noopener">📘 <strong>Facebook</strong></a>
+        <a class="tile" href="http://zalo.me/098223186" target="_blank" rel="noopener">💬 <strong>Zalo</strong></a>
+        <button class="tile" id="copyMail" type="button">✉️ <strong>Copy Email</strong></button>
+        <button class="tile" id="scrollTopBtn" type="button">🌌 <strong>Lên đầu trang</strong></button>
+      </div>
+
+      <div class="footer">© 2026 • Khoa An | BIO LINK </div>
+    </section>
+  </div>
+</div>
+
+<div class="toast" id="toast">Đã copy!</div>
+<button class="music-fab" id="musicFab" type="button" aria-label="Bật tắt nhạc">🎵</button>
+
+<audio id="backgroundAudio" loop preload="auto" style="display:none">
+  <source src="https://files.catbox.moe/rp5kuq.mp3" type="audio/mpeg" />
+</audio>
+
+<script>
+const toast=document.getElementById('toast');
+function showToast(text){
+  toast.textContent=text;
+  toast.style.display='block';
+  clearTimeout(showToast.t);
+  showToast.t=setTimeout(()=>toast.style.display='none',1600);
+}
+function safeCopy(text){
+  if(navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(text).then(()=>showToast('Đã copy!'));
+  }else{
+    const ta=document.createElement('textarea');
+    ta.value=text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('Đã copy!');
+  }
+}
+
+document.getElementById('copyPhone').addEventListener('click',()=>safeCopy('0981251350'));
+document.getElementById('copyMail').addEventListener('click',()=>safeCopy('dinhvantruong27th05@gmail.com'));
+document.getElementById('scrollTopBtn').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+const audio=document.getElementById('backgroundAudio');
+const toggleMusicBtn=document.getElementById('toggleMusicBtn');
+const musicFab=document.getElementById('musicFab');
+audio.volume=.62;
+async function syncMusicUI(){
+  const isPlaying=!audio.paused;
+  toggleMusicBtn.textContent=isPlaying?'🔊 Tắt nhạc':'🔈 Bật nhạc';
+  toggleMusicBtn.setAttribute('aria-pressed', String(isPlaying));
+  musicFab.textContent=isPlaying?'🎵':'🔇';
+}
+async function playMusic(){
+  try{await audio.play();}catch(e){}
+  syncMusicUI();
+}
+function pauseMusic(){
+  audio.pause();
+  syncMusicUI();
+}
+function toggleMusic(){
+  if(audio.paused) playMusic();
+  else pauseMusic();
+}
+playMusic();
+toggleMusicBtn.addEventListener('click',toggleMusic);
+musicFab.addEventListener('click',toggleMusic);
+
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) syncMusicUI(); });
+
+const avatar=document.getElementById('avatar');
+function spawnHeart(x,y){
+  const el=document.createElement('div');
+  el.textContent=Math.random()>.5?'💗':'💖';
+  Object.assign(el.style,{
+    position:'absolute', left:x+'px', top:y+'px', pointerEvents:'none', zIndex:'5',
+    fontSize:(14+Math.random()*12)+'px', opacity:'1', filter:'drop-shadow(0 0 10px rgba(255,180,235,.9))'
+  });
+  const dx=(Math.random()-.5)*80;
+  const dy=-(34+Math.random()*76);
+  const rot=(Math.random()-.5)*80;
+  avatar.appendChild(el);
+  const t0=performance.now();
+  function step(t){
+    const k=Math.min(1,(t-t0)/1000);
+    el.style.transform=`translate(${dx*k}px, ${dy*k}px) rotate(${rot*k}deg) scale(${1+.25*k})`;
+    el.style.opacity=String(1-k);
+    if(k<1) requestAnimationFrame(step); else el.remove();
+  }
+  requestAnimationFrame(step);
+}
+function heartBurst(evt){
+  const rect=avatar.getBoundingClientRect();
+  const x=(evt?.clientX?evt.clientX-rect.left:52);
+  const y=(evt?.clientY?evt.clientY-rect.top:52);
+  for(let i=0;i<8;i++) spawnHeart(x,y);
+}
+avatar.addEventListener('click',heartBurst);
+avatar.addEventListener('keydown',(e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); heartBurst(); }});
+
+const nebula=document.getElementById('nebula');
+const nctx=nebula.getContext('2d');
+const galaxy=document.getElementById('galaxy');
+const gctx=galaxy.getContext('2d');
+let W=0,H=0,stars=[],dust=[],meteors=[];
+function resize(){
+  W=nebula.width=galaxy.width=innerWidth;
+  H=nebula.height=galaxy.height=innerHeight;
+  stars=Array.from({length:Math.max(170, Math.floor(W/7))},()=>({
+    x:Math.random()*W,
+    y:Math.random()*H,
+    r:Math.random()*1.7+.15,
+    v:Math.random()*.28+.06,
+    a:Math.random()*.7+.25,
+    tw:Math.random()*.03+.008
+  }));
+  dust=Array.from({length:20},()=>({
+    x:Math.random()*W,
+    y:Math.random()*H,
+    r:Math.random()*180+90,
+    c:Math.random()>.5?'rgba(255,152,229,.08)':'rgba(210,140,255,.08)'
+  }));
+}
+function drawNebula(){
+  nctx.clearRect(0,0,W,H);
+  for(const d of dust){
+    const grd=nctx.createRadialGradient(d.x,d.y,0,d.x,d.y,d.r);
+    grd.addColorStop(0,d.c);
+    grd.addColorStop(1,'transparent');
+    nctx.fillStyle=grd;
+    nctx.beginPath();
+    nctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+    nctx.fill();
+  }
+}
+function drawGalaxy(){
+  gctx.clearRect(0,0,W,H);
+  const glow=gctx.createRadialGradient(W*.72,H*.18,0,W*.72,H*.18,Math.max(W,H)*.85);
+  glow.addColorStop(0,'rgba(255,206,242,.12)');
+  glow.addColorStop(.28,'rgba(255,132,223,.06)');
+  glow.addColorStop(1,'transparent');
+  gctx.fillStyle=glow;
+  gctx.fillRect(0,0,W,H);
+
+  for(const s of stars){
+    s.y+=s.v;
+    s.a+=s.tw*(Math.random()>.5?1:-1);
+    if(s.a<.2 || s.a>.95) s.tw*=-1;
+    if(s.y>H+3){ s.y=-3; s.x=Math.random()*W; }
+    gctx.beginPath();
+    gctx.fillStyle=`rgba(255,238,250,${Math.max(.18,Math.min(.95,s.a))})`;
+    gctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    gctx.fill();
+  }
+
+  gctx.lineWidth=1.4;
+  for(let i=meteors.length-1;i>=0;i--){
+    const m=meteors[i];
+    const tail=gctx.createLinearGradient(m.x,m.y,m.x-m.l*.72,m.y+m.l);
+    tail.addColorStop(0,'rgba(255,240,250,.95)');
+    tail.addColorStop(1,'rgba(255,140,225,0)');
+    gctx.strokeStyle=tail;
+    gctx.beginPath();
+    gctx.moveTo(m.x,m.y);
+    gctx.lineTo(m.x-m.l*.72,m.y+m.l);
+    gctx.stroke();
+    m.x+=m.vx; m.y+=m.vy;
+    if(m.y>H+160 || m.x>W+160) meteors.splice(i,1);
+  }
+  if(Math.random()<0.022){
+    meteors.push({
+      x:Math.random()*W*.85,
+      y:-20,
+      l:Math.random()*110+55,
+      vx:Math.random()*2.7+2.2,
+      vy:Math.random()*4.3+5.3
+    });
+  }
+  requestAnimationFrame(drawGalaxy);
+}
+addEventListener('resize',()=>{resize(); drawNebula();});
+resize();
+drawNebula();
+drawGalaxy();
+</script>
+</body>
+</html>
