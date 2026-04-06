@@ -669,46 +669,92 @@ drawGalaxy();
   to{transform:scale(1);opacity:1}
 }
 </style>
-</head>
+// ===== WELCOME POPUP FIX =====
 
-<body>
+// CSS
+const style = document.createElement("style");
+style.innerHTML = `
+#welcomeOverlay{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at center, rgba(0,255,255,.15), #000);
+  backdrop-filter:blur(12px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  animation:fadeIn .8s ease;
+}
 
-<!-- POPUP -->
-<div id="welcomeOverlay">
+.welcomeBox{
+  text-align:center;
+  padding:40px 30px;
+  border-radius:20px;
+  background:rgba(0,40,60,.7);
+  border:1px solid rgba(0,255,255,.3);
+  box-shadow:0 0 40px rgba(0,255,255,.4);
+  animation:animePop .6s ease;
+}
+
+.welcomeBox h2{
+  margin:0 0 10px;
+  color:#00ffff;
+  text-shadow:0 0 15px #00ffff;
+}
+
+.welcomeBox p{
+  color:#ccc;
+  margin-bottom:20px;
+}
+
+.welcomeBox button{
+  padding:12px 20px;
+  border:none;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+  background:linear-gradient(135deg,#00ffff,#00cfff);
+  box-shadow:0 0 20px #00ffff;
+}
+
+@keyframes animePop{
+  from{transform:scale(.7) translateY(40px); opacity:0}
+  to{transform:scale(1); opacity:1}
+}
+
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+`;
+document.head.appendChild(style);
+
+// HTML
+const overlay = document.createElement("div");
+overlay.id = "welcomeOverlay";
+overlay.innerHTML = `
   <div class="welcomeBox">
     <h2>✨ Xin chào Khoa An ✨</h2>
     <p>Chào mừng đến với bio coder 😎</p>
-    <button id="enterBtn">🚀 Bắt đầu</button>
+    <button onclick="startWeb()">🚀 Bắt đầu</button>
   </div>
-</div>
+`;
 
-<!-- WEB CỦA BẠN -->
-<h1 style="text-align:center;color:white;margin-top:120px">
-  BIO KHOA AN 😎
-</h1>
+document.body.appendChild(overlay);
 
-<audio id="backgroundAudio" loop>
-  <source src="https://files.catbox.moe/rp5kuq.mp3">
-</audio>
+// FUNCTION CLICK (FIX LỖI)
+function startWeb(){
+  const overlay = document.getElementById("welcomeOverlay");
+  if(!overlay) return;
 
-<script>
-// ===== MUSIC =====
-const audio = document.getElementById("backgroundAudio");
-
-function playMusic(){
-  audio.play().catch(()=>{});
-}
-
-// ===== POPUP =====
-const overlay = document.getElementById("welcomeOverlay");
-const btn = document.getElementById("enterBtn");
-
-btn.onclick = () => {
   overlay.style.opacity = "0";
   overlay.style.transform = "scale(1.1)";
+
   setTimeout(()=> overlay.remove(), 400);
-  playMusic();
-};
-</script>
+
+  if (typeof playMusic === "function") {
+    playMusic();
+  }
+}
 </body>
 </html>
