@@ -80,12 +80,11 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 .welcome-panel h2{margin:0 0 15px;color:var(--pink-3);font-size:1.5rem;text-shadow:0 0 15px rgba(255,132,223,.4)}
 .device-box{margin:20px 0;padding:15px;background:rgba(255,255,255,.05);border-radius:12px;border:1px dashed rgba(255,199,238,.3);font-size:.95rem;line-height:1.6;color:#f8d7f0}
 
-/* CSS FPS & MINECRAFT DECOR */
+/* CSS FPS & MINECRAFT DECOR (ĐÃ FIX ẢNH CHẾT) */
 #fps-counter { position: fixed; top: 12px; left: 14px; color: #00ff00; font-family: monospace; font-size: 16px; font-weight: bold; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000; z-index: 999; pointer-events: none; }
-.mc-item { position: fixed; z-index: 10; width: 44px; height: 44px; image-rendering: pixelated; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s; animation: float-mc 3s ease-in-out infinite alternate; }
+.mc-item { position: fixed; z-index: 10; width: 44px; height: 44px; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s; animation: float-mc 3s ease-in-out infinite alternate; image-rendering: pixelated; image-rendering: crisp-edges; }
 @keyframes float-mc { from { transform: translateY(0); } to { transform: translateY(-10px); } }
 .mc-item:hover { filter: drop-shadow(0 0 12px #00ffff); }
-/* Tương tác Minecraft */
 .mc-spin { animation: spin-fast 0.5s linear !important; }
 .mc-eat { transform: scale(0) !important; opacity: 0; }
 .mc-glow-body { box-shadow: inset 0 0 100px rgba(255, 215, 0, 0.4); transition: 0.5s; }
@@ -93,7 +92,7 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 @keyframes spin-fast { 100% { transform: rotate(360deg) scale(1.2); } }
 @keyframes panel-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px) rotate(-1deg); } 75% { transform: translateX(10px) rotate(1deg); } }
 
-/* Vị trí ban đầu của các item Minecraft */
+/* Vị trí ban đầu */
 #mc-diamond { top: 15%; right: 5%; }
 #mc-apple { bottom: 25%; left: 8%; animation-delay: 0.5s; }
 #mc-cake { bottom: 12%; right: 20%; animation-delay: 1s; }
@@ -106,11 +105,11 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 
 <div id="fps-counter">FPS: 0</div>
 
-<img src="https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/assets/minecraft/textures/item/diamond.png" class="mc-item" id="mc-diamond" title="Diamond" />
-<img src="https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/assets/minecraft/textures/item/golden_apple.png" class="mc-item" id="mc-apple" title="Golden Apple" />
-<img src="https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/assets/minecraft/textures/item/cake.png" class="mc-item" id="mc-cake" title="Cake" />
-<img src="https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/assets/minecraft/textures/item/diamond_sword.png" class="mc-item" id="mc-sword" title="Sword" />
-<img src="https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/assets/minecraft/textures/item/diamond_pickaxe.png" class="mc-item" id="mc-pickaxe" title="Pickaxe" />
+<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond.png" class="mc-item" id="mc-diamond" title="Diamond" onerror="this.style.display='none'" />
+<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/golden_apple.png" class="mc-item" id="mc-apple" title="Golden Apple" onerror="this.style.display='none'" />
+<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/cake.png" class="mc-item" id="mc-cake" title="Cake" onerror="this.style.display='none'" />
+<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond_sword.png" class="mc-item" id="mc-sword" title="Sword" onerror="this.style.display='none'" />
+<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond_pickaxe.png" class="mc-item" id="mc-pickaxe" title="Pickaxe" onerror="this.style.display='none'" />
 
 <div class="welcome-overlay active" id="welcomeOverlay">
   <div class="welcome-panel">
@@ -149,7 +148,7 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 <section class="panel">
   <div class="section">Tài Nguyên</div>
   <div class="stack"><a class="tile" href="https://l.facebook.com/l.php?u=https%3A%2F%2Ftuoitre24h.com%2Fkhoa-an-buff-mang-xa-hoi-nang-cap-premium" target="_blank">✨ <strong>Link Báo</strong></a></div>
-  <div class="section" style="margin-top:20px">Thông tin liên hệ</div>
+  <div class="section" style="margin-top:20px">Thông liên hệ</div>
   <div class="social-grid">
     <a class="tile" href="https://www.facebook.com/Kem11th6" target="_blank">📘 <strong>Facebook</strong></a>
     <a class="tile" href="https://zalo.me/84982213186" target="_blank">💬 <strong>Zalo</strong></a>
@@ -189,7 +188,7 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 <audio id="backgroundAudio" loop preload="auto" style="display:none"><source src="https://files.catbox.moe/rp5kuq.mp3" type="audio/mpeg"/></audio>
 
 <script>
-// --- XÁC MINH THIẾT BỊ NÂNG CAO (Lấy tên máy chính xác nếu trình duyệt hỗ trợ) ---
+// --- 1. XÁC MINH THIẾT BỊ ---
 async function checkDevice() {
   const ua = navigator.userAgent;
   let os = "Unknown", browser = "Unknown", vendor = "", modelName = "";
@@ -197,7 +196,7 @@ async function checkDevice() {
   if(/windows phone/i.test(ua)) os = "Windows Phone";
   else if(/win/i.test(ua)) os = "Windows";
   else if(/android/i.test(ua)) os = "Android";
-  else if(/ipad|iphone|ipod/i.test(ua)){ os = "iOS"; vendor = "Apple "; modelName = "iPhone/iPad"; }
+  else if(/ipad|iphone|ipod/i.test(ua)){ os = "iOS"; vendor = "Apple "; modelName = "iPhone/iPad"; } 
   else if(/mac/i.test(ua)){ os = "macOS"; vendor = "Apple "; modelName = "Mac"; }
   else if(/linux/i.test(ua)) os = "Linux";
 
@@ -207,28 +206,25 @@ async function checkDevice() {
   else if(/firefox|fxios/i.test(ua)) browser = "Firefox";
   else if(/safari/i.test(ua)) browser = "Safari";
 
-  // Thử lấy mã máy thật (chỉ chạy trên Chrome/Edge Android bản mới)
   if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
     try {
-      const hints = await navigator.userAgentData.getHighEntropyValues(["model", "platform"]);
-      if (hints.model) modelName = hints.model; // Ví dụ: SM-G998B
+      const hints = await navigator.userAgentData.getHighEntropyValues(["model"]);
+      if (hints.model) modelName = hints.model; 
     } catch(e) {}
   }
 
-  // Backup cho thiết bị Android không hỗ trợ Client Hints
   if(os === "Android" && modelName === "") {
     let match = ua.match(/Android.*?; (.*?) Build/);
     if(match && match[1]) modelName = match[1];
-    else modelName = "Điện thoại Android";
+    else modelName = "Android Device";
   }
 
   document.getElementById('deviceBox').innerHTML = `📱 <b>Thiết bị:</b> ${vendor}${modelName} (${os})<br>🌐 <b>Trình duyệt:</b> ${browser}<br>✅ <b>Trạng thái:</b> Đã xác minh an toàn`;
 }
 checkDevice();
 
-// --- FPS COUNTER ---
-let lastTime = performance.now();
-let frames = 0;
+// --- 2. FPS COUNTER ---
+let lastTime = performance.now(), frames = 0;
 const fpsEl = document.getElementById('fps-counter');
 function updateFPS(t) {
   frames++;
@@ -241,65 +237,59 @@ function updateFPS(t) {
 }
 requestAnimationFrame(updateFPS);
 
-// --- VIEW COUNTER (Chống F5 qua LocalStorage + Public API) ---
+// --- 3. VIEW COUNTER ---
 async function fetchViews() {
   const viewEl = document.getElementById('viewCount');
-  const namespace = 'khoaan_bio_page_2026'; // ID định danh trang của bạn
+  const namespace = 'khoaan_bio_page_2026_id'; 
   const visitedKey = 'visited_' + namespace;
   const apiUrl = 'https://api.counterapi.dev/v1/' + namespace + '/views';
   
   try {
     let res;
     if (!localStorage.getItem(visitedKey)) {
-      res = await fetch(apiUrl + '/up'); // Tăng view nếu chưa từng vào
-      localStorage.setItem(visitedKey, 'true');
+      res = await fetch(apiUrl + '/up'); 
+      localStorage.setItem(visitedKey, 'true'); 
     } else {
-      res = await fetch(apiUrl); // Chỉ đọc view nếu đã vào rồi
+      res = await fetch(apiUrl); 
     }
     const data = await res.json();
-    viewEl.innerText = data.count || '99+';
+    viewEl.innerText = data.count || '1';
   } catch(e) {
-    // Nếu API lỗi (mạng chặn), fake 1 số base ngẫu nhiên từ ngày tạo
-    let fakeBase = 1205 + Math.floor(Date.now() / 86400000 % 1000);
+    let fakeBase = 1200 + Math.floor(Date.now() / 86400000 % 1000);
     viewEl.innerText = fakeBase; 
   }
 }
 fetchViews();
 
-// --- TƯƠNG TÁC MINECRAFT DECOR ---
-const mainBody = document.getElementById('mainBody');
-const mainShell = document.getElementById('mainShell');
+// --- 4. TƯƠNG TÁC MINECRAFT ---
+const mainBody = document.getElementById('mainBody'), mainShell = document.getElementById('mainShell');
 
-// 1. Kim cương: Nhấp vào quay vòng
 document.getElementById('mc-diamond').addEventListener('click', function() {
   this.classList.remove('mc-spin');
-  void this.offsetWidth; // trigger reflow
+  void this.offsetWidth; 
   this.classList.add('mc-spin');
 });
-// 2. Bánh kem: Nhấp vào "ăn"
 document.getElementById('mc-cake').addEventListener('click', function() {
   this.classList.add('mc-eat');
-  setTimeout(() => this.classList.remove('mc-eat'), 3000); // 3s sau mọc lại
+  setTimeout(() => this.classList.remove('mc-eat'), 3000); 
 });
-// 3. Táo vàng: Nhấp vào phát sáng nền
 document.getElementById('mc-apple').addEventListener('click', function() {
   mainBody.classList.add('mc-glow-body');
   setTimeout(() => mainBody.classList.remove('mc-glow-body'), 1000);
 });
-// 4. Cuốc chim kim cương: Nhấp vào rung lắc trang (mine)
 document.getElementById('mc-pickaxe').addEventListener('click', function() {
   mainShell.classList.add('mc-shake');
   setTimeout(() => mainShell.classList.remove('mc-shake'), 400);
 });
-// 5. Kiếm kim cương: Đi theo chuột nhẹ nhàng
 document.addEventListener('mousemove', (e) => {
   const sword = document.getElementById('mc-sword');
+  if(!sword) return;
   const x = (e.clientX / window.innerWidth - 0.5) * 40;
   const y = (e.clientY / window.innerHeight - 0.5) * 40;
   sword.style.transform = `translate(${x}px, ${y}px)`;
 });
 
-// --- CODE CŨ (Welcome, Nhạc, Tim, Background, Copy) ---
+// --- CÁC TÍNH NĂNG CƠ BẢN CỦA WEB ---
 const welcomeOverlay=document.getElementById('welcomeOverlay');
 document.getElementById('enterBtn').addEventListener('click',()=>{
   welcomeOverlay.classList.remove('active');
