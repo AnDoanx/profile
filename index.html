@@ -12,16 +12,6 @@
 :root{--bg:#000;--bg-2:#111;--fg:#fff2fb;--muted:#f8d7f0;--pink:#0ff;--pink-3:#0ff;--line:rgba(0,255,255,.2);--card:rgba(0,40,60,.6);--card-2:rgba(0,60,90,.5);--shadow:0 22px 60px rgba(0,0,0,.52),0 0 50px rgba(255,132,223,.18);--shadow-strong:0 28px 80px rgba(0,0,0,.68),0 0 80px rgba(255,132,223,.3),0 0 140px rgba(255,199,238,.18)}
 *{box-sizing:border-box}
 
-/* THEME HACKER MATRIX (KÍCH HOẠT QUA EASTER EGG) */
-body.hacker-matrix-mode {
-  --bg: #000; --bg-2: #051005; --fg: #0f0; --muted: #0a0; --pink: #0f0; --pink-3: #0f0; --line: #0f0; 
-  --card: rgba(0,20,0,0.8); --card-2: rgba(0,30,0,0.6); 
-  --shadow: 0 0 20px rgba(0,255,0,0.2); --shadow-strong: 0 0 40px rgba(0,255,0,0.4);
-}
-body.hacker-matrix-mode * { font-family: 'Courier New', Courier, monospace !important; text-shadow: 0 0 4px #0f0 !important; }
-body.hacker-matrix-mode .avatar::before { background: conic-gradient(from 0deg, #0f0, #000, #0f0); animation: spin 2s linear infinite; }
-body.hacker-matrix-mode .btn { background: #000; border: 1px solid #0f0; color: #0f0; box-shadow: 0 0 10px #0f0; }
-
 body,html{margin:0;min-height:100%;color:var(--fg);font-family:Inter,system-ui,-apple-system,sans-serif;background:radial-gradient(circle at 15% 20%,rgba(0,255,255,.15),transparent 28%),radial-gradient(circle at 85% 18%,rgba(0,255,255,.08),transparent 22%),radial-gradient(circle at 50% 78%,rgba(0,255,255,.1),transparent 28%),linear-gradient(180deg,var(--bg),var(--bg-2));overflow-x:hidden}
 body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.03),transparent 35%),radial-gradient(circle at center,rgba(255,255,255,.03),transparent 55%);pointer-events:none;z-index:0}
 #galaxy,#nebula{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
@@ -43,11 +33,6 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 .title h1{margin:0;font-size:clamp(1.45rem,2vw,1.9rem);line-height:1.15;color:var(--pink-3);text-shadow:0 0 18px rgba(255,132,223,.36);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .badge-verify{display:inline-flex;width:22px;height:22px}
 .sub{color:var(--muted);opacity:.92; margin-top: 4px;}
-
-/* CSS THANH EXP MINECRAFT PIXELATED */
-.mc-exp-container { position: relative; width: 100%; max-width: 250px; height: 8px; background: #000; border: 2px solid #222; margin-top: 8px; border-radius: 4px; box-shadow: 0 0 5px rgba(0,255,0,0.3); overflow: hidden; image-rendering: pixelated; }
-.mc-exp-fill { width: 85%; height: 100%; background-color: #32cd32; background-image: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.2) 2px, rgba(255, 255, 255, 0.2) 4px); }
-.mc-exp-level { position: absolute; top: -7px; left: 50%; transform: translateX(-50%); font-family: monospace; font-size: 14px; font-weight: 900; color: #80ff20; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; pointer-events: none; image-rendering: pixelated; }
 
 .badges{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 10px}
 .badge{padding:8px 12px;border-radius:999px;font-size:.93rem;background:rgba(255,255,255,.045);border:1px solid rgba(255,199,238,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
@@ -106,29 +91,15 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 .term-input-line span { color: #ff86df; margin-right: 5px; }
 .term-input-line input { flex: 1; background: transparent; border: none; color: #0f0; outline: none; font-family: monospace; font-size: 1rem; }
 
-/* CSS FPS & MINECRAFT DECOR */
+/* CSS FPS & FLOATING STARS */
 #fps-counter { position: fixed; top: 12px; left: 14px; color: #00ff00; font-family: monospace; font-size: 16px; font-weight: bold; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000; z-index: 999; pointer-events: none; }
-.mc-item { position: fixed; z-index: 10; width: 44px; height: 44px; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s; animation: float-mc 3s ease-in-out infinite alternate; image-rendering: pixelated; image-rendering: crisp-edges; }
-@keyframes float-mc { from { transform: translateY(0); } to { transform: translateY(-10px); } }
-.mc-item:hover { filter: drop-shadow(0 0 12px #00ffff); }
-.mc-spin { animation: spin-fast 0.5s linear !important; }
-.mc-eat { transform: scale(0) !important; opacity: 0; }
-.mc-glow-body { box-shadow: inset 0 0 100px rgba(255, 215, 0, 0.4); transition: 0.5s; }
-.mc-shake { animation: panel-shake 0.4s ease-in-out; }
-@keyframes spin-fast { 100% { transform: rotate(360deg) scale(1.2); } }
-@keyframes panel-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px) rotate(-1deg); } 75% { transform: translateX(10px) rotate(1deg); } }
+.floating-star { position: fixed; z-index: 10; font-size: 40px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s; animation: float-star 3s ease-in-out infinite alternate; pointer-events: none; }
+@keyframes float-star { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+.floating-star:hover { filter: drop-shadow(0 0 12px #00ffff); }
 
 /* CSS MOUSE TRAIL */
 .mouse-particle { position: fixed; pointer-events: none; width: 8px; height: 8px; border-radius: 50%; z-index: 9999; animation: particle-fade 0.8s forwards ease-out; }
 @keyframes particle-fade { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0.2) translateY(30px); opacity: 0; } }
-
-/* Vị trí ban đầu Minecraft */
-#mc-diamond { top: 15%; right: 5%; }
-#mc-apple { bottom: 25%; left: 8%; animation-delay: 0.5s; }
-#mc-cake { bottom: 12%; right: 20%; animation-delay: 1s; }
-#mc-sword { top: 40%; left: 4%; animation-delay: 0.2s; }
-#mc-pickaxe { top: 10%; left: 25%; animation-delay: 0.8s; }
-@media (max-width: 768px) { .mc-item { width: 36px; height: 36px; } }
 
 /* CSS INTRO SCREEN */
 #intro-screen { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center; transition: opacity 1s ease, visibility 1s; }
@@ -154,11 +125,11 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 
 <div id="fps-counter">FPS: 0</div>
 
-<img src="https://mc-items.net/items/diamond.png" class="mc-item" id="mc-diamond" title="Diamond" onerror="this.style.display='none'" />
-<img src="https://mc-items.net/items/golden_apple.png" class="mc-item" id="mc-apple" title="Golden Apple" onerror="this.style.display='none'" />
-<img src="https://mc-items.net/items/cake.png" class="mc-item" id="mc-cake" title="Cake" onerror="this.style.display='none'" />
-<img src="https://mc-items.net/items/diamond_sword.png" class="mc-item" id="mc-sword" title="Sword" onerror="this.style.display='none'" />
-<img src="https://mc-items.net/items/diamond_pickaxe.png" class="mc-item" id="mc-pickaxe" title="Cúp Kim Cương - Click 5 lần nhé!" onerror="this.style.display='none'" />
+<div class="floating-star" style="top: 15%; right: 5%; color: #ffd7f5; text-shadow: 0 0 10px #ffd7f5;">★</div>
+<div class="floating-star" style="bottom: 25%; left: 8%; color: #ff8adf; text-shadow: 0 0 10px #ff8adf;">★</div>
+<div class="floating-star" style="bottom: 12%; right: 20%; color: #00ffff; text-shadow: 0 0 10px #00ffff;">★</div>
+<div class="floating-star" style="top: 40%; left: 4%; color: #ffd7f5; text-shadow: 0 0 10px #ffd7f5;">★</div>
+<div class="floating-star" style="top: 10%; left: 25%; color: #0ff; text-shadow: 0 0 10px #0ff;">★</div>
 
 <div class="modal-overlay active" id="welcomeOverlay">
   <div class="modal-panel">
@@ -176,12 +147,8 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
   <div class="head">
     <div class="avatar" id="avatar"><img src="https://sf-static.upanhlaylink.com/img/image_202604052e5fd760d0635ce9d9c6e7555d064a1a.jpg" alt="Avatar"/><span class="online"></span></div>
     <div class="title">
-      <h1>Khoa An <span class="badge-verify"><svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="vg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#ffd7f5"/><stop offset="1" stop-color="#ff86df"/></linearGradient></defs><path d="M12 2l2.3 1.3 2.6-.1 1.7 2 .1 2.6L20 10l1.7 2.2-.1 2.6-1.7 2-2.6-.1L12 22l-2.3-1.3-2.6.1-1.7-2-.1-2.6L4 12l-1.7-2.2.1-2.6 1.7-2 2.6.1L12 2z" fill="url(#vg)"/><path d="M10.2 13.3l-2-2 1.4-1.4 1.3 1.3 3.5-3.5 1.4 1.4-4.9 5.2z" fill="#3a0c2f"/></svg></span></h1>
+      <h1 title="Tư vấn chuyển khoản ngân hàng">Khoa An <span class="badge-verify"><svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="vg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#ffd7f5"/><stop offset="1" stop-color="#ff86df"/></linearGradient></defs><path d="M12 2l2.3 1.3 2.6-.1 1.7 2 .1 2.6L20 10l1.7 2.2-.1 2.6-1.7 2-2.6-.1L12 22l-2.3-1.3-2.6.1-1.7-2-.1-2.6L4 12l-1.7-2.2.1-2.6 1.7-2 2.6.1L12 2z" fill="url(#vg)"/><path d="M10.2 13.3l-2-2 1.4-1.4 1.3 1.3 3.5-3.5 1.4 1.4-4.9 5.2z" fill="#3a0c2f"/></svg></span></h1>
       <div class="sub">Coder • Reverse • 36xSec</div>
-      <div class="mc-exp-container">
-        <div class="mc-exp-level">99</div>
-        <div class="mc-exp-fill"></div>
-      </div>
     </div>
   </div>
   <div class="badges"><span class="badge">🇻🇳 Việt Nam</span><span class="badge">☎ 098223186</span><span class="badge">✉ Khoaansuperhero@gmail.com</span></div>
@@ -286,18 +253,8 @@ async function fetchViews() {
 }
 fetchViews();
 
-// --- 4. TƯƠNG TÁC MINECRAFT & MOUSE TRAIL & EASTER EGG ---
-const mainBody = document.getElementById('mainBody'), mainShell = document.getElementById('mainShell');
-let pickaxeClicks = 0;
-
-document.getElementById('mc-diamond').addEventListener('click', function() { this.classList.remove('mc-spin'); void this.offsetWidth; this.classList.add('mc-spin'); });
-document.getElementById('mc-cake').addEventListener('click', function() { this.classList.add('mc-eat'); setTimeout(() => this.classList.remove('mc-eat'), 3000); });
-document.getElementById('mc-apple').addEventListener('click', function() { mainBody.classList.add('mc-glow-body'); setTimeout(() => mainBody.classList.remove('mc-glow-body'), 1000); });
+// --- 4. TRAILING MOUSE particles ---
 document.addEventListener('mousemove', (e) => {
-  const sword = document.getElementById('mc-sword');
-  if(sword) sword.style.transform = `translate(${(e.clientX / window.innerWidth - 0.5) * 40}px, ${(e.clientY / window.innerHeight - 0.5) * 40}px)`;
-  
-  // Hiệu ứng hạt bụi chuột rơi (Mouse Trail)
   if(Math.random() > 0.6) {
     const p = document.createElement('div');
     p.className = 'mouse-particle';
@@ -307,18 +264,6 @@ document.addEventListener('mousemove', (e) => {
     p.style.boxShadow = `0 0 8px ${p.style.background}`;
     document.body.appendChild(p);
     setTimeout(() => p.remove(), 800);
-  }
-});
-
-// Easter Egg Hacker Mode
-document.getElementById('mc-pickaxe').addEventListener('click', function() {
-  mainShell.classList.add('mc-shake');
-  setTimeout(() => mainShell.classList.remove('mc-shake'), 400);
-  pickaxeClicks++;
-  if(pickaxeClicks === 5) {
-    document.body.classList.toggle('hacker-matrix-mode');
-    showToast(document.body.classList.contains('hacker-matrix-mode') ? '⚠️ SYSTEM OVERRIDE: HACKER MODE ON ⚠️' : 'Trở về bình thường!');
-    pickaxeClicks = 0;
   }
 });
 
@@ -345,10 +290,10 @@ termInput.addEventListener('keydown', (e) => {
     const val = termInput.value.trim().toLowerCase();
     let reply = `<div><span style="color:#ff86df">root@khoaan:~$</span> ${val}</div>`;
     if(val === 'help') reply += `<div style="color:#aaa">Lệnh khả dụng:<br>- whoami: Xem thông tin<br>- contact: Liên hệ<br>- clear: Xóa màn hình<br>- hack: Thử đi ;)</div>`;
-    else if(val === 'whoami') reply += `<div style="color:#0ff">Khoa An - Coder / Reverse / 36xSec. Sống nội tâm, code ban đêm.</div>`;
+    else if(val === 'whoami') reply += `<div style="color:#0ff">Khoa An - Coder / Reverse / 36xSec. Tư vấn bảo mật ngân hàng.</div>`;
     else if(val === 'contact') reply += `<div style="color:#ff0">FB: fb.com/Kem11th6 | Zalo: 098223186</div>`;
     else if(val === 'clear') { termOutput.innerHTML = ''; termInput.value = ''; return; }
-    else if(val === 'hack') { reply += `<div style="color:#f00">Đang tấn công hệ thống... ERROR 404: Bạn còn non lắm!</div>`; }
+    else if(val === 'hack') { reply += `<div style="color:#f00">ERROR 404: Bạn còn non lắm!</div>`; }
     else if(val !== '') reply += `<div style="color:#f00">Lệnh không hợp lệ. Gõ 'help'.</div>`;
     
     termOutput.innerHTML += reply;
