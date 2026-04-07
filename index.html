@@ -8,8 +8,20 @@
 <meta name="description" content="Bio link phong cách hồng vũ trụ" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='52'%3E%F0%9F%92%96%3C/text%3E%3C/svg%3E" />
 <style>
+/* CSS GỐC + BIẾN TOÀN CỤC */
 :root{--bg:#000;--bg-2:#111;--fg:#fff2fb;--muted:#f8d7f0;--pink:#0ff;--pink-3:#0ff;--line:rgba(0,255,255,.2);--card:rgba(0,40,60,.6);--card-2:rgba(0,60,90,.5);--shadow:0 22px 60px rgba(0,0,0,.52),0 0 50px rgba(255,132,223,.18);--shadow-strong:0 28px 80px rgba(0,0,0,.68),0 0 80px rgba(255,132,223,.3),0 0 140px rgba(255,199,238,.18)}
 *{box-sizing:border-box}
+
+/* THEME HACKER MATRIX (KÍCH HOẠT QUA EASTER EGG) */
+body.hacker-matrix-mode {
+  --bg: #000; --bg-2: #051005; --fg: #0f0; --muted: #0a0; --pink: #0f0; --pink-3: #0f0; --line: #0f0; 
+  --card: rgba(0,20,0,0.8); --card-2: rgba(0,30,0,0.6); 
+  --shadow: 0 0 20px rgba(0,255,0,0.2); --shadow-strong: 0 0 40px rgba(0,255,0,0.4);
+}
+body.hacker-matrix-mode * { font-family: 'Courier New', Courier, monospace !important; text-shadow: 0 0 4px #0f0 !important; }
+body.hacker-matrix-mode .avatar::before { background: conic-gradient(from 0deg, #0f0, #000, #0f0); animation: spin 2s linear infinite; }
+body.hacker-matrix-mode .btn { background: #000; border: 1px solid #0f0; color: #0f0; box-shadow: 0 0 10px #0f0; }
+
 body,html{margin:0;min-height:100%;color:var(--fg);font-family:Inter,system-ui,-apple-system,sans-serif;background:radial-gradient(circle at 15% 20%,rgba(0,255,255,.15),transparent 28%),radial-gradient(circle at 85% 18%,rgba(0,255,255,.08),transparent 22%),radial-gradient(circle at 50% 78%,rgba(0,255,255,.1),transparent 28%),linear-gradient(180deg,var(--bg),var(--bg-2));overflow-x:hidden}
 body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.03),transparent 35%),radial-gradient(circle at center,rgba(255,255,255,.03),transparent 55%);pointer-events:none;z-index:0}
 #galaxy,#nebula{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
@@ -22,7 +34,7 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 .panel::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.11),transparent 24%),radial-gradient(circle at top right,rgba(255,199,238,.12),transparent 32%);pointer-events:none}
 .panel::after{content:"";position:absolute;inset:1px;border-radius:24px;background:linear-gradient(160deg,var(--card),var(--card-2));z-index:-1}
 .panel:hover{transform:translateY(-8px) scale(1.01);box-shadow:var(--shadow-strong);border-color:rgba(255,199,238,.32)}
-.head{display:flex;align-items:center;gap:18px;margin-bottom:14px}
+.head{display:flex;align-items:center;gap:18px;margin-bottom:8px}
 .avatar{position:relative;width:104px;height:104px;border-radius:50%;overflow:hidden;flex:0 0 auto;border:2px solid rgba(255,199,238,.6);box-shadow:0 0 30px rgba(0,255,255,.4),0 0 65px rgba(255,199,238,.16);cursor:pointer;transition:.3s}
 .avatar::before{content:"";position:absolute;inset:-7px;border-radius:50%;background:conic-gradient(from 0deg,rgba(255,132,223,.12),rgba(255,199,238,.45),rgba(255,132,223,.12));filter:blur(14px);z-index:-1;animation:spin 8s linear infinite}
 .avatar:hover{transform:scale(1.04);box-shadow:0 0 34px rgba(255,132,223,.5),0 0 85px rgba(255,199,238,.26)}
@@ -30,7 +42,13 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 .online{position:absolute;right:8px;bottom:8px;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#ffd4f5,#ff8adf);box-shadow:0 0 16px rgba(255,199,238,.95);border:2px solid rgba(18,7,26,.8)}
 .title h1{margin:0;font-size:clamp(1.45rem,2vw,1.9rem);line-height:1.15;color:var(--pink-3);text-shadow:0 0 18px rgba(255,132,223,.36);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .badge-verify{display:inline-flex;width:22px;height:22px}
-.sub{margin-top:8px;color:var(--muted);opacity:.92}
+.sub{color:var(--muted);opacity:.92; margin-top: 4px;}
+
+/* CSS THANH EXP MINECRAFT */
+.mc-exp-container { position: relative; width: 100%; max-width: 250px; height: 6px; background: rgba(0,0,0,0.5); border: 2px solid #222; margin-top: 8px; border-radius: 4px; box-shadow: 0 0 5px rgba(0,255,0,0.3); }
+.mc-exp-fill { width: 85%; height: 100%; background: linear-gradient(90deg, #32cd32, #7cfc00); }
+.mc-exp-level { position: absolute; top: -7px; left: 50%; transform: translateX(-50%); font-family: monospace; font-size: 14px; font-weight: 900; color: #80ff20; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; pointer-events: none; }
+
 .badges{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 10px}
 .badge{padding:8px 12px;border-radius:999px;font-size:.93rem;background:rgba(255,255,255,.045);border:1px solid rgba(255,199,238,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
 .bio{margin:14px 0 18px;padding:14px 16px;line-height:1.65;border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid rgba(255,199,238,.12)}
@@ -53,30 +71,40 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 .stack{display:grid;gap:12px}
 .social-grid{margin-top:12px}
 .footer{margin-top:18px;padding-top:14px;text-align:center;color:var(--muted);border-top:1px solid rgba(255,199,238,.12)}
-.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);padding:11px 16px;border-radius:999px;color:#2a0721;background:linear-gradient(135deg,#ffd9f6,#ff9ee5);box-shadow:0 12px 34px rgba(255,132,223,.35);font-weight:800;display:none;z-index:10}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);padding:11px 16px;border-radius:999px;color:#2a0721;background:linear-gradient(135deg,#ffd9f6,#ff9ee5);box-shadow:0 12px 34px rgba(255,132,223,.35);font-weight:800;display:none;z-index:10000}
 .music-fab{position:fixed;right:20px;bottom:20px;z-index:9;width:58px;height:58px;border:none;border-radius:50%;cursor:pointer;color:#330a2a;background:linear-gradient(135deg,#ffe0f8,#ff95e2);box-shadow:0 18px 38px rgba(255,132,223,.34),0 0 24px rgba(255,199,238,.25);font-size:1.2rem;transition:.25s}
 .music-fab:hover{transform:translateY(-3px) scale(1.04)}
-.avatar:focus-visible,.bank-fab:focus-visible,.btn:focus-visible,.music-fab:focus-visible,.tile:focus-visible{outline:2px solid #ffd8f5;outline-offset:3px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .bank-fab{position:fixed;left:20px;bottom:20px;z-index:9;width:58px;height:58px;border:2px solid rgba(0,255,255,.5);border-radius:50%;cursor:pointer;background:#000;box-shadow:0 18px 38px rgba(0,255,255,.25),0 0 24px rgba(0,255,255,.15);transition:.25s;display:flex;align-items:center;justify-content:center;animation:float-bubble 3s ease-in-out infinite;padding:0;overflow:hidden}
 .bank-fab img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .bank-fab:hover{transform:scale(1.08);animation-play-state:paused;box-shadow:0 20px 42px rgba(0,255,255,.4),0 0 30px rgba(0,255,255,.25)}
 @keyframes float-bubble{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.bank-modal-overlay,.welcome-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(10px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.3s}
-.bank-modal-overlay.active,.welcome-overlay.active{opacity:1;pointer-events:auto}
-.welcome-overlay{z-index:998;background:rgba(0,0,0,.85)}
-.bank-modal-panel,.welcome-panel{width:90%;max-width:400px;max-height:90vh;overflow-y:auto;transform:scale(.9);transition:.3s;padding:30px 24px;background:rgba(20,5,25,.8);border:1px solid rgba(255,199,238,.3);border-radius:24px;box-shadow:var(--shadow-strong)}
-.bank-modal-overlay.active .bank-modal-panel,.welcome-overlay.active .welcome-panel{transform:scale(1)}
-.bank-modal-panel::-webkit-scrollbar,.welcome-panel::-webkit-scrollbar{width:6px}
-.bank-modal-panel::-webkit-scrollbar-thumb,.welcome-panel::-webkit-scrollbar-thumb{background:rgba(255,199,238,.3);border-radius:10px}
+
+/* OVERLAYS (WELCOME, BANK, TERMINAL) */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(10px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.3s}
+.modal-overlay.active{opacity:1;pointer-events:auto}
+#welcomeOverlay{z-index:998;background:rgba(0,0,0,.85)}
+#terminalModal{z-index:999;}
+.modal-panel{width:90%;max-width:400px;max-height:90vh;overflow-y:auto;transform:scale(.9);transition:.3s;padding:30px 24px;background:rgba(20,5,25,.8);border:1px solid rgba(255,199,238,.3);border-radius:24px;box-shadow:var(--shadow-strong)}
+.modal-overlay.active .modal-panel{transform:scale(1)}
+.modal-panel::-webkit-scrollbar{width:6px}
+.modal-panel::-webkit-scrollbar-thumb{background:rgba(255,199,238,.3);border-radius:10px}
 .close-modal-btn{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,199,238,.3);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;transition:.2s;z-index:10}
 .close-modal-btn:hover{background:rgba(255,255,255,.2);transform:rotate(90deg)}
+
 .bank-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,199,238,.12);border-radius:16px;padding:16px;margin-top:15px}
 .bank-card p{margin:12px 0;font-size:1rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed rgba(255,255,255,.1);padding-bottom:10px}
 .bank-card p:last-of-type{border-bottom:none;padding-bottom:0}
 .bank-card strong{color:var(--pink-3)}
-.welcome-panel h2{margin:0 0 15px;color:var(--pink-3);font-size:1.5rem;text-shadow:0 0 15px rgba(255,132,223,.4)}
+.modal-panel h2{margin:0 0 15px;color:var(--pink-3);font-size:1.5rem;text-shadow:0 0 15px rgba(255,132,223,.4)}
 .device-box{margin:20px 0;padding:15px;background:rgba(255,255,255,.05);border-radius:12px;border:1px dashed rgba(255,199,238,.3);font-size:.95rem;line-height:1.6;color:#f8d7f0}
+
+/* TERMINAL DECOR */
+.term-box { background: #000; padding: 15px; border-radius: 12px; border: 1px solid #0f0; box-shadow: inset 0 0 10px rgba(0,255,0,0.2); font-family: monospace; color: #0f0; height: 250px; display: flex; flex-direction: column; text-align: left; }
+.term-output { flex: 1; overflow-y: auto; margin-bottom: 10px; padding-right: 5px; word-break: break-all; }
+.term-input-line { display: flex; }
+.term-input-line span { color: #ff86df; margin-right: 5px; }
+.term-input-line input { flex: 1; background: transparent; border: none; color: #0f0; outline: none; font-family: monospace; font-size: 1rem; }
 
 /* CSS FPS & MINECRAFT DECOR */
 #fps-counter { position: fixed; top: 12px; left: 14px; color: #00ff00; font-family: monospace; font-size: 16px; font-weight: bold; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000; z-index: 999; pointer-events: none; }
@@ -90,7 +118,11 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 @keyframes spin-fast { 100% { transform: rotate(360deg) scale(1.2); } }
 @keyframes panel-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px) rotate(-1deg); } 75% { transform: translateX(10px) rotate(1deg); } }
 
-/* Vị trí ban đầu */
+/* CSS MOUSE TRAIL */
+.mouse-particle { position: fixed; pointer-events: none; width: 8px; height: 8px; border-radius: 50%; z-index: 9999; animation: particle-fade 0.8s forwards ease-out; }
+@keyframes particle-fade { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0.2) translateY(30px); opacity: 0; } }
+
+/* Vị trí ban đầu Minecraft */
 #mc-diamond { top: 15%; right: 5%; }
 #mc-apple { bottom: 25%; left: 8%; animation-delay: 0.5s; }
 #mc-cake { bottom: 12%; right: 20%; animation-delay: 1s; }
@@ -116,22 +148,20 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
   <div class="intro-content">
     <div class="intro-logo">✨ KHOA AN ✨</div>
     <div id="intro-text"></div>
-    <div class="intro-loader">
-      <div class="loader-bar"></div>
-    </div>
+    <div class="intro-loader"><div class="loader-bar"></div></div>
   </div>
 </div>
 
 <div id="fps-counter">FPS: 0</div>
 
-<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond.png" class="mc-item" id="mc-diamond" title="Diamond" onerror="this.style.display='none'" />
-<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/golden_apple.png" class="mc-item" id="mc-apple" title="Golden Apple" onerror="this.style.display='none'" />
-<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/cake.png" class="mc-item" id="mc-cake" title="Cake" onerror="this.style.display='none'" />
-<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond_sword.png" class="mc-item" id="mc-sword" title="Sword" onerror="this.style.display='none'" />
-<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond_pickaxe.png" class="mc-item" id="mc-pickaxe" title="Pickaxe" onerror="this.style.display='none'" />
+<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond.png" class="mc-item" id="mc-diamond" title="Diamond" />
+<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/golden_apple.png" class="mc-item" id="mc-apple" title="Golden Apple" />
+<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/cake.png" class="mc-item" id="mc-cake" title="Cake" />
+<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond_sword.png" class="mc-item" id="mc-sword" title="Sword" />
+<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond_pickaxe.png" class="mc-item" id="mc-pickaxe" title="Click 5 lần nhé!" />
 
-<div class="welcome-overlay active" id="welcomeOverlay">
-  <div class="welcome-panel">
+<div class="modal-overlay active" id="welcomeOverlay">
+  <div class="modal-panel">
     <h2>Xin chào đã tới Profile của mình! ✨</h2>
     <div class="device-box" id="deviceBox">Đang xác minh thiết bị...</div>
     <button class="btn" id="enterBtn" style="width:100%">Vào Trang Thôi</button>
@@ -145,7 +175,14 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 <section class="panel">
   <div class="head">
     <div class="avatar" id="avatar"><img src="https://sf-static.upanhlaylink.com/img/image_202604052e5fd760d0635ce9d9c6e7555d064a1a.jpg" alt="Avatar"/><span class="online"></span></div>
-    <div class="title"><h1>Khoa An <span class="badge-verify"><svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="vg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#ffd7f5"/><stop offset="1" stop-color="#ff86df"/></linearGradient></defs><path d="M12 2l2.3 1.3 2.6-.1 1.7 2 .1 2.6L20 10l1.7 2.2-.1 2.6-1.7 2-2.6-.1L12 22l-2.3-1.3-2.6.1-1.7-2-.1-2.6L4 12l-1.7-2.2.1-2.6 1.7-2 2.6.1L12 2z" fill="url(#vg)"/><path d="M10.2 13.3l-2-2 1.4-1.4 1.3 1.3 3.5-3.5 1.4 1.4-4.9 5.2z" fill="#3a0c2f"/></svg></span></h1><div class="sub">Coder • Reverse • 36xSec</div></div>
+    <div class="title">
+      <h1>Khoa An <span class="badge-verify"><svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="vg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#ffd7f5"/><stop offset="1" stop-color="#ff86df"/></linearGradient></defs><path d="M12 2l2.3 1.3 2.6-.1 1.7 2 .1 2.6L20 10l1.7 2.2-.1 2.6-1.7 2-2.6-.1L12 22l-2.3-1.3-2.6.1-1.7-2-.1-2.6L4 12l-1.7-2.2.1-2.6 1.7-2 2.6.1L12 2z" fill="url(#vg)"/><path d="M10.2 13.3l-2-2 1.4-1.4 1.3 1.3 3.5-3.5 1.4 1.4-4.9 5.2z" fill="#3a0c2f"/></svg></span></h1>
+      <div class="sub">Coder • Reverse • 36xSec</div>
+      <div class="mc-exp-container">
+        <div class="mc-exp-level">99</div>
+        <div class="mc-exp-fill"></div>
+      </div>
+    </div>
   </div>
   <div class="badges"><span class="badge">🇻🇳 Việt Nam</span><span class="badge">☎ 098223186</span><span class="badge">✉ Khoaansuperhero@gmail.com</span></div>
   <p class="bio">CHÀO MỪNG CÁC BẠN ĐẾN VỚI BIO CỦA MÌNH 💕</p>
@@ -172,7 +209,7 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
     <a class="tile" href="https://www.facebook.com/Kem11th6" target="_blank">📘 <strong>Facebook</strong></a>
     <a class="tile" href="https://zalo.me/84982213186" target="_blank">💬 <strong>Zalo</strong></a>
     <button class="tile" id="copyMail">✉️ <strong>Copy Email</strong></button>
-    <button class="tile" id="scrollTopBtn">🌌 <strong>Lên đầu trang</strong></button>
+    <button class="tile" id="openTerminalBtn">💻 <strong>Terminal</strong></button>
   </div>
   <div class="footer">© 2026 • Khoa An | BIO LINK</div>
 </section>
@@ -183,20 +220,34 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 <button class="bank-fab" id="bankFab">
   <img src="LINK_ẢNH_CỦA_BẠN_Ở_ĐÂY" alt="Bank" id="bankIconImg" onerror="this.src='https://ui-avatars.com/api/?name=Bank&background=00ffff&color=000&rounded=true'" />
 </button>
-
 <button class="music-fab" id="musicFab">🎵</button>
 
-<div class="bank-modal-overlay" id="bankModal">
-  <div class="bank-modal-panel">
+<div class="modal-overlay" id="bankModal">
+  <div class="modal-panel">
     <button class="close-modal-btn" id="closeBankModal">&times;</button>
-    <h2 style="color:var(--pink-3);margin-top:0;text-align:center;text-shadow:0 0 12px rgba(255,132,223,.4)">Chuyển Khoản</h2>
-
+    <h2 style="color:var(--pink-3);margin-top:0;text-align:center;">Chuyển Khoản</h2>
     <div class="bank-card">
       <p><strong>Ngân hàng:</strong> <span>MB Bank</span></p>
       <p><strong>Chủ TK:</strong> <span>NG DOÃN KHOA AN</span></p>
       <p><strong>Số TK:</strong> <span id="stkValue">274233</span></p>
     </div>
     <button class="btn" id="copyStkBtn" style="width:100%;margin-top:15px">📋 Copy Số Tài Khoản</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="terminalModal">
+  <div class="modal-panel" style="background:#0a0a0a;">
+    <button class="close-modal-btn" id="closeTerminalBtn">&times;</button>
+    <h2 style="color:#0f0;margin-top:0;font-family:monospace;text-align:center">CMD Panel</h2>
+    <div class="term-box">
+      <div class="term-output" id="termOutput">
+        KhoaAnOS v1.0.0<br>Gõ 'help' để xem danh sách lệnh.<br>
+      </div>
+      <div class="term-input-line">
+        <span>root@khoaan:~$</span>
+        <input type="text" id="termInput" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
   </div>
 </div>
 
@@ -207,135 +258,126 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 async function checkDevice() {
   const ua = navigator.userAgent;
   let os = "Unknown", browser = "Unknown", vendor = "", modelName = "";
-
-  if(/windows phone/i.test(ua)) os = "Windows Phone";
-  else if(/win/i.test(ua)) os = "Windows";
-  else if(/android/i.test(ua)) os = "Android";
-  else if(/ipad|iphone|ipod/i.test(ua)){ os = "iOS"; vendor = "Apple "; modelName = "iPhone/iPad"; } 
-  else if(/mac/i.test(ua)){ os = "macOS"; vendor = "Apple "; modelName = "Mac"; }
-  else if(/linux/i.test(ua)) os = "Linux";
-
-  if(/opr\//i.test(ua)||/opera/i.test(ua)) browser = "Opera";
-  else if(/edg/i.test(ua)) browser = "Edge";
-  else if(/chrome|crios/i.test(ua)) browser = "Chrome";
-  else if(/firefox|fxios/i.test(ua)) browser = "Firefox";
-  else if(/safari/i.test(ua)) browser = "Safari";
-
+  if(/windows phone/i.test(ua)) os = "Windows Phone"; else if(/win/i.test(ua)) os = "Windows"; else if(/android/i.test(ua)) os = "Android"; else if(/ipad|iphone|ipod/i.test(ua)){ os = "iOS"; vendor = "Apple "; modelName = "iPhone/iPad"; } else if(/mac/i.test(ua)){ os = "macOS"; vendor = "Apple "; modelName = "Mac"; } else if(/linux/i.test(ua)) os = "Linux";
+  if(/opr\//i.test(ua)||/opera/i.test(ua)) browser = "Opera"; else if(/edg/i.test(ua)) browser = "Edge"; else if(/chrome|crios/i.test(ua)) browser = "Chrome"; else if(/firefox|fxios/i.test(ua)) browser = "Firefox"; else if(/safari/i.test(ua)) browser = "Safari";
   if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
-    try {
-      const hints = await navigator.userAgentData.getHighEntropyValues(["model"]);
-      if (hints.model) modelName = hints.model; 
-    } catch(e) {}
+    try { const hints = await navigator.userAgentData.getHighEntropyValues(["model"]); if (hints.model) modelName = hints.model; } catch(e) {}
   }
-
   if(os === "Android" && modelName === "") {
     let match = ua.match(/Android.*?; (.*?) Build/);
-    if(match && match[1]) modelName = match[1];
-    else modelName = "Android Device";
+    if(match && match[1]) modelName = match[1]; else modelName = "Android Device";
   }
-
   document.getElementById('deviceBox').innerHTML = `📱 <b>Thiết bị:</b> ${vendor}${modelName} (${os})<br>🌐 <b>Trình duyệt:</b> ${browser}<br>✅ <b>Trạng thái:</b> Đã xác minh an toàn`;
 }
 checkDevice();
 
 // --- 2. FPS COUNTER ---
-let lastTime = performance.now(), frames = 0;
-const fpsEl = document.getElementById('fps-counter');
-function updateFPS(t) {
-  frames++;
-  if(t - lastTime >= 1000) {
-    fpsEl.innerText = 'FPS: ' + frames;
-    frames = 0;
-    lastTime = t;
-  }
-  requestAnimationFrame(updateFPS);
-}
-requestAnimationFrame(updateFPS);
+let lastTime = performance.now(), frames = 0; const fpsEl = document.getElementById('fps-counter');
+function updateFPS(t) { frames++; if(t - lastTime >= 1000) { fpsEl.innerText = 'FPS: ' + frames; frames = 0; lastTime = t; } requestAnimationFrame(updateFPS); } requestAnimationFrame(updateFPS);
 
 // --- 3. VIEW COUNTER ---
 async function fetchViews() {
-  const viewEl = document.getElementById('viewCount');
-  const namespace = 'khoaan_bio_page_2026_id'; 
-  const visitedKey = 'visited_' + namespace;
-  const apiUrl = 'https://api.counterapi.dev/v1/' + namespace + '/views';
-  
+  const viewEl = document.getElementById('viewCount'), namespace = 'khoaan_bio_page_2026_id', visitedKey = 'visited_' + namespace;
   try {
-    let res;
-    if (!localStorage.getItem(visitedKey)) {
-      res = await fetch(apiUrl + '/up'); 
-      localStorage.setItem(visitedKey, 'true'); 
-    } else {
-      res = await fetch(apiUrl); 
-    }
-    const data = await res.json();
-    viewEl.innerText = data.count || '1';
-  } catch(e) {
-    let fakeBase = 1200 + Math.floor(Date.now() / 86400000 % 1000);
-    viewEl.innerText = fakeBase; 
-  }
+    let res = await fetch('https://api.counterapi.dev/v1/' + namespace + '/views' + (!localStorage.getItem(visitedKey) ? '/up' : ''));
+    if(!localStorage.getItem(visitedKey)) localStorage.setItem(visitedKey, 'true');
+    viewEl.innerText = (await res.json()).count || '1';
+  } catch(e) { viewEl.innerText = 1200 + Math.floor(Date.now() / 86400000 % 1000); }
 }
 fetchViews();
 
-// --- 4. TƯƠNG TÁC MINECRAFT ---
+// --- 4. TƯƠNG TÁC MINECRAFT & MOUSE TRAIL & EASTER EGG ---
 const mainBody = document.getElementById('mainBody'), mainShell = document.getElementById('mainShell');
+let pickaxeClicks = 0;
 
-document.getElementById('mc-diamond').addEventListener('click', function() {
-  this.classList.remove('mc-spin');
-  void this.offsetWidth; 
-  this.classList.add('mc-spin');
+document.getElementById('mc-diamond').addEventListener('click', function() { this.classList.remove('mc-spin'); void this.offsetWidth; this.classList.add('mc-spin'); });
+document.getElementById('mc-cake').addEventListener('click', function() { this.classList.add('mc-eat'); setTimeout(() => this.classList.remove('mc-eat'), 3000); });
+document.getElementById('mc-apple').addEventListener('click', function() { mainBody.classList.add('mc-glow-body'); setTimeout(() => mainBody.classList.remove('mc-glow-body'), 1000); });
+document.addEventListener('mousemove', (e) => {
+  const sword = document.getElementById('mc-sword');
+  if(sword) sword.style.transform = `translate(${(e.clientX / window.innerWidth - 0.5) * 40}px, ${(e.clientY / window.innerHeight - 0.5) * 40}px)`;
+  
+  // Hiệu ứng hạt bụi chuột rơi (Mouse Trail)
+  if(Math.random() > 0.6) {
+    const p = document.createElement('div');
+    p.className = 'mouse-particle';
+    p.style.left = e.clientX + 'px';
+    p.style.top = e.clientY + 'px';
+    p.style.background = Math.random() > 0.5 ? '#0ff' : '#ff86df';
+    p.style.boxShadow = `0 0 8px ${p.style.background}`;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 800);
+  }
 });
-document.getElementById('mc-cake').addEventListener('click', function() {
-  this.classList.add('mc-eat');
-  setTimeout(() => this.classList.remove('mc-eat'), 3000); 
-});
-document.getElementById('mc-apple').addEventListener('click', function() {
-  mainBody.classList.add('mc-glow-body');
-  setTimeout(() => mainBody.classList.remove('mc-glow-body'), 1000);
-});
+
+// Easter Egg Hacker Mode
 document.getElementById('mc-pickaxe').addEventListener('click', function() {
   mainShell.classList.add('mc-shake');
   setTimeout(() => mainShell.classList.remove('mc-shake'), 400);
-});
-document.addEventListener('mousemove', (e) => {
-  const sword = document.getElementById('mc-sword');
-  if(!sword) return;
-  const x = (e.clientX / window.innerWidth - 0.5) * 40;
-  const y = (e.clientY / window.innerHeight - 0.5) * 40;
-  sword.style.transform = `translate(${x}px, ${y}px)`;
-});
-
-// --- CÁC TÍNH NĂNG CƠ BẢN CỦA WEB ---
-const welcomeOverlay=document.getElementById('welcomeOverlay');
-document.getElementById('enterBtn').addEventListener('click',()=>{
-  welcomeOverlay.classList.remove('active');
-  playMusic();
+  pickaxeClicks++;
+  if(pickaxeClicks === 5) {
+    document.body.classList.toggle('hacker-matrix-mode');
+    showToast(document.body.classList.contains('hacker-matrix-mode') ? '⚠️ SYSTEM OVERRIDE: HACKER MODE ON ⚠️' : 'Trở về bình thường!');
+    pickaxeClicks = 0;
+  }
 });
 
+// --- 5. TIÊU ĐỀ TAB NHÕNG NHẼO (DYNAMIC TAB TITLE) ---
+const originalTitle = document.title;
+let titleTimeout;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    document.title = "Ê, quay lại đây! 🥺";
+    clearTimeout(titleTimeout);
+  } else {
+    document.title = "Mừng bạn trở lại! 💕";
+    titleTimeout = setTimeout(() => { document.title = originalTitle; }, 2000);
+  }
+});
+
+// --- 6. TERMINAL MINI ---
+const termModal = document.getElementById('terminalModal'), openTermBtn = document.getElementById('openTerminalBtn'), closeTermBtn = document.getElementById('closeTerminalBtn'), termInput = document.getElementById('termInput'), termOutput = document.getElementById('termOutput');
+openTermBtn.addEventListener('click', () => { termModal.classList.add('active'); setTimeout(() => termInput.focus(), 300); });
+closeTermBtn.addEventListener('click', () => termModal.classList.remove('active'));
+
+termInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') {
+    const val = termInput.value.trim().toLowerCase();
+    let reply = `<div><span style="color:#ff86df">root@khoaan:~$</span> ${val}</div>`;
+    if(val === 'help') reply += `<div style="color:#aaa">Lệnh khả dụng:<br>- whoami: Xem thông tin<br>- contact: Liên hệ<br>- clear: Xóa màn hình<br>- hack: Thử đi ;)</div>`;
+    else if(val === 'whoami') reply += `<div style="color:#0ff">Khoa An - Coder / Reverse / 36xSec. Sống nội tâm, code ban đêm.</div>`;
+    else if(val === 'contact') reply += `<div style="color:#ff0">FB: fb.com/Kem11th6 | Zalo: 098223186</div>`;
+    else if(val === 'clear') { termOutput.innerHTML = ''; termInput.value = ''; return; }
+    else if(val === 'hack') { reply += `<div style="color:#f00">Đang tấn công hệ thống... ERROR 404: Bạn còn non lắm!</div>`; }
+    else if(val !== '') reply += `<div style="color:#f00">Lệnh không hợp lệ. Gõ 'help'.</div>`;
+    
+    termOutput.innerHTML += reply;
+    termInput.value = '';
+    termOutput.scrollTop = termOutput.scrollHeight;
+  }
+});
+
+// --- CÁC CHỨC NĂNG CƠ BẢN ---
+const welcomeOverlay=document.getElementById('welcomeOverlay'), enterBtn=document.getElementById('enterBtn');
+enterBtn.addEventListener('click',()=>{ welcomeOverlay.classList.remove('active'); playMusic(); });
 const toast=document.getElementById('toast');
 const showToast=t=>{toast.textContent=t;toast.style.display='block';clearTimeout(showToast.t);showToast.t=setTimeout(()=>toast.style.display='none',1600)};
 const safeCopy=t=>{if(navigator.clipboard?.writeText)navigator.clipboard.writeText(t).then(()=>showToast('Đã copy!'));else{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('Đã copy!')}};
 
-document.getElementById('copyPhone').addEventListener('click',()=>safeCopy('098223186'));
-document.getElementById('copyMail').addEventListener('click',()=>safeCopy('Khoaansuperhero@gmail.com'));
-document.getElementById('scrollTopBtn').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
-
-const audio=document.getElementById('backgroundAudio'), toggleMusicBtn=document.getElementById('toggleMusicBtn'), musicFab=document.getElementById('musicFab');
-audio.volume=.62;
+document.getElementById('copyPhone').addEventListener('click',()=>safeCopy('098223186')); document.getElementById('copyMail').addEventListener('click',()=>safeCopy('Khoaansuperhero@gmail.com'));
+const audio=document.getElementById('backgroundAudio'), toggleMusicBtn=document.getElementById('toggleMusicBtn'), musicFab=document.getElementById('musicFab'); audio.volume=.62;
 const syncMusicUI=()=>{const p=!audio.paused;toggleMusicBtn.textContent=p?'🔊 Tắt nhạc':'🔈 Bật nhạc';musicFab.textContent=p?'🎵':'🔇'};
-const playMusic=async()=>{try{await audio.play()}catch(e){}syncMusicUI()};
-const toggleMusic=()=>{audio.paused?playMusic():(audio.pause(),syncMusicUI())};
+const playMusic=async()=>{try{await audio.play()}catch(e){}syncMusicUI()}; const toggleMusic=()=>{audio.paused?playMusic():(audio.pause(),syncMusicUI())};
 toggleMusicBtn.addEventListener('click',toggleMusic); musicFab.addEventListener('click',toggleMusic);
 
 const bFab=document.getElementById('bankFab'), bMod=document.getElementById('bankModal'), cBtn=document.getElementById('closeBankModal'), cStk=document.getElementById('copyStkBtn'), stk=document.getElementById('stkValue').innerText;
-bFab.addEventListener('click',()=>bMod.classList.add('active'));
-cBtn.addEventListener('click',()=>bMod.classList.remove('active'));
-bMod.addEventListener('click',e=>{if(e.target===bMod)bMod.classList.remove('active')});
-cStk.addEventListener('click',()=>{safeCopy(stk);setTimeout(()=>bMod.classList.remove('active'),500)});
+bFab.addEventListener('click',()=>bMod.classList.add('active')); cBtn.addEventListener('click',()=>bMod.classList.remove('active'));
+bMod.addEventListener('click',e=>{if(e.target===bMod)bMod.classList.remove('active')}); cStk.addEventListener('click',()=>{safeCopy(stk);setTimeout(()=>bMod.classList.remove('active'),500)});
+termModal.addEventListener('click',e=>{if(e.target===termModal)termModal.classList.remove('active')});
 
 const avatar=document.getElementById('avatar');
 const spawnHeart=(x,y)=>{const e=document.createElement('div');e.textContent=Math.random()>.5?'💗':'💖';Object.assign(e.style,{position:'absolute',left:x+'px',top:y+'px',pointerEvents:'none',zIndex:'5',fontSize:(14+Math.random()*12)+'px',opacity:'1',filter:'drop-shadow(0 0 10px rgba(255,180,235,.9))'});const dx=(Math.random()-.5)*80,dy=-(34+Math.random()*76),rot=(Math.random()-.5)*80;avatar.appendChild(e);const t0=performance.now();const step=t=>{const k=Math.min(1,(t-t0)/1000);e.style.transform=`translate(${dx*k}px, ${dy*k}px) rotate(${rot*k}deg) scale(${1+.25*k})`;e.style.opacity=String(1-k);if(k<1)requestAnimationFrame(step);else e.remove()};requestAnimationFrame(step)};
-const heartBurst=e=>{const r=avatar.getBoundingClientRect(),x=(e?.clientX?e.clientX-r.left:52),y=(e?.clientY?e.clientY-r.top:52);for(let i=0;i<8;i++)spawnHeart(x,y)};
-avatar.addEventListener('click',heartBurst);
+avatar.addEventListener('click',e=>{const r=avatar.getBoundingClientRect(),x=(e?.clientX?e.clientX-r.left:52),y=(e?.clientY?e.clientY-r.top:52);for(let i=0;i<8;i++)spawnHeart(x,y)});
 
 const nctx=document.getElementById('nebula').getContext('2d'), gctx=document.getElementById('galaxy').getContext('2d');
 let W,H,stars=[],dust=[],meteors=[];
@@ -344,28 +386,11 @@ const drawN=()=>{nctx.clearRect(0,0,W,H);dust.forEach(d=>{const g=nctx.createRad
 const drawG=()=>{gctx.clearRect(0,0,W,H);const gl=gctx.createRadialGradient(W*.72,H*.18,0,W*.72,H*.18,Math.max(W,H)*.85);gl.addColorStop(0,'rgba(255,206,242,.12)');gl.addColorStop(.28,'rgba(255,132,223,.06)');gl.addColorStop(1,'transparent');gctx.fillStyle=gl;gctx.fillRect(0,0,W,H);stars.forEach(s=>{s.y+=s.v;s.a+=s.tw*(Math.random()>.5?1:-1);if(s.a<.2||s.a>.95)s.tw*=-1;if(s.y>H+3){s.y=-3;s.x=Math.random()*W}gctx.beginPath();gctx.fillStyle=`rgba(255,238,250,${Math.max(.18,Math.min(.95,s.a))})`;gctx.arc(s.x,s.y,s.r,0,Math.PI*2);gctx.fill()});gctx.lineWidth=1.4;for(let i=meteors.length-1;i>=0;i--){const m=meteors[i],t=gctx.createLinearGradient(m.x,m.y,m.x-m.l*.72,m.y+m.l);t.addColorStop(0,'rgba(255,240,250,.95)');t.addColorStop(1,'rgba(255,140,225,0)');gctx.strokeStyle=t;gctx.beginPath();gctx.moveTo(m.x,m.y);gctx.lineTo(m.x-m.l*.72,m.y+m.l);gctx.stroke();m.x+=m.vx;m.y+=m.vy;if(m.y>H+160||m.x>W+160)meteors.splice(i,1)}if(Math.random()<.022)meteors.push({x:Math.random()*W*.85,y:-20,l:Math.random()*110+55,vx:Math.random()*2.7+2.2,vy:Math.random()*4.3+5.3});requestAnimationFrame(drawG)};
 addEventListener('resize',()=>{resize();drawN()});resize();drawN();drawG();
 
-// --- 5. INTRO SCREEN ---
-const introScreen = document.getElementById('intro-screen');
-const introText = document.getElementById('intro-text');
-const message = "System Loading... Welcome to Khoa An's Universe ✨";
-let charIndex = 0;
-
-function typeWriter() {
-  if (charIndex < message.length) {
-    introText.innerHTML += message.charAt(charIndex);
-    charIndex++;
-    setTimeout(typeWriter, 50); // Tốc độ gõ chữ
-  }
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  typeWriter();
-  
-  // Sau 3.5 giây thì ẩn màn hình intro
-  setTimeout(() => {
-    introScreen.classList.add('intro-hidden');
-  }, 3500);
-});
+// --- 7. INTRO SCREEN XỬ LÝ ---
+const introScreen = document.getElementById('intro-screen'), introText = document.getElementById('intro-text');
+const message = "System Loading... Welcome to Khoa An's Universe ✨"; let charIndex = 0;
+function typeWriter() { if (charIndex < message.length) { introText.innerHTML += message.charAt(charIndex); charIndex++; setTimeout(typeWriter, 50); } }
+window.addEventListener('DOMContentLoaded', () => { typeWriter(); setTimeout(() => { introScreen.classList.add('intro-hidden'); }, 3500); });
 </script>
 </body>
 </html>
