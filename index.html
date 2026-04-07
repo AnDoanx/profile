@@ -44,10 +44,10 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 .badge-verify{display:inline-flex;width:22px;height:22px}
 .sub{color:var(--muted);opacity:.92; margin-top: 4px;}
 
-/* CSS THANH EXP MINECRAFT */
-.mc-exp-container { position: relative; width: 100%; max-width: 250px; height: 6px; background: rgba(0,0,0,0.5); border: 2px solid #222; margin-top: 8px; border-radius: 4px; box-shadow: 0 0 5px rgba(0,255,0,0.3); }
-.mc-exp-fill { width: 85%; height: 100%; background: linear-gradient(90deg, #32cd32, #7cfc00); }
-.mc-exp-level { position: absolute; top: -7px; left: 50%; transform: translateX(-50%); font-family: monospace; font-size: 14px; font-weight: 900; color: #80ff20; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; pointer-events: none; }
+/* CSS THANH EXP MINECRAFT PIXELATED */
+.mc-exp-container { position: relative; width: 100%; max-width: 250px; height: 8px; background: #000; border: 2px solid #222; margin-top: 8px; border-radius: 4px; box-shadow: 0 0 5px rgba(0,255,0,0.3); overflow: hidden; image-rendering: pixelated; }
+.mc-exp-fill { width: 85%; height: 100%; background-color: #32cd32; background-image: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.2) 2px, rgba(255, 255, 255, 0.2) 4px); }
+.mc-exp-level { position: absolute; top: -7px; left: 50%; transform: translateX(-50%); font-family: monospace; font-size: 14px; font-weight: 900; color: #80ff20; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; pointer-events: none; image-rendering: pixelated; }
 
 .badges{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 10px}
 .badge{padding:8px 12px;border-radius:999px;font-size:.93rem;background:rgba(255,255,255,.045);border:1px solid rgba(255,199,238,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
@@ -154,11 +154,11 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 
 <div id="fps-counter">FPS: 0</div>
 
-<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond.png" class="mc-item" id="mc-diamond" title="Diamond" />
-<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/golden_apple.png" class="mc-item" id="mc-apple" title="Golden Apple" />
-<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/cake.png" class="mc-item" id="mc-cake" title="Cake" />
-<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond_sword.png" class="mc-item" id="mc-sword" title="Sword" />
-<img src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.19.3/items/diamond_pickaxe.png" class="mc-item" id="mc-pickaxe" title="Click 5 lần nhé!" />
+<img src="https://mc-items.net/items/diamond.png" class="mc-item" id="mc-diamond" title="Diamond" onerror="this.style.display='none'" />
+<img src="https://mc-items.net/items/golden_apple.png" class="mc-item" id="mc-apple" title="Golden Apple" onerror="this.style.display='none'" />
+<img src="https://mc-items.net/items/cake.png" class="mc-item" id="mc-cake" title="Cake" onerror="this.style.display='none'" />
+<img src="https://mc-items.net/items/diamond_sword.png" class="mc-item" id="mc-sword" title="Sword" onerror="this.style.display='none'" />
+<img src="https://mc-items.net/items/diamond_pickaxe.png" class="mc-item" id="mc-pickaxe" title="Cúp Kim Cương - Click 5 lần nhé!" onerror="this.style.display='none'" />
 
 <div class="modal-overlay active" id="welcomeOverlay">
   <div class="modal-panel">
