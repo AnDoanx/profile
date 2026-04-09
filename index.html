@@ -52,7 +52,10 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 .tile{color:var(--fg);background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,.028));border:1px solid rgba(255,199,238,.16)}
 .tile:hover{transform:translateY(-3px);border-color:rgba(255,199,238,.35);box-shadow:0 16px 34px rgba(0,0,0,.28),0 0 32px rgba(255,132,223,.18)}
 .section{margin:6px 0 16px;padding-bottom:12px;font-size:1.04rem;color:var(--pink-3);font-weight:800;text-shadow:0 0 12px rgba(255,132,223,.28);position:relative}
-.section::after{content:"absolute;left:0;bottom:0;width:88px;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff8edf,#ffd2f2)}
+
+/* ĐÃ SỬA LỖI Ở DÒNG NÀY (Thêm dấu ngoặc kép sau content) */
+.section::after{content:"";position:absolute;left:0;bottom:0;width:88px;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff8edf,#ffd2f2)}
+
 .stack{display:grid;gap:12px}
 .social-grid{margin-top:12px}
 .footer{margin-top:18px;padding-top:14px;text-align:center;color:var(--muted);border-top:1px solid rgba(255,199,238,.12)}
@@ -198,7 +201,7 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 
 <div class="pixel-pet-container" id="petContainer">
   <div class="pet-bubble" id="petBubble">Chào chủ nhân! ✨</div>
-  <img src="https://ibb.co/fYckVt5j" class="pixel-pet" alt="Pixel Pet" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXJ3eXpueXJ3eXpueXJ3eXpueXJ3eXpueXJ3eXpueXJ3JmVwPXYxX3N0aWNrZXJzX2xvZ29zJmN0PXM/3o7TKMGpxx6B8f0XF6/giphy.gif'">
+  <img src="https://ibb.co/fYckVt5j" class="pixel-pet" alt="Pixel Pet" onerror="this.src='https://media.tenor.com/2s_T4Eok6sIAAAAi/pixel-cat.gif'">
 </div>
 
 <div class="floating-star" style="top: 15%; right: 5%; color: #ffd7f5; text-shadow: 0 0 10px #ffd7f5;">★</div>
