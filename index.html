@@ -52,10 +52,7 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 .tile{color:var(--fg);background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,.028));border:1px solid rgba(255,199,238,.16)}
 .tile:hover{transform:translateY(-3px);border-color:rgba(255,199,238,.35);box-shadow:0 16px 34px rgba(0,0,0,.28),0 0 32px rgba(255,132,223,.18)}
 .section{margin:6px 0 16px;padding-bottom:12px;font-size:1.04rem;color:var(--pink-3);font-weight:800;text-shadow:0 0 12px rgba(255,132,223,.28);position:relative}
-
-/* ĐÃ SỬA LỖI Ở DÒNG NÀY (Thêm dấu ngoặc kép sau content) */
 .section::after{content:"";position:absolute;left:0;bottom:0;width:88px;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff8edf,#ffd2f2)}
-
 .stack{display:grid;gap:12px}
 .social-grid{margin-top:12px}
 .footer{margin-top:18px;padding-top:14px;text-align:center;color:var(--muted);border-top:1px solid rgba(255,199,238,.12)}
@@ -87,12 +84,15 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 .modal-panel h2{margin:0 0 15px;color:var(--pink-3);font-size:1.5rem;text-shadow:0 0 15px rgba(255,132,223,.4)}
 .device-box{margin:20px 0;padding:15px;background:rgba(255,255,255,.05);border-radius:12px;border:1px dashed rgba(255,199,238,.3);font-size:.95rem;line-height:1.6;color:#f8d7f0}
 
-/* TERMINAL DECOR */
-.term-box { background: #000; padding: 15px; border-radius: 12px; border: 1px solid #0f0; box-shadow: inset 0 0 10px rgba(0,255,0,0.2); font-family: monospace; color: #0f0; height: 250px; display: flex; flex-direction: column; text-align: left; }
-.term-output { flex: 1; overflow-y: auto; margin-bottom: 10px; padding-right: 5px; word-break: break-all; }
-.term-input-line { display: flex; }
-.term-input-line span { color: #ff86df; margin-right: 5px; }
+/* TERMINAL DECOR - ĐÃ NÂNG CẤP ĐỂ CHƠI GAME */
+.term-box { position: relative; background: #000; padding: 15px; border-radius: 12px; border: 1px solid #0f0; box-shadow: inset 0 0 10px rgba(0,255,0,0.2); font-family: monospace; color: #0f0; height: 320px; display: flex; flex-direction: column; text-align: left; overflow: hidden; }
+.term-output { flex: 1; overflow-y: auto; margin-bottom: 10px; padding-right: 5px; word-break: break-all; z-index: 2; }
+.term-input-line { display: flex; z-index: 2; }
+.term-input-line span { color: #ff86df; margin-right: 5px; white-space: nowrap;}
 .term-input-line input { flex: 1; background: transparent; border: none; color: #0f0; outline: none; font-family: monospace; font-size: 1rem; }
+#matrixCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; z-index: 1; pointer-events: none; display: none; }
+#snakeCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #0f0; z-index: 3; display: none; background: #001100; box-shadow: 0 0 15px #0f0; }
+#snakeScore { position: absolute; top: 10px; right: 15px; color: #0f0; font-family: monospace; z-index: 4; display: none; font-weight: bold; }
 
 /* CSS FPS & FLOATING STARS */
 #fps-counter { position: fixed; top: 12px; left: 14px; color: #00ff00; font-family: monospace; font-size: 16px; font-weight: bold; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000; z-index: 999; pointer-events: none; }
@@ -132,12 +132,12 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
 }
 
-/* Pixel Pet Container */
+/* Pixel Pet Container - FIXED Z-INDEX */
 .pixel-pet-container {
     position: fixed;
     right: 30px;
     bottom: 90px;
-    z-index: 997;
+    z-index: 99999; /* Đẩy lên lớp cao nhất */
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -148,10 +148,10 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 
 /* Pet Image */
 .pixel-pet {
-    width: 65px;
+    width: 75px;
     height: auto;
     image-rendering: pixelated;
-    filter: drop-shadow(0 0 5px var(--pink-3));
+    filter: drop-shadow(0 0 8px var(--pink-3));
 }
 
 /* Pet Speech Bubble */
@@ -169,6 +169,7 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
     pointer-events: none;
     transition: 0.3s;
     margin-bottom: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 .pet-bubble.active { opacity: 1; transform: translateY(-5px); }
 .pet-bubble::after {
@@ -201,7 +202,7 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 
 <div class="pixel-pet-container" id="petContainer">
   <div class="pet-bubble" id="petBubble">Chào chủ nhân! ✨</div>
-  <img src="https://ibb.co/fYckVt5j" class="pixel-pet" alt="Pixel Pet" onerror="this.src='https://media.tenor.com/2s_T4Eok6sIAAAAi/pixel-cat.gif'">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHVnMHpueXJ3eXpueXJ3eXpueXJ3eXpueXJ3eXpueXJ3eXpueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9Blh1H6wAEl4IqC/giphy.gif" class="pixel-pet" alt="Pixel Pet">
 </div>
 
 <div class="floating-star" style="top: 15%; right: 5%; color: #ffd7f5; text-shadow: 0 0 10px #ffd7f5;">★</div>
@@ -264,7 +265,7 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 <div class="toast" id="toast">Đã copy!</div>
 
 <button class="bank-fab" id="bankFab">
-  <img src="LINK_ẢNH_CỦA_BẠN_Ở_ĐÂY" alt="Bank" id="bankIconImg" onerror="this.src='https://ui-avatars.com/api/?name=Bank&background=00ffff&color=000&rounded=true'" />
+  <img src="https://ui-avatars.com/api/?name=Bank&background=00ffff&color=000&rounded=true" alt="Bank" id="bankIconImg" />
 </button>
 <button class="music-fab" id="musicFab">🎵</button>
 
@@ -282,14 +283,19 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 </div>
 
 <div class="modal-overlay" id="terminalModal">
-  <div class="modal-panel" style="background:#0a0a0a;">
+  <div class="modal-panel" style="background:#0a0a0a; max-width: 450px;">
     <button class="close-modal-btn" id="closeTerminalBtn">&times;</button>
     <h2 style="color:#0f0;margin-top:0;font-family:monospace;text-align:center">CMD Panel</h2>
-    <div class="term-box">
+    
+    <div class="term-box" id="termBox">
+      <canvas id="matrixCanvas"></canvas>
+      <div id="snakeScore">Score: <span id="s-score">0</span></div>
+      <canvas id="snakeCanvas" width="300" height="200"></canvas>
+      
       <div class="term-output" id="termOutput">
-        KhoaAnOS v1.0.0<br>Gõ 'help' để xem danh sách lệnh.<br>
+        KhoaAnOS v1.0.0<br>Gõ <span style="color:#ff86df">'help'</span> để xem 20 lệnh thú vị.<br>Gõ <span style="color:#ff86df">'snake'</span> để chơi game.<br>
       </div>
-      <div class="term-input-line">
+      <div class="term-input-line" id="termInputLine">
         <span>root@khoaan:~$</span>
         <input type="text" id="termInput" autocomplete="off" spellcheck="false" />
       </div>
@@ -346,41 +352,6 @@ document.addEventListener('mousemove', (e) => {
   }
 });
 
-// --- 5. TIÊU ĐỀ TAB NHÕNG NHẼO (DYNAMIC TAB TITLE) ---
-const originalTitle = document.title;
-let titleTimeout;
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    document.title = "Ê, quay lại đây! 🥺";
-    clearTimeout(titleTimeout);
-  } else {
-    document.title = "Mừng bạn trở lại! 💕";
-    titleTimeout = setTimeout(() => { document.title = originalTitle; }, 2000);
-  }
-});
-
-// --- 6. TERMINAL MINI ---
-const termModal = document.getElementById('terminalModal'), openTermBtn = document.getElementById('openTerminalBtn'), closeTermBtn = document.getElementById('closeTerminalBtn'), termInput = document.getElementById('termInput'), termOutput = document.getElementById('termOutput');
-openTermBtn.addEventListener('click', () => { termModal.classList.add('active'); setTimeout(() => termInput.focus(), 300); });
-closeTermBtn.addEventListener('click', () => termModal.classList.remove('active'));
-
-termInput.addEventListener('keydown', (e) => {
-  if(e.key === 'Enter') {
-    const val = termInput.value.trim().toLowerCase();
-    let reply = `<div><span style="color:#ff86df">root@khoaan:~$</span> ${val}</div>`;
-    if(val === 'help') reply += `<div style="color:#aaa">Lệnh khả dụng:<br>- whoami: Xem thông tin<br>- contact: Liên hệ<br>- clear: Xóa màn hình<br>- hack: Thử đi ;)</div>`;
-    else if(val === 'whoami') reply += `<div style="color:#0ff">Khoa An - Coder / Reverse / 36xSec. Tư vấn bảo mật ngân hàng.</div>`;
-    else if(val === 'contact') reply += `<div style="color:#ff0">FB: fb.com/Kem11th6 | Zalo: 098223186</div>`;
-    else if(val === 'clear') { termOutput.innerHTML = ''; termInput.value = ''; return; }
-    else if(val === 'hack') { reply += `<div style="color:#f00">ERROR 404: Bạn còn non lắm!</div>`; }
-    else if(val !== '') reply += `<div style="color:#f00">Lệnh không hợp lệ. Gõ 'help'.</div>`;
-    
-    termOutput.innerHTML += reply;
-    termInput.value = '';
-    termOutput.scrollTop = termOutput.scrollHeight;
-  }
-});
-
 // --- CÁC CHỨC NĂNG CƠ BẢN ---
 const welcomeOverlay=document.getElementById('welcomeOverlay'), enterBtn=document.getElementById('enterBtn');
 enterBtn.addEventListener('click',()=>{ welcomeOverlay.classList.remove('active'); playMusic(); });
@@ -397,7 +368,6 @@ toggleMusicBtn.addEventListener('click',toggleMusic); musicFab.addEventListener(
 const bFab=document.getElementById('bankFab'), bMod=document.getElementById('bankModal'), cBtn=document.getElementById('closeBankModal'), cStk=document.getElementById('copyStkBtn'), stk=document.getElementById('stkValue').innerText;
 bFab.addEventListener('click',()=>bMod.classList.add('active')); cBtn.addEventListener('click',()=>bMod.classList.remove('active'));
 bMod.addEventListener('click',e=>{if(e.target===bMod)bMod.classList.remove('active')}); cStk.addEventListener('click',()=>{safeCopy(stk);setTimeout(()=>bMod.classList.remove('active'),500)});
-termModal.addEventListener('click',e=>{if(e.target===termModal)termModal.classList.remove('active')});
 
 const avatar=document.getElementById('avatar');
 const spawnHeart=(x,y)=>{const e=document.createElement('div');e.textContent=Math.random()>.5?'💗':'💖';Object.assign(e.style,{position:'absolute',left:x+'px',top:y+'px',pointerEvents:'none',zIndex:'5',fontSize:(14+Math.random()*12)+'px',opacity:'1',filter:'drop-shadow(0 0 10px rgba(255,180,235,.9))'});const dx=(Math.random()-.5)*80,dy=-(34+Math.random()*76),rot=(Math.random()-.5)*80;avatar.appendChild(e);const t0=performance.now();const step=t=>{const k=Math.min(1,(t-t0)/1000);e.style.transform=`translate(${dx*k}px, ${dy*k}px) rotate(${rot*k}deg) scale(${1+.25*k})`;e.style.opacity=String(1-k);if(k<1)requestAnimationFrame(step);else e.remove()};requestAnimationFrame(step)};
@@ -410,13 +380,13 @@ const drawN=()=>{nctx.clearRect(0,0,W,H);dust.forEach(d=>{const g=nctx.createRad
 const drawG=()=>{gctx.clearRect(0,0,W,H);const gl=gctx.createRadialGradient(W*.72,H*.18,0,W*.72,H*.18,Math.max(W,H)*.85);gl.addColorStop(0,'rgba(255,206,242,.12)');gl.addColorStop(.28,'rgba(255,132,223,.06)');gl.addColorStop(1,'transparent');gctx.fillStyle=gl;gctx.fillRect(0,0,W,H);stars.forEach(s=>{s.y+=s.v;s.a+=s.tw*(Math.random()>.5?1:-1);if(s.a<.2||s.a>.95)s.tw*=-1;if(s.y>H+3){s.y=-3;s.x=Math.random()*W}gctx.beginPath();gctx.fillStyle=`rgba(255,238,250,${Math.max(.18,Math.min(.95,s.a))})`;gctx.arc(s.x,s.y,s.r,0,Math.PI*2);gctx.fill()});gctx.lineWidth=1.4;for(let i=meteors.length-1;i>=0;i--){const m=meteors[i],t=gctx.createLinearGradient(m.x,m.y,m.x-m.l*.72,m.y+m.l);t.addColorStop(0,'rgba(255,240,250,.95)');t.addColorStop(1,'rgba(255,140,225,0)');gctx.strokeStyle=t;gctx.beginPath();gctx.moveTo(m.x,m.y);gctx.lineTo(m.x-m.l*.72,m.y+m.l);gctx.stroke();m.x+=m.vx;m.y+=m.vy;if(m.y>H+160||m.x>W+160)meteors.splice(i,1)}if(Math.random()<.022)meteors.push({x:Math.random()*W*.85,y:-20,l:Math.random()*110+55,vx:Math.random()*2.7+2.2,vy:Math.random()*4.3+5.3});requestAnimationFrame(drawG)};
 addEventListener('resize',()=>{resize();drawN()});resize();drawN();drawG();
 
-// --- 7. INTRO SCREEN XỬ LÝ ---
+// --- INTRO SCREEN XỬ LÝ ---
 const introScreen = document.getElementById('intro-screen'), introText = document.getElementById('intro-text');
 const message = "System Loading... Welcome to Khoa An's Universe ✨"; let charIndex = 0;
 function typeWriter() { if (charIndex < message.length) { introText.innerHTML += message.charAt(charIndex); charIndex++; setTimeout(typeWriter, 50); } }
 window.addEventListener('DOMContentLoaded', () => { typeWriter(); setTimeout(() => { introScreen.classList.add('intro-hidden'); }, 3500); });
 
-// --- 8. XỬ LÝ UPTIME (THỜI GIAN THỰC) ---
+// --- XỬ LÝ UPTIME (THỜI GIAN THỰC) ---
 const startTime = Date.now();
 function updateUptime() {
   const now = Date.now();
@@ -428,28 +398,175 @@ function updateUptime() {
 }
 setInterval(updateUptime, 1000);
 
-// --- 9. XỬ LÝ PET PIXEL TƯƠNG TÁC ---
-const petContainer = document.getElementById('petContainer');
-const petBubble = document.getElementById('petBubble');
-const petQuotes = [
-  "Cần buff view cứ gọi Khoa An! 😎",
-  "Đang làm gì thế chủ nhân? ✨",
-  "Web này xịn quá đi! 💕",
-  "Đừng quên liên hệ Zalo nhé! 💬",
-  "Hôm nay bạn thật tuyệt vời! 🌟",
-  "Tớ là bảo vệ của Bio này! 🛡️"
-];
-
+// --- XỬ LÝ PET PIXEL TƯƠNG TÁC ---
+const petContainer = document.getElementById('petContainer'), petBubble = document.getElementById('petBubble');
+const petQuotes = ["Cần buff view cứ gọi Khoa An! 😎", "Đang làm gì thế chủ nhân? ✨", "Web này xịn quá đi! 💕", "Đừng quên liên hệ Zalo nhé! 💬", "Hôm nay bạn thật tuyệt vời! 🌟", "Tớ là bảo vệ của Bio này! 🛡️"];
 petContainer.addEventListener('click', () => {
   petContainer.style.transform = "scale(0.8)";
   setTimeout(() => { petContainer.style.transform = "scale(1.1)"; }, 100);
-  const randomQuote = petQuotes[Math.floor(Math.random() * petQuotes.length)];
-  petBubble.innerText = randomQuote;
+  petBubble.innerText = petQuotes[Math.floor(Math.random() * petQuotes.length)];
   petBubble.classList.add('active');
-  setTimeout(() => {
-    petBubble.classList.remove('active');
-  }, 3000);
+  setTimeout(() => { petBubble.classList.remove('active'); }, 3000);
 });
+
+// --- 💻 TERMINAL SYSTEM (20 Lệnh + Game Rắn) ---
+const termModal = document.getElementById('terminalModal'), openTermBtn = document.getElementById('openTerminalBtn'), closeTermBtn = document.getElementById('closeTerminalBtn'), termInput = document.getElementById('termInput'), termOutput = document.getElementById('termOutput');
+const sCanvas = document.getElementById('snakeCanvas'), sScore = document.getElementById('snakeScore'), sCtx = sCanvas.getContext('2d'), termInputLine = document.getElementById('termInputLine');
+const mCanvas = document.getElementById('matrixCanvas'), mCtx = mCanvas.getContext('2d');
+let snakeGameInterval = null, isPlayingSnake = false, matrixInterval = null;
+
+openTermBtn.addEventListener('click', () => { termModal.classList.add('active'); setTimeout(() => termInput.focus(), 300); });
+closeTermBtn.addEventListener('click', () => { termModal.classList.remove('active'); quitSnake(); });
+termModal.addEventListener('click', e => { if(e.target===termModal) { termModal.classList.remove('active'); quitSnake(); } });
+
+// Hiệu ứng Matrix
+function toggleMatrix() {
+  if (matrixInterval) { clearInterval(matrixInterval); matrixInterval = null; mCanvas.style.display = 'none'; return "Đã tắt hiệu ứng Matrix."; }
+  mCanvas.style.display = 'block'; mCanvas.width = mCanvas.parentElement.clientWidth; mCanvas.height = mCanvas.parentElement.clientHeight;
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~"; const fontSize = 14; const columns = mCanvas.width/fontSize; const drops = [];
+  for(let x=0; x<columns; x++) drops[x]=1;
+  matrixInterval = setInterval(() => {
+    mCtx.fillStyle = 'rgba(0, 0, 0, 0.05)'; mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+    mCtx.fillStyle = '#0F0'; mCtx.font = fontSize + 'px monospace';
+    for(let i=0; i<drops.length; i++) {
+      const text = chars.charAt(Math.floor(Math.random() * chars.length));
+      mCtx.fillText(text, i*fontSize, drops[i]*fontSize);
+      if(drops[i]*fontSize > mCanvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }, 33);
+  return "Đã bật hiệu ứng Matrix hacker.";
+}
+
+termInput.addEventListener('keydown', (e) => {
+  if(isPlayingSnake) {
+    if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+    return; // Block terminal input while playing game
+  }
+  
+  if(e.key === 'Enter') {
+    const rawVal = termInput.value.trim();
+    const val = rawVal.toLowerCase();
+    let reply = `<div><span style="color:#ff86df">root@khoaan:~$</span> ${rawVal}</div>`;
+    
+    // XỬ LÝ 20 LỆNH TERMINAL
+    if(val === 'help') {
+      reply += `<div style="color:#aaa">Danh sách 20 lệnh khả dụng:<br>
+      1.  <b style="color:#0ff">help</b> - Xem danh sách lệnh<br>
+      2.  <b style="color:#0ff">whoami</b> - Thông tin của tôi<br>
+      3.  <b style="color:#0ff">clear</b> - Xóa màn hình terminal<br>
+      4.  <b style="color:#0ff">snake</b> - Chơi rắn săn mồi 🐍<br>
+      5.  <b style="color:#0ff">bank</b> - Xem thông tin ngân hàng<br>
+      6.  <b style="color:#0ff">matrix</b> - Bật/tắt hiệu ứng Hacker<br>
+      7.  <b style="color:#0ff">date</b> - Xem ngày giờ hiện tại<br>
+      8.  <b style="color:#0ff">echo [chữ]</b> - Lặp lại từ bạn gõ<br>
+      9.  <b style="color:#0ff">ping</b> - Gửi gói tin ping<br>
+      10. <b style="color:#0ff">music play</b> - Bật nhạc nền<br>
+      11. <b style="color:#0ff">music pause</b> - Tắt nhạc nền<br>
+      12. <b style="color:#0ff">social</b> - Lấy link MXH<br>
+      13. <b style="color:#0ff">skills</b> - Kỹ năng chuyên môn<br>
+      14. <b style="color:#0ff">reboot</b> - Khởi động lại trang<br>
+      15. <b style="color:#0ff">hack</b> - Thử hack hệ thống<br>
+      16. <b style="color:#0ff">sudo</b> - Quyền quản trị<br>
+      17. <b style="color:#0ff">version</b> - Phiên bản HĐH<br>
+      18. <b style="color:#0ff">uptime</b> - Thời gian truy cập<br>
+      19. <b style="color:#0ff">quote</b> - Trích dẫn ngẫu nhiên<br>
+      20. <b style="color:#0ff">exit</b> - Thoát Terminal</div>`;
+    } 
+    else if(val === 'whoami') reply += `<div style="color:#0ff">NG DOÃN KHOA AN<br>- Coder<br>- Reverse Engineering<br>- 36xSec<br>- Cung cấp tool Python & Dịch vụ MXH</div>`;
+    else if(val === 'clear') { termOutput.innerHTML = ''; termInput.value = ''; return; }
+    else if(val === 'snake') { startSnake(); termInput.value = ''; return; }
+    else if(val === 'bank') reply += `<div style="color:#ff0">Ngân hàng: MB Bank<br>Chủ TK: NG DOÃN KHOA AN<br>STK: 274233</div>`;
+    else if(val === 'matrix') reply += `<div style="color:#0f0">${toggleMatrix()}</div>`;
+    else if(val === 'date') reply += `<div style="color:#fff">${new Date().toLocaleString('vi-VN')}</div>`;
+    else if(val.startsWith('echo ')) reply += `<div style="color:#fff">${rawVal.substring(5)}</div>`;
+    else if(val === 'ping') reply += `<div style="color:#0f0">PONG! Thời gian phản hồi: ${Math.floor(Math.random()*20)+1}ms</div>`;
+    else if(val === 'music play') { playMusic(); reply += `<div style="color:#0f0">Đã bật nhạc nền.</div>`; }
+    else if(val === 'music pause') { audio.pause(); syncMusicUI(); reply += `<div style="color:#aaa">Đã tạm dừng nhạc nền.</div>`; }
+    else if(val === 'social') reply += `<div style="color:#0ff">FB: fb.com/Kem11th6<br>Zalo: 098223186</div>`;
+    else if(val === 'skills') reply += `<div style="color:#ff86df">- Python Automation<br>- Tool Facebook/Spam<br>- UI/UX Design<br>- Reverse Security</div>`;
+    else if(val === 'reboot') { reply += `<div style="color:#f00">System rebooting...</div>`; setTimeout(()=>location.reload(), 1000); }
+    else if(val === 'hack') reply += `<div style="color:#f00">Initiating bypass...<br>[ERR] Firewall detected!<br>Bạn còn non lắm, không hack được Khoa An đâu ;)</div>`;
+    else if(val === 'sudo' || val.startsWith('sudo ')) reply += `<div style="color:#f00">Permission denied. Chỉ có NG DOÃN KHOA AN mới có quyền root!</div>`;
+    else if(val === 'version') reply += `<div style="color:#fff">KhoaAnOS v1.0.0 (Bản quyền 2026)</div>`;
+    else if(val === 'uptime') reply += `<div style="color:#fff">Đã hoạt động: ${document.getElementById('uptime-clock').innerText}</div>`;
+    else if(val === 'quote') { const q = ["Làm hết sức, chơi hết mình!","Bug là tính năng, không phải lỗi.","Code sạch là code không có bug."]; reply += `<div style="color:#ff86df">"${q[Math.floor(Math.random()*q.length)]}"</div>`; }
+    else if(val === 'exit') { termModal.classList.remove('active'); termInput.value = ''; return; }
+    else if(val !== '') reply += `<div style="color:#f00">Lệnh không hợp lệ. Gõ 'help' để xem danh sách.</div>`;
+    
+    termOutput.innerHTML += reply;
+    termInput.value = '';
+    termOutput.scrollTop = termOutput.scrollHeight;
+  }
+});
+
+// --- GAME RẮN SĂN MỒI (SNAKE) ---
+let snake, food, dx, dy, score;
+function startSnake() {
+  isPlayingSnake = true; termOutput.style.display = 'none'; termInputLine.style.display = 'none';
+  sCanvas.style.display = 'block'; sScore.style.display = 'block'; termInput.blur();
+  
+  snake = [{x: 150, y: 100}, {x: 140, y: 100}, {x: 130, y: 100}];
+  dx = 10; dy = 0; score = 0; document.getElementById('s-score').innerText = score;
+  createFood();
+  document.addEventListener("keydown", changeDirection);
+  snakeGameInterval = setInterval(mainSnake, 100);
+}
+
+function quitSnake() {
+  if(!isPlayingSnake) return;
+  isPlayingSnake = false; clearInterval(snakeGameInterval); document.removeEventListener("keydown", changeDirection);
+  sCanvas.style.display = 'none'; sScore.style.display = 'none';
+  termOutput.style.display = 'block'; termInputLine.style.display = 'flex';
+  termOutput.innerHTML += `<div style="color:#ff0">[Trò chơi kết thúc] Điểm của bạn: ${score}</div>`;
+  termOutput.scrollTop = termOutput.scrollHeight; termInput.focus();
+}
+
+function mainSnake() {
+  if (hasGameEnded()) return quitSnake();
+  sCtx.fillStyle = '#001100'; sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
+  drawFood(); moveSnake(); drawSnake();
+}
+
+function drawSnake() {
+  snake.forEach((part, index) => {
+    sCtx.fillStyle = index === 0 ? '#0f0' : '#0a0';
+    sCtx.strokeStyle = '#000'; sCtx.fillRect(part.x, part.y, 10, 10); sCtx.strokeRect(part.x, part.y, 10, 10);
+  });
+}
+
+function moveSnake() {
+  const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+  snake.unshift(head);
+  if (head.x === food.x && head.y === food.y) {
+    score += 10; document.getElementById('s-score').innerText = score; createFood();
+  } else { snake.pop(); }
+}
+
+function createFood() {
+  food = { x: Math.round((Math.random() * (sCanvas.width - 10)) / 10) * 10, y: Math.round((Math.random() * (sCanvas.height - 10)) / 10) * 10 };
+  snake.forEach(part => { if (part.x == food.x && part.y == food.y) createFood(); });
+}
+
+function drawFood() { sCtx.fillStyle = '#f00'; sCtx.strokeStyle = '#000'; sCtx.fillRect(food.x, food.y, 10, 10); sCtx.strokeRect(food.x, food.y, 10, 10); }
+
+function hasGameEnded() {
+  for (let i = 4; i < snake.length; i++) if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
+  return snake[0].x < 0 || snake[0].x >= sCanvas.width || snake[0].y < 0 || snake[0].y >= sCanvas.height;
+}
+
+function changeDirection(e) {
+  if(!isPlayingSnake) return;
+  const LEFT_KEY = 37, RIGHT_KEY = 39, UP_KEY = 38, DOWN_KEY = 40, ESC = 27;
+  const keyPressed = e.keyCode;
+  if (keyPressed === ESC) return quitSnake();
+  const goingUp = dy === -10, goingDown = dy === 10, goingRight = dx === 10, goingLeft = dx === -10;
+  if ([LEFT_KEY, RIGHT_KEY, UP_KEY, DOWN_KEY, 32].includes(keyPressed)) e.preventDefault(); // Chặn scroll web
+  if (keyPressed === LEFT_KEY && !goingRight) { dx = -10; dy = 0; }
+  if (keyPressed === UP_KEY && !goingDown) { dx = 0; dy = -10; }
+  if (keyPressed === RIGHT_KEY && !goingLeft) { dx = 10; dy = 0; }
+  if (keyPressed === DOWN_KEY && !goingUp) { dx = 0; dy = 10; }
+}
 </script>
 </body>
 </html>
