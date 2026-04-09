@@ -52,7 +52,7 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 .tile{color:var(--fg);background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,.028));border:1px solid rgba(255,199,238,.16)}
 .tile:hover{transform:translateY(-3px);border-color:rgba(255,199,238,.35);box-shadow:0 16px 34px rgba(0,0,0,.28),0 0 32px rgba(255,132,223,.18)}
 .section{margin:6px 0 16px;padding-bottom:12px;font-size:1.04rem;color:var(--pink-3);font-weight:800;text-shadow:0 0 12px rgba(255,132,223,.28);position:relative}
-.section::after{content:"";position:absolute;left:0;bottom:0;width:88px;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff8edf,#ffd2f2)}
+.section::after{content:"absolute;left:0;bottom:0;width:88px;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff8edf,#ffd2f2)}
 .stack{display:grid;gap:12px}
 .social-grid{margin-top:12px}
 .footer{margin-top:18px;padding-top:14px;text-align:center;color:var(--muted);border-top:1px solid rgba(255,199,238,.12)}
@@ -111,6 +111,73 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 @keyframes load-progress { 0% { width: 0%; } 100% { width: 100%; } }
 @keyframes pulse-glow { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
 .intro-hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none; }
+
+/* Real-time Uptime Bar */
+.uptime-bar {
+    position: fixed;
+    top: 40px;
+    left: 14px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--pink);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--pink);
+    z-index: 998;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+/* Pixel Pet Container */
+.pixel-pet-container {
+    position: fixed;
+    right: 30px;
+    bottom: 90px;
+    z-index: 997;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+.pixel-pet-container:hover { transform: scale(1.1); }
+
+/* Pet Image */
+.pixel-pet {
+    width: 65px;
+    height: auto;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 0 5px var(--pink-3));
+}
+
+/* Pet Speech Bubble */
+.pet-bubble {
+    position: absolute;
+    bottom: 100%;
+    background: white;
+    color: #000;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+.pet-bubble.active { opacity: 1; transform: translateY(-5px); }
+.pet-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+}
 </style>
 </head>
 <body id="mainBody">
@@ -124,6 +191,15 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg
 </div>
 
 <div id="fps-counter">FPS: 0</div>
+
+<div class="uptime-bar">
+  ⏱ Uptime: <span id="uptime-clock">00:00:00</span>
+</div>
+
+<div class="pixel-pet-container" id="petContainer">
+  <div class="pet-bubble" id="petBubble">Chào chủ nhân! ✨</div>
+  <img src="https://ibb.co/fYckVt5j" class="pixel-pet" alt="Pixel Pet" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXJ3eXpueXJ3eXpueXJ3eXpueXJ3eXpueXJ3eXpueXJ3JmVwPXYxX3N0aWNrZXJzX2xvZ29zJmN0PXM/3o7TKMGpxx6B8f0XF6/giphy.gif'">
+</div>
 
 <div class="floating-star" style="top: 15%; right: 5%; color: #ffd7f5; text-shadow: 0 0 10px #ffd7f5;">★</div>
 <div class="floating-star" style="bottom: 25%; left: 8%; color: #ff8adf; text-shadow: 0 0 10px #ff8adf;">★</div>
@@ -336,6 +412,41 @@ const introScreen = document.getElementById('intro-screen'), introText = documen
 const message = "System Loading... Welcome to Khoa An's Universe ✨"; let charIndex = 0;
 function typeWriter() { if (charIndex < message.length) { introText.innerHTML += message.charAt(charIndex); charIndex++; setTimeout(typeWriter, 50); } }
 window.addEventListener('DOMContentLoaded', () => { typeWriter(); setTimeout(() => { introScreen.classList.add('intro-hidden'); }, 3500); });
+
+// --- 8. XỬ LÝ UPTIME (THỜI GIAN THỰC) ---
+const startTime = Date.now();
+function updateUptime() {
+  const now = Date.now();
+  const diff = Math.floor((now - startTime) / 1000);
+  const hrs = String(Math.floor(diff / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+  const secs = String(diff % 60).padStart(2, '0');
+  document.getElementById('uptime-clock').innerText = `${hrs}:${mins}:${secs}`;
+}
+setInterval(updateUptime, 1000);
+
+// --- 9. XỬ LÝ PET PIXEL TƯƠNG TÁC ---
+const petContainer = document.getElementById('petContainer');
+const petBubble = document.getElementById('petBubble');
+const petQuotes = [
+  "Cần buff view cứ gọi Khoa An! 😎",
+  "Đang làm gì thế chủ nhân? ✨",
+  "Web này xịn quá đi! 💕",
+  "Đừng quên liên hệ Zalo nhé! 💬",
+  "Hôm nay bạn thật tuyệt vời! 🌟",
+  "Tớ là bảo vệ của Bio này! 🛡️"
+];
+
+petContainer.addEventListener('click', () => {
+  petContainer.style.transform = "scale(0.8)";
+  setTimeout(() => { petContainer.style.transform = "scale(1.1)"; }, 100);
+  const randomQuote = petQuotes[Math.floor(Math.random() * petQuotes.length)];
+  petBubble.innerText = randomQuote;
+  petBubble.classList.add('active');
+  setTimeout(() => {
+    petBubble.classList.remove('active');
+  }, 3000);
+});
 </script>
 </body>
 </html>
