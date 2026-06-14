@@ -6,30 +6,53 @@
     <title>Profile của Khoa An</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+
+        /* Loading Screen */
+        #loader { position: fixed; inset: 0; background: #0f172a; display: flex; justify-content: center; align-items: center; z-index: 999; transition: opacity 0.5s; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #334155; border-top: 4px solid #38bdf8; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .card { background: #1e293b; padding: 2rem; border-radius: 20px; text-align: center; width: 350px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         .avatar { width: 120px; height: 120px; border-radius: 50%; margin-bottom: 1rem; border: 4px solid #38bdf8; object-fit: cover; }
-        h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        p { color: #94a3b8; margin-bottom: 1.5rem; font-size: 0.9rem; }
-        .link-container { display: flex; flex-direction: column; gap: 10px; }
-        .btn { display: block; padding: 12px; background: #334155; text-decoration: none; color: white; border-radius: 10px; transition: 0.3s; font-weight: 500; }
+        .link-container { display: flex; flex-direction: column; gap: 10px; margin-top: 1.5rem; }
+        .btn { display: block; padding: 12px; background: #334155; text-decoration: none; color: white; border-radius: 10px; transition: 0.3s; }
         .btn:hover { background: #38bdf8; color: #000; }
+
+        /* Info Box */
+        #info-box { margin-top: 2rem; font-size: 0.7rem; color: #64748b; padding: 8px; border: 1px solid #334155; border-radius: 8px; }
     </style>
 </head>
 <body>
 
+    <!-- Loading -->
+    <div id="loader"><div class="spinner"></div></div>
+
     <div class="card">
-        <!-- Thay link ảnh tại src bên dưới -->
         <img src="https://i.imgur.com/your-image-id.jpg" alt="Avatar" class="avatar">
         <h1>Ng Doãn Khoa An</h1>
         <p>Developer & Student</p>
         
         <div class="link-container">
-            <a href="https://facebook.com/yourprofile" class="btn">Facebook</a>
-            <a href="https://zalo.me/yourphonenumber" class="btn">Zalo</a>
-            <a href="mailto:your-email@gmail.com" class="btn">Gmail</a>
+            <a href="#" class="btn">Facebook</a>
+            <a href="#" class="btn">Zalo</a>
+            <a href="#" class="btn">Gmail</a>
+        </div>
+
+        <div id="info-box">
+            <span id="device-info">Đang xác định...</span>
         </div>
     </div>
 
+    <script>
+        // Loading animation
+        window.onload = () => { setTimeout(() => { document.getElementById('loader').style.opacity = '0'; setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 500); }, 600); };
+
+        // Browser & Device info
+        const ua = navigator.userAgent;
+        let device = "Desktop";
+        if (/Android|iPhone|iPad|iPod/i.test(ua)) device = "Mobile/Tablet";
+        document.getElementById('device-info').innerText = `${device} | ${navigator.userAgent.split(' ')[0]}`;
+    </script>
 </body>
 </html>
