@@ -3,336 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile & TikTok Downloader</title>
-    <!-- FontAwesome Icon & Google Fonts -->
+    <title>Store Dịch Vụ Số - Autogen VietQR</title>
+    <!-- Tailwind CSS & FontAwesome Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <style>
-        :root {
-            --bg: #0d1117;
-            --card-bg: #161b22;
-            --border: #30363d;
-            --text-main: #c9d1d9;
-            --text-sub: #8b949e;
-            --accent-blue: #58a6ff;
-            --accent-tiktok: #ff0050;
-            --accent-green: #2ea043;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 30px 16px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            max-width: 550px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* CARD 1: PROFILE CARDS */
-        .profile-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 24px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .avatar {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-blue);
-            margin-bottom: 12px;
-        }
-
-        .profile-card h1 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #fff;
-        }
-
-        .profile-card .bio {
-            font-size: 13px;
-            color: var(--text-sub);
-            margin-top: 4px;
-            margin-bottom: 16px;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .social-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .social-btn:hover {
-            background: var(--accent-blue);
-            color: #fff;
-            transform: translateY(-2px);
-        }
-
-        /* CARD 2: TIKTOK TOOL */
-        .tool-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .tool-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 14px;
-        }
-
-        .tool-title i {
-            color: var(--accent-tiktok);
-        }
-
-        .input-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        .input-group input {
-            flex: 1;
-            background: #0d1117;
-            border: 1px solid var(--border);
-            padding: 12px 14px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .input-group input:focus {
-            border-color: var(--accent-blue);
-        }
-
-        .btn-get {
-            background: var(--accent-tiktok);
-            color: #fff;
-            border: none;
-            padding: 0 18px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .btn-get:hover {
-            opacity: 0.9;
-        }
-
-        /* LOADER & RESULT */
-        .loader {
-            display: none;
-            text-align: center;
-            margin-top: 14px;
-            font-size: 13px;
-            color: var(--text-sub);
-        }
-
-        .result-box {
-            display: none;
-            margin-top: 18px;
-            padding-top: 18px;
-            border-top: 1px solid var(--border);
-        }
-
-        .video-meta {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 14px;
-        }
-
-        .thumb {
-            width: 65px;
-            height: 85px;
-            border-radius: 8px;
-            object-fit: cover;
-            background: #0d1117;
-        }
-
-        .meta-info h4 {
-            font-size: 13px;
-            color: #fff;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .meta-info p {
-            font-size: 12px;
-            color: var(--text-sub);
-            margin-top: 4px;
-        }
-
-        .download-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .dl-btn {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .dl-no-wm {
-            background: var(--accent-green);
-            color: #fff;
-        }
-
-        .dl-music {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-            border: 1px solid var(--border);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .gradient-text { background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
-<body>
+<body class="min-h-screen pb-12">
 
-    <div class="container">
-        <!-- 1. PHẦN PROFILE CÁ NHÂN -->
-        <div class="profile-card">
-            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Admin" alt="Avatar" class="avatar">
-            <h1>Admin Profile</h1>
-            <p class="bio">Developer & Media Automation</p>
-
-            <div class="social-links">
-                <!-- Thay link Zalo và Email của bạn vào đây -->
-                <a href="https://zalo.me" target="_blank" class="social-btn" title="Zalo"><i class="fa-solid fa-comment-dots"></i></a>
-                <a href="mailto:admin@gmail.com" class="social-btn" title="Gmail"><i class="fa-solid fa-envelope"></i></a>
-                <a href="https://github.com" target="_blank" class="social-btn" title="GitHub"><i class="fa-brands fa-github"></i></a>
+    <!-- Header -->
+    <header class="sticky top-0 z-40 glass-card border-b border-slate-800 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-sky-500/20">
+                    <i class="fa-solid fa-bolt text-white text-xl"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">DIGITAL <span class="gradient-text">STORE</span></span>
+            </div>
+            <div class="text-xs sm:text-sm font-medium text-slate-400">
+                <i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i> Thanh toán tự động 24/7
             </div>
         </div>
+    </header>
 
-        <!-- 2. PHẦN TOOL TẢI TIKTOK -->
-        <div class="tool-card">
-            <div class="tool-title">
-                <i class="fa-brands fa-tiktok"></i>
-                <span>Tải Video TikTok Không Logo</span>
-            </div>
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Danh sách sản phẩm (Bên trái) -->
+        <section class="lg:col-span-7 space-y-4">
+            <h2 class="text-lg font-bold text-slate-200 flex items-center">
+                <i class="fa-solid fa-cubes text-sky-400 mr-2"></i> Chọn gói dịch vụ
+            </h2>
+            <div id="productList" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+        </section>
 
-            <div class="input-group">
-                <input type="text" id="tiktokUrl" placeholder="Dán link TikTok vào đây...">
-                <button class="btn-get" onclick="fetchTikTok()">Tải Ngay</button>
-            </div>
+        <!-- Hóa đơn & QR Thanh toán (Bên phải) -->
+        <section class="lg:col-span-5">
+            <div class="glass-card rounded-2xl p-6 sticky top-24 shadow-2xl">
+                <h2 class="text-lg font-bold text-slate-200 border-b border-slate-700/60 pb-3 flex items-center justify-between">
+                    <span><i class="fa-solid fa-receipt text-indigo-400 mr-2"></i> Đơn hàng của bạn</span>
+                    <span id="orderIdTag" class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full font-mono">#---</span>
+                </h2>
 
-            <div class="loader" id="loader">
-                <i class="fa-solid fa-spinner fa-spin"></i> Đang phân tích link...
-            </div>
-
-            <div class="result-box" id="resultBox">
-                <div class="video-meta">
-                    <img src="" alt="Thumb" class="thumb" id="resThumb">
-                    <div class="meta-info">
-                        <h4 id="resTitle">Title Video</h4>
-                        <p id="resAuthor">@author</p>
+                <!-- Form nhập thông tin -->
+                <div class="mt-4 space-y-3">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-400 block mb-1">SẢN PHẨM ĐÃ CHỌN</label>
+                        <div id="selectedProdName" class="p-3 bg-slate-900/80 border border-slate-700/50 rounded-xl font-medium text-sky-300">
+                            Vui lòng chọn 1 sản phẩm
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs font-semibold text-slate-400 block mb-1">HỌ VÀ TÊN</label>
+                            <input type="text" id="custName" placeholder="Nguyễn Văn A" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-400 block mb-1">SỐ ĐIỆN THOẠI</label>
+                            <input type="text" id="custPhone" placeholder="09xxx..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500">
+                        </div>
                     </div>
                 </div>
 
-                <div class="download-actions">
-                    <a href="#" target="_blank" class="dl-btn dl-no-wm" id="btnNoWM">
-                        <i class="fa-solid fa-download"></i> Video (Không Logo)
-                    </a>
-                    <a href="#" target="_blank" class="dl-btn dl-music" id="btnMusic">
-                        <i class="fa-solid fa-music"></i> Nhạc (MP3)
-                    </a>
+                <!-- Nút bấm tạo mã QR -->
+                <button id="btnPay" onclick="generateQR()" class="w-full mt-5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-sky-500/25 flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed" disabled>
+                    <i class="fa-solid fa-qrcode"></i>
+                    <span>Tạo Mã QR Thanh Toán</span>
+                </button>
+
+                <!-- Khung hiển thị Mã QR -->
+                <div id="qrArea" class="hidden mt-6 text-center border-t border-slate-700/60 pt-5">
+                    <div class="bg-white p-3 rounded-2xl inline-block shadow-xl relative group">
+                        <img id="qrImg" src="" alt="VietQR" class="w-48 h-48 mx-auto rounded-lg">
+                    </div>
+
+                    <div class="mt-4 bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 text-left text-xs space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Ngân hàng:</span>
+                            <span class="font-semibold text-white" id="bankName">MBBank (MB)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Chủ tài khoản:</span>
+                            <span class="font-semibold text-white" id="bankAccName">NGUYEN VAN A</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Số tài khoản:</span>
+                            <span class="font-mono font-bold text-sky-400 flex items-center cursor-pointer" onclick="copyText('bankAccNo')">
+                                <span id="bankAccNo">0987654321</span> <i class="fa-regular fa-copy ml-1"></i>
+                            </span>
+                        </div>
+                        <div class="flex justify-between border-t border-slate-800 pt-2">
+                            <span class="text-slate-400">Nội dung chuyển khoản:</span>
+                            <span class="font-mono font-bold text-amber-400 flex items-center cursor-pointer" onclick="copyText('transferCode')">
+                                <span id="transferCode">--</span> <i class="fa-regular fa-copy ml-1"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Nút xác nhận thanh toán -->
+                    <button onclick="confirmPayment()" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Tôi đã hoàn tất chuyển khoản</span>
+                    </button>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <!-- CODE JAVASCRIPT GỌI API SẴN -->
     <script>
-        async function fetchTikTok() {
-            const urlInput = document.getElementById('tiktokUrl').value.trim();
-            const loader = document.getElementById('loader');
-            const resultBox = document.getElementById('resultBox');
+        // CẤU HÌNH THÔNG TIN NGÂN HÀNG CỦA BẠN TẠI ĐÂY
+        const CONFIG = {
+            BANK_ID: "MB",           // Mã ngân hàng VietQR (MB, VCB, TCB, VPB, ACB...)
+            ACCOUNT_NO: "0987654321", // Số tài khoản nhận tiền
+            ACCOUNT_NAME: "NGUYEN VAN A" // Tên tài khoản
+        };
 
-            if (!urlInput) {
-                alert('Vui lòng dán liên kết TikTok!');
-                return;
-            }
+        // DANH SÁCH SẢN PHẨM
+        const products = [
+            { id: 1, name: "YouTube Premium 1 Tháng", price: 35000, desc: "Nâng cấp chính chủ, không quảng cáo" },
+            { id: 2, name: "YouTube Premium 1 Năm", price: 320000, desc: "Gói gia đình trọn gói tiết kiệm" },
+            { id: 3, name: "CapCut Pro 1 Tháng", price: 45000, desc: "Mở khóa full tính năng VIP & Mẫu" },
+            { id: 4, name: "Canva Pro vĩnh viễn", price: 69000, desc: "Thiết kế không giới hạn tài nguyên" }
+        ];
 
-            loader.style.display = 'block';
-            resultBox.style.display = 'none';
+        let selectedProduct = null;
+        let currentOrderCode = "";
 
-            try {
-                // Tích hợp trực tiếp TikWM API công khai
-                const response = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`);
-                const res = await response.json();
-
-                if (res.code === 0) {
-                    const data = res.data;
-
-                    document.getElementById('resThumb').src = data.cover;
-                    document.getElementById('resTitle').innerText = data.title || 'Video TikTok';
-                    document.getElementById('resAuthor').innerText = `@${data.author.unique_id} (${data.author.nickname})`;
-
-                    // Link stream trực tiếp không dán watermark
-                    document.getElementById('btnNoWM').href = data.play;
-                    document.getElementById('btnMusic').href = data.music;
-
-                    resultBox.style.display = 'block';
-                } else {
-                    alert('Không lấy được video. Hãy kiểm tra lại đường dẫn!');
-                }
-            } catch (error) {
-                alert('Lỗi kết nối API!');
-            } finally {
-                loader.style.display = 'none';
-            }
+        // Hiển thị danh sách sản phẩm
+        function renderProducts() {
+            const container = document.getElementById('productList');
+            container.innerHTML = products.map(p => `
+                <div onclick="selectProduct(${p.id})" id="prod-${p.id}" class="glass-card p-5 rounded-2xl cursor-pointer transition-all hover:border-sky-500/50 relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-base text-white group-hover:text-sky-300 transition-colors">${p.name}</h3>
+                        <span class="text-xs bg-sky-500/10 text-sky-400 font-bold px-2 py-1 rounded-lg">HOT</span>
+                    </div>
+                    <p class="text-slate-400 text-xs mb-4">${p.desc}</p>
+                    <div class="text-lg font-extrabold text-emerald-400">${p.price.toLocaleString('vi-VN')} đ</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('bankAccName').innerText = CONFIG.ACCOUNT_NAME;
+            document.getElementById('bankAccNo').innerText = CONFIG.ACCOUNT_NO;
+            document.getElementById('bankName').innerText = CONFIG.BANK_ID;
         }
+
+        function selectProduct(id) {
+            products.forEach(p => {
+                const el = document.getElementById(`prod-${p.id}`);
+                if (p.id === id) {
+                    el.classList.add('border-sky-500', 'bg-sky-500/10');
+                    selectedProduct = p;
+                } else {
+                    el.classList.remove('border-sky-500', 'bg-sky-500/10');
+                }
+            });
+            
+            document.getElementById('selectedProdName').innerText = `${selectedProduct.name} - ${selectedProduct.price.toLocaleString('vi-VN')} đ`;
+            
+            const btn = document.getElementById('btnPay');
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        // Tự động tạo QR code từ API VietQR
+        function generateQR() {
+            if (!selectedProduct) return;
+
+            // Tạo mã đơn hàng dạng: STORE + 4 số ngẫu nhiên
+            currentOrderCode = "STORE" + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('orderIdTag').innerText = "#" + currentOrderCode;
+            document.getElementById('transferCode').innerText = currentOrderCode;
+
+            // API VietQR tự sinh QR theo số tiền và nội dung chuyển khoản
+            const qrUrl = `https://img.vietqr.io/image/${CONFIG.BANK_ID}-${CONFIG.ACCOUNT_NO}-compact2.png?amount=${selectedProduct.price}&addInfo=${currentOrderCode}&accountName=${encodeURIComponent(CONFIG.ACCOUNT_NAME)}`;
+            
+            document.getElementById('qrImg').src = qrUrl;
+            document.getElementById('qrArea').classList.remove('hidden');
+        }
+
+        function copyText(id) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text);
+            alert("Đã sao chép: " + text);
+        }
+
+        function confirmPayment() {
+            alert(`Cảm ơn bạn! Đã ghi nhận xác nhận cho đơn hàng #${currentOrderCode}.\nHệ thống sẽ kiểm tra giao dịch và kích hoạt dịch vụ cho bạn ngay!`);
+        }
+
+        renderProducts();
     </script>
 </body>
 </html>
