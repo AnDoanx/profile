@@ -3,465 +3,156 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KEM SHOP - Dịch Vụ Số Tự Động</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
-      --card-bg: rgba(30, 41, 59, 0.7);
-      --card-border: rgba(255, 255, 255, 0.1);
-      --accent-color: #6366f1;
-      --accent-glow: rgba(99, 102, 241, 0.4);
-      --success-color: #10b981;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-    body {
-      background: var(--bg-gradient);
-      color: var(--text-main);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .shop-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 28px;
-      width: 100%;
-      max-width: 440px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.15);
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Glow Effect Top Header */
-    .shop-card::before {
-      content: '';
-      position: absolute;
-      top: -50px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
-      height: 100px;
-      background: var(--accent-color);
-      filter: blur(80px);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .brand-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .brand-title {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #fff 30%, #a5b4fc 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .brand-subtitle {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 4px;
-      font-weight: 500;
-    }
-
-    .product-preview {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(15, 23, 42, 0.6);
-      padding: 12px 16px;
-      border-radius: 14px;
-      border: 1px solid var(--card-border);
-      margin-bottom: 18px;
-    }
-
-    .app-icon-container {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.05);
-      flex-shrink: 0;
-    }
-
-    .app-icon-container svg {
-      width: 28px;
-      height: 28px;
-    }
-
-    .form-group { margin-bottom: 16px; }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 12px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    select {
-      width: 100%;
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      background: #0f172a;
-      color: var(--text-main);
-      font-size: 14px;
-      font-weight: 600;
-      outline: none;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    select:focus {
-      border-color: var(--accent-color);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-
-    .btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-      color: #fff;
-      box-shadow: 0 4px 15px var(--accent-glow);
-      margin-top: 8px;
-    }
-
-    .btn-primary:hover {
-      opacity: 0.95;
-      transform: translateY(-1px);
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: #fff;
-      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-      margin-top: 16px;
-    }
-
-    .btn-success:hover {
-      opacity: 0.95;
-      transform: translateY(-1px);
-    }
-
-    .qr-container {
-      text-align: center;
-      margin-top: 24px;
-      display: none;
-      border-top: 1px dashed var(--card-border);
-      padding-top: 20px;
-      animation: fadeIn 0.3s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .qr-frame {
-      background: #fff;
-      padding: 12px;
-      border-radius: 16px;
-      display: inline-block;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      margin-bottom: 14px;
-    }
-
-    .qr-frame img {
-      width: 100%;
-      max-width: 220px;
-      display: block;
-      border-radius: 8px;
-    }
-
-    .timer-badge {
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      color: #f59e0b;
-      padding: 8px 14px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-
-    .info-card {
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid var(--card-border);
-      padding: 16px;
-      border-radius: 14px;
-      text-align: left;
-    }
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .info-row:last-child { margin-bottom: 0; }
-    .price-tag { color: #34d399; font-weight: 800; font-size: 18px; }
-    .code-tag { background: #1e293b; padding: 4px 10px; border-radius: 6px; color: #fbbf24; font-weight: 800; font-family: monospace; letter-spacing: 0.5px; }
-
-    /* Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(2, 6, 23, 0.85);
-      backdrop-filter: blur(8px);
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      z-index: 999;
-    }
-
-    .modal-card {
-      background: #1e293b;
-      border: 1px solid var(--card-border);
-      padding: 28px;
-      border-radius: 20px;
-      max-width: 380px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-    }
-
-    .order-box {
-      font-size: 20px;
-      font-weight: 800;
-      color: #60a5fa;
-      margin: 16px 0;
-      background: #0f172a;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px dashed #60a5fa;
-      letter-spacing: 1px;
-    }
-  </style>
+  <title>Mail 10 Phút - Nhận OTP Siêu Tốc</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center p-4">
 
-<div class="shop-card">
-  <div class="brand-header">
-    <div class="brand-title">KEM SHOP 🍦</div>
-    <div class="brand-subtitle">Thanh Toán Dịch Vụ Số Tự Động 24/7</div>
-  </div>
+  <div class="max-w-2xl w-full mt-8 bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700">
+    <h1 class="text-3xl font-bold text-blue-500 mb-2 text-center">⚡ Web Mail 10 Phút</h1>
+    <p class="text-gray-400 text-center mb-6 text-sm">Tạo email tạm thời nhận mã OTP Facebook, TikTok, Netflix và các dịch vụ khác.</p>
 
-  <!-- Icon & Tên Dịch Vụ Đang Chọn -->
-  <div class="product-preview">
-    <div class="app-icon-container" id="appIcon">
-      <!-- Icon SVG Render động -->
-    </div>
-    <div>
-      <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Đang chọn</div>
-      <div id="productTitle" style="font-size: 15px; font-weight: 700;">Gemini Pro</div>
-    </div>
-  </div>
-
-  <!-- Select Box -->
-  <div class="form-group">
-    <label>Dịch vụ</label>
-    <select id="serviceSelect" onchange="updateProductView()">
-      <option value="gemini">Gemini Pro</option>
-      <option value="spotify">Spotify Premium</option>
-      <option value="youtube">YouTube Premium</option>
-      <option value="chatgpt">ChatGPT Plus</option>
-      <option value="capcut">CapCut Pro</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label>Gói thời hạn</label>
-    <select id="planSelect" onchange="resetQR()"></select>
-  </div>
-
-  <button class="btn btn-primary" onclick="generatePayment()">
-    ⚡ Tạo Mã QR Thanh Toán
-  </button>
-
-  <!-- Khung QR Thanh Toán -->
-  <div id="qrSection" class="qr-container">
-    <div class="timer-badge">
-      ⏱️ Hạn mã QR: <span id="timerDisplay">10:00</span>
-    </div>
-
-    <div class="qr-frame">
-      <img id="qrImage" src="" alt="Mã QR Thanh Toán">
-    </div>
-
-    <div class="info-card">
-      <div class="info-row">
-        <span style="color: var(--text-muted); font-size: 13px;">Số tiền:</span>
-        <span id="priceDisplay" class="price-tag">0 đ</span>
+    <!-- Khối Địa Chỉ Email -->
+    <div class="bg-gray-900 p-4 rounded-xl border border-gray-700 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="w-full sm:w-auto">
+        <span class="text-xs text-gray-400 block">Địa chỉ email của bạn:</span>
+        <span id="emailAddress" class="text-xl font-mono font-bold text-green-400 break-all">Đang khởi tạo...</span>
       </div>
-      <div class="info-row">
-        <span style="color: var(--text-muted); font-size: 13px;">Nội dung CK:</span>
-        <span id="codeDisplay" class="code-tag"></span>
+      <div class="flex gap-2 w-full sm:w-auto">
+        <button onclick="copyEmail()" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-sm font-semibold px-4 py-2 rounded-lg transition">
+          📋 Sao chép
+        </button>
+        <button onclick="generateNewEmail()" class="flex-1 sm:flex-none bg-gray-700 hover:bg-gray-600 text-sm font-semibold px-4 py-2 rounded-lg transition">
+          🔄 Đổi mail
+        </button>
       </div>
     </div>
 
-    <button class="btn btn-success" onclick="confirmPayment()">
-      ✔ Tôi đã hoàn tất chuyển khoản
-    </button>
+    <!-- Danh sách Hòm thư (Inbox) -->
+    <div class="mb-4 flex justify-between items-center">
+      <h2 class="text-lg font-semibold text-gray-200">Hòm thư đến (<span id="mailCount">0</span>)</h2>
+      <span id="statusText" class="text-xs text-yellow-400 animate-pulse">Đang chờ thư mới...</span>
+    </div>
+
+    <div id="inboxList" class="space-y-3">
+      <div class="text-center py-8 text-gray-500 text-sm bg-gray-900 rounded-xl border border-dashed border-gray-700">
+        Chưa có thư nào. Hãy dùng email phía trên để nhận mã OTP!
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- Modal Báo Thành Công -->
-<div id="orderModal" class="modal-overlay">
-  <div class="modal-card">
-    <div style="font-size: 40px; margin-bottom: 8px;">🎉</div>
-    <h3 style="color: #34d399; font-size: 20px;">Tạo Đơn Thành Công!</h3>
-    <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">Mã đơn hàng của bạn:</p>
-    
-    <div id="orderIdDisplay" class="order-box">---</div>
+  <script>
+    let currentLogin = '';
+    let currentDomain = '';
+    let pollInterval = null;
 
-    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
-      Vui lòng nhấn nút bên dưới để gửi mã đơn cho Supporter kích hoạt nhé!
-    </p>
+    // 1. Lấy danh sách Domain khả dụng & tạo email mới
+    async function generateNewEmail() {
+      document.getElementById('emailAddress').innerText = 'Đang tạo...';
+      document.getElementById('inboxList').innerHTML = '<div class="text-center py-8 text-gray-500 text-sm bg-gray-900 rounded-xl border border-dashed border-gray-700">Chưa có thư nào. Hãy dùng email phía trên để nhận mã OTP!</div>';
+      document.getElementById('mailCount').innerText = '0';
 
-    <a id="teleLink" href="#" target="_blank" style="text-decoration: none;">
-      <button class="btn btn-primary">✈️ Nhận Hàng Qua Telegram (@iues1hihi)</button>
-    </a>
-  </div>
-</div>
+      try {
+        const res = await fetch('https://www.1secmail.com/api/v1/?action=getDomainList');
+        const domains = await res.json();
+        
+        // Tạo username ngẫu nhiên
+        currentLogin = Math.random().toString(36).substring(2, 10);
+        currentDomain = domains[Math.floor(Math.random() * domains.length)];
+        
+        const fullEmail = `${currentLogin}@${currentDomain}`;
+        document.getElementById('emailAddress').innerText = fullEmail;
 
-<script>
-  // SVG Icons chuẩn thương hiệu
-  const icons = {
-    gemini: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C12 7.52285 7.52285 12 2 12C7.52285 12 12 16.4771 12 22C12 16.4771 16.4771 12 22 12C16.4771 12 12 7.52285 12 2=" fill="#818CF8"/></svg>`,
-    spotify: `<svg viewBox="0 0 24 24" fill="#1DB954"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.76-8.793-.963-.335.077-.67-.133-.746-.468-.077-.334.132-.67.467-.746 3.808-.87 7.076-.496 9.722 1.122.294.18.386.563.207.848zm1.233-2.743c-.226.367-.706.482-1.072.257-2.687-1.652-6.785-2.131-9.965-1.166-.413.126-.848-.106-.973-.519-.125-.413.106-.848.519-.973 3.632-1.102 8.147-.568 11.234 1.328.366.226.48.707.257 1.073zm.145-2.857C14.73 8.956 8.528 8.749 4.96 9.833c-.503.153-1.033-.133-1.186-.636-.153-.502.133-1.032.636-1.186 4.103-1.245 10.957-.999 14.773 1.267.452.268.601.85.333 1.302-.268.452-.85.601-1.302.333z"/></svg>`,
-    youtube: `<svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
-    chatgpt: `<svg viewBox="0 0 24 24" fill="#10a37f"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0813 4.779-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4952 4.4952zm-10.12-4.249a4.4755 4.4755 0 0 1-.5355-3.0037l.142.0831 4.779 2.7583a.7948.7948 0 0 0 .7854 0l5.8341-3.3687v2.3372a.071.071 0 0 1-.0285.057l-4.8348 2.7915a4.504 4.504 0 0 1-6.1417-1.6547z"/></svg>`,
-    capcut: `<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`
-  };
-
-  const products = {
-    gemini: { name: "GEMINI", title: "Gemini Pro", plans: [{ label: "1 Năm - 45.000đ", value: 45000 }, { label: "6 Tháng - 25.000đ", value: 25000 }] },
-    spotify: { name: "SPOTIFY", title: "Spotify Premium", plans: [{ label: "3 Tháng - 50.000đ", value: 50000 }, { label: "1 Tháng - 20.000đ", value: 20000 }] },
-    youtube: { name: "YOUTUBE", title: "YouTube Premium", plans: [{ label: "1 Tháng - 30.000đ", value: 30000 }, { label: "6 Tháng - 150.000đ", value: 150000 }] },
-    chatgpt: { name: "CHATGPT", title: "ChatGPT Plus", plans: [{ label: "1 Tháng - 90.000đ", value: 90000 }] },
-    capcut: { name: "CAPCUT", title: "CapCut Pro", plans: [{ label: "1 Tháng - 40.000đ", value: 40000 }, { label: "1 Năm - 250.000đ", value: 250000 }] }
-  };
-
-  const BANK_ID = 'MB';
-  const ACCOUNT_NO = '274233';
-  const TELE_USERNAME = 'iues1hihi';
-  let countdownInterval;
-
-  function updateProductView() {
-    const key = document.getElementById('serviceSelect').value;
-    const item = products[key];
-
-    document.getElementById('appIcon').innerHTML = icons[key];
-    document.getElementById('productTitle').innerText = item.title;
-
-    const planSelect = document.getElementById('planSelect');
-    planSelect.innerHTML = '';
-    item.plans.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.value;
-      opt.innerText = p.label;
-      planSelect.appendChild(opt);
-    });
-
-    resetQR();
-  }
-
-  function resetQR() {
-    document.getElementById('qrSection').style.display = 'none';
-    clearInterval(countdownInterval);
-  }
-
-  function startTimer(duration) {
-    clearInterval(countdownInterval);
-    let timer = duration;
-    const display = document.getElementById('timerDisplay');
-
-    countdownInterval = setInterval(() => {
-      let m = parseInt(timer / 60, 10);
-      let s = parseInt(timer % 60, 10);
-      display.textContent = `${m < 10 ? "0" + m : m}:${s < 10 ? "0" + s : s}`;
-
-      if (--timer < 0) {
-        clearInterval(countdownInterval);
-        resetQR();
-        alert("Mã QR đã hết hạn. Vui lòng tạo lại mã mới!");
+        // Bắt đầu vòng lặp quét hòm thư
+        if (pollInterval) clearInterval(pollInterval);
+        checkInbox();
+        pollInterval = setInterval(checkInbox, 4000); // Quét mỗi 4 giây
+      } catch (err) {
+        document.getElementById('emailAddress').innerText = 'Lỗi kết nối API!';
       }
-    }, 1000);
-  }
+    }
 
-  function generatePayment() {
-    const amount = document.getElementById('planSelect').value;
-    const randomCode = 'KEM ' + Math.random().toString(36).substring(2, 8).toUpperCase();
-    const qrUrl = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(randomCode)}`;
+    // 2. Kiểm tra Hòm thư (Polling API)
+    async function checkInbox() {
+      if (!currentLogin || !currentDomain) return;
 
-    document.getElementById('qrImage').src = qrUrl;
-    document.getElementById('priceDisplay').innerText = Number(amount).toLocaleString('vi-VN') + ' đ';
-    document.getElementById('codeDisplay').innerText = randomCode;
-    document.getElementById('qrSection').style.display = 'block';
-    
-    startTimer(600);
-  }
+      try {
+        const res = await fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${currentLogin}&domain=${currentDomain}`);
+        const messages = await res.json();
 
-  function confirmPayment() {
-    const key = document.getElementById('serviceSelect').value;
-    const prefix = products[key].name;
-    const orderId = `KEM-${prefix}-${Math.floor(10000 + Math.random() * 90000)}`;
-    
-    document.getElementById('orderIdDisplay').innerText = orderId;
-    
-    const message = encodeURIComponent(`Chào Kem Shop, mình vừa hoàn tất chuyển khoản cho đơn hàng [${orderId}]. Nhờ shop kiểm tra và kích hoạt dịch vụ giúp mình nhé!`);
-    document.getElementById('teleLink').href = `https://t.me/${TELE_USERNAME}?text=${message}`;
-    
-    document.getElementById('orderModal').style.display = 'flex';
-  }
+        document.getElementById('mailCount').innerText = messages.length;
 
-  // Khởi tạo
-  updateProductView();
-</script>
+        if (messages.length > 0) {
+          document.getElementById('statusText').innerText = '✅ Có thư mới!';
+          renderInbox(messages);
+        } else {
+          document.getElementById('statusText').innerText = 'Đang tự động quét thư mới mỗi 4s...';
+        }
+      } catch (err) {
+        console.error("Lỗi khi quét mail:", err);
+      }
+    }
 
+    // 3. Hiển thị danh sách Thư & Tự trích xuất mã OTP
+    function renderInbox(messages) {
+      const container = document.getElementById('inboxList');
+      container.innerHTML = '';
+
+      messages.forEach(msg => {
+        // Tự động tìm dãy số 4-8 chữ số làm OTP trong tiêu đề/người gửi
+        const otpMatch = msg.subject.match(/\b\d{4,8}\b/);
+        const otpBadge = otpMatch 
+          ? `<span class="bg-green-500/20 text-green-400 border border-green-500/30 text-xs font-bold px-2 py-1 rounded">Mã OTP: ${otpMatch[0]}</span>` 
+          : '';
+
+        const mailItem = document.createElement('div');
+        mailItem.className = 'bg-gray-900 p-4 rounded-xl border border-gray-700 hover:border-blue-500 transition cursor-pointer';
+        mailItem.onclick = () => readMessage(msg.id);
+        
+        mailItem.innerHTML = `
+          <div class="flex justify-between items-start mb-1">
+            <span class="font-bold text-sm text-blue-400">${msg.from}</span>
+            <span class="text-xs text-gray-500">${msg.date}</span>
+          </div>
+          <div class="font-medium text-gray-200 text-sm mb-2">${msg.subject}</div>
+          ${otpBadge}
+          <div id="msg-body-${msg.id}" class="hidden mt-3 pt-3 border-t border-gray-800 text-xs text-gray-300">Đang tải nội dung...</div>
+        `;
+        container.appendChild(mailItem);
+      });
+    }
+
+    // 4. Đọc chi tiết nội dung thư khi bấm vào
+    async function readMessage(id) {
+      const bodyDiv = document.getElementById(`msg-body-${id}`);
+      if (!bodyDiv) return;
+
+      if (!bodyDiv.classList.contains('hidden')) {
+        bodyDiv.classList.add('hidden');
+        return;
+      }
+
+      bodyDiv.classList.remove('hidden');
+      try {
+        const res = await fetch(`https://www.1secmail.com/api/v1/?action=readMessage&login=${currentLogin}&domain=${currentDomain}&id=${id}`);
+        const data = await res.json();
+        bodyDiv.innerHTML = data.htmlBody || data.textBody || 'Không có nội dung.';
+      } catch (err) {
+        bodyDiv.innerText = 'Lỗi khi tải chi tiết thư.';
+      }
+    }
+
+    // 5. Sao chép email nhanh
+    function copyEmail() {
+      const email = document.getElementById('emailAddress').innerText;
+      if (email && !email.includes('...')) {
+        navigator.clipboard.writeText(email);
+        alert('Đã sao chép địa chỉ email!');
+      }
+    }
+
+    // Chạy ngay khi mở web
+    generateNewEmail();
+  </script>
 </body>
 </html>
