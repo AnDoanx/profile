@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store Dịch Vụ Số - Autogen VietQR</title>
+    <title>Store Dịch Vụ Số - Thanh Toán QR</title>
     <!-- Tailwind CSS & FontAwesome Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,6 +12,14 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
         .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .gradient-text { background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Hiệu ứng xoay tròn */
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-custom {
+            animation: spinner 1.2s linear infinite;
+        }
     </style>
 </head>
 <body class="min-h-screen pb-12">
@@ -34,7 +42,7 @@
     <!-- Main Content -->
     <main class="max-w-6xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- Danh sách sản phẩm (Bên trái) -->
+        <!-- Danh sách sản phẩm -->
         <section class="lg:col-span-7 space-y-4">
             <h2 class="text-lg font-bold text-slate-200 flex items-center">
                 <i class="fa-solid fa-cubes text-sky-400 mr-2"></i> Chọn gói dịch vụ
@@ -42,7 +50,7 @@
             <div id="productList" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
         </section>
 
-        <!-- Hóa đơn & QR Thanh toán (Bên phải) -->
+        <!-- Hóa đơn & QR Thanh toán -->
         <section class="lg:col-span-5">
             <div class="glass-card rounded-2xl p-6 sticky top-24 shadow-2xl">
                 <h2 class="text-lg font-bold text-slate-200 border-b border-slate-700/60 pb-3 flex items-center justify-between">
@@ -76,26 +84,25 @@
                     <span>Tạo Mã QR Thanh Toán</span>
                 </button>
 
-                <!-- Khung hiển thị Mã QR -->
-                <div id="qrArea" class="hidden mt-6 text-center border-t border-slate-700/60 pt-5">
+                <!-- Khung hiển thị QR & Thanh Xoay Chờ -->
+                <div id="qrArea" class="hidden mt-6 text-center border-t border-slate-700/60 pt-5 space-y-4">
+                    
+                    <!-- Mã QR cố định của bạn -->
                     <div class="bg-white p-3 rounded-2xl inline-block shadow-xl relative group">
-                        <img id="qrImg" src="" alt="VietQR" class="w-48 h-48 mx-auto rounded-lg">
+                        <img id="qrImg" src="https://kommodo.ai/i/kbyeAMVBPtkK1oIH5ttD" alt="QR STK Thanh Toán" class="w-52 h-52 mx-auto rounded-lg object-contain">
                     </div>
 
-                    <div class="mt-4 bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 text-left text-xs space-y-2">
+                    <!-- Thanh xoay trạng thái chờ -->
+                    <div id="waitingStatus" class="flex items-center justify-center space-x-2 bg-slate-900/90 py-2.5 px-4 rounded-xl border border-sky-500/30 text-sky-400 text-xs font-medium">
+                        <div class="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin-custom"></div>
+                        <span>Đang chờ chuyển khoản... Hạn mã: <strong id="timer" class="text-amber-400 font-mono">10:00</strong></span>
+                    </div>
+
+                    <!-- Thông tin chi tiết đơn -->
+                    <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 text-left text-xs space-y-2">
                         <div class="flex justify-between">
-                            <span class="text-slate-400">Ngân hàng:</span>
-                            <span class="font-semibold text-white" id="bankName">MBBank (MB)</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-400">Chủ tài khoản:</span>
-                            <span class="font-semibold text-white" id="bankAccName">NGUYEN VAN A</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-400">Số tài khoản:</span>
-                            <span class="font-mono font-bold text-sky-400 flex items-center cursor-pointer" onclick="copyText('bankAccNo')">
-                                <span id="bankAccNo">0987654321</span> <i class="fa-regular fa-copy ml-1"></i>
-                            </span>
+                            <span class="text-slate-400">Số tiền cần chuyển:</span>
+                            <span class="font-extrabold text-emerald-400 text-sm" id="payAmount">0 đ</span>
                         </div>
                         <div class="flex justify-between border-t border-slate-800 pt-2">
                             <span class="text-slate-400">Nội dung chuyển khoản:</span>
@@ -106,7 +113,7 @@
                     </div>
 
                     <!-- Nút xác nhận thanh toán -->
-                    <button onclick="confirmPayment()" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20">
+                    <button id="btnConfirm" onclick="confirmPayment()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20">
                         <i class="fa-solid fa-circle-check"></i>
                         <span>Tôi đã hoàn tất chuyển khoản</span>
                     </button>
@@ -116,14 +123,6 @@
     </main>
 
     <script>
-        // CẤU HÌNH THÔNG TIN NGÂN HÀNG CỦA BẠN TẠI ĐÂY
-        const CONFIG = {
-            BANK_ID: "MB",           // Mã ngân hàng VietQR (MB, VCB, TCB, VPB, ACB...)
-            ACCOUNT_NO: "0987654321", // Số tài khoản nhận tiền
-            ACCOUNT_NAME: "NGUYEN VAN A" // Tên tài khoản
-        };
-
-        // DANH SÁCH SẢN PHẨM
         const products = [
             { id: 1, name: "YouTube Premium 1 Tháng", price: 35000, desc: "Nâng cấp chính chủ, không quảng cáo" },
             { id: 2, name: "YouTube Premium 1 Năm", price: 320000, desc: "Gói gia đình trọn gói tiết kiệm" },
@@ -133,8 +132,8 @@
 
         let selectedProduct = null;
         let currentOrderCode = "";
+        let timerInterval = null;
 
-        // Hiển thị danh sách sản phẩm
         function renderProducts() {
             const container = document.getElementById('productList');
             container.innerHTML = products.map(p => `
@@ -147,10 +146,6 @@
                     <div class="text-lg font-extrabold text-emerald-400">${p.price.toLocaleString('vi-VN')} đ</div>
                 </div>
             `).join('');
-            
-            document.getElementById('bankAccName').innerText = CONFIG.ACCOUNT_NAME;
-            document.getElementById('bankAccNo').innerText = CONFIG.ACCOUNT_NO;
-            document.getElementById('bankName').innerText = CONFIG.BANK_ID;
         }
 
         function selectProduct(id) {
@@ -171,30 +166,57 @@
             btn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
 
-        // Tự động tạo QR code từ API VietQR
         function generateQR() {
             if (!selectedProduct) return;
 
-            // Tạo mã đơn hàng dạng: STORE + 4 số ngẫu nhiên
             currentOrderCode = "STORE" + Math.floor(1000 + Math.random() * 9000);
             document.getElementById('orderIdTag').innerText = "#" + currentOrderCode;
             document.getElementById('transferCode').innerText = currentOrderCode;
+            document.getElementById('payAmount').innerText = selectedProduct.price.toLocaleString('vi-VN') + " đ";
 
-            // API VietQR tự sinh QR theo số tiền và nội dung chuyển khoản
-            const qrUrl = `https://img.vietqr.io/image/${CONFIG.BANK_ID}-${CONFIG.ACCOUNT_NO}-compact2.png?amount=${selectedProduct.price}&addInfo=${currentOrderCode}&accountName=${encodeURIComponent(CONFIG.ACCOUNT_NAME)}`;
-            
-            document.getElementById('qrImg').src = qrUrl;
             document.getElementById('qrArea').classList.remove('hidden');
+
+            // Khởi chạy đếm ngược 10 phút (600s)
+            startTimer(600);
+        }
+
+        function startTimer(duration) {
+            clearInterval(timerInterval);
+            let timer = duration, minutes, seconds;
+            timerInterval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                document.getElementById('timer').textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('waitingStatus').innerHTML = `<span class="text-rose-400 font-bold">Mã đã hết hạn, vui lòng tạo mới!</span>`;
+                }
+            }, 1000);
         }
 
         function copyText(id) {
             const text = document.getElementById(id).innerText;
             navigator.clipboard.writeText(text);
-            alert("Đã sao chép: " + text);
+            alert("Đã sao chép nội dung chuyển khoản: " + text);
         }
 
         function confirmPayment() {
-            alert(`Cảm ơn bạn! Đã ghi nhận xác nhận cho đơn hàng #${currentOrderCode}.\nHệ thống sẽ kiểm tra giao dịch và kích hoạt dịch vụ cho bạn ngay!`);
+            clearInterval(timerInterval);
+            const statusBox = document.getElementById('waitingStatus');
+            statusBox.className = "flex items-center justify-center space-x-2 bg-emerald-500/20 py-2.5 px-4 rounded-xl border border-emerald-500/50 text-emerald-300 text-xs font-semibold";
+            statusBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 text-base"></i><span>Đã xác nhận! Hệ thống đang xử lý đơn hàng #${currentOrderCode}...</span>`;
+
+            const btnConfirm = document.getElementById('btnConfirm');
+            btnConfirm.disabled = true;
+            btnConfirm.classList.add('opacity-50', 'cursor-not-allowed');
+            btnConfirm.innerText = "Đã nhận xác nhận";
+            
+            alert(`Cảm ơn bạn! Đã nhận xác nhận chuyển khoản cho đơn hàng #${currentOrderCode}.\nHệ thống sẽ kiểm tra và kích hoạt dịch vụ cho bạn trong giây lát!`);
         }
 
         renderProducts();
