@@ -3,43 +3,195 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Digital Store - Thanh Toán</title>
+  <title>Digital Store - Thanh Toán Auto</title>
   <style>
-    body { font-family: sans-serif; background: #0f172a; color: #fff; padding: 20px; display: flex; justify-content: center; margin: 0; }
-    .card { background: #1e293b; padding: 20px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; font-size: 14px; color: #94a3b8; }
-    select, button { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 15px; }
-    
-    .btn-generate { background: #3b82f6; font-weight: bold; cursor: pointer; border: none; margin-top: 10px; transition: 0.2s; }
-    .btn-generate:hover { background: #2563eb; }
-    
-    .btn-confirm { background: #10b981; font-weight: bold; cursor: pointer; border: none; margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; }
-    .btn-confirm:hover { background: #059669; }
+    :root {
+      --bg-color: #0d1117;
+      --card-bg: #161b22;
+      --border-color: #30363d;
+      --accent-color: #3b82f6;
+      --accent-hover: #2563eb;
+      --success-color: #10b981;
+      --text-main: #f0f6fc;
+      --text-muted: #8b949e;
+    }
 
-    .qr-container { text-align: center; margin-top: 20px; display: none; }
-    .qr-container img { width: 100%; max-width: 250px; border-radius: 12px; background: #fff; padding: 10px; margin-bottom: 15px; }
-    
-    .timer-box { border: 1px solid #334155; padding: 12px; border-radius: 8px; font-size: 14px; text-align: center; margin-bottom: 15px; display: flex; justify-content: center; gap: 5px; }
-    .timer-text { color: #facc15; font-weight: bold; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 
-    .info-box { background: #0f172a; padding: 15px; border-radius: 8px; font-size: 14px; text-align: left; border: 1px solid #334155; }
-    .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .header span { color: var(--accent-color); }
+
+    .form-group { margin-bottom: 18px; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: #0d1117;
+      color: var(--text-main);
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    select:focus { border-color: var(--accent-color); }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary { background: var(--accent-color); color: #fff; margin-top: 10px; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+    .btn-success { background: var(--success-color); color: #fff; margin-top: 15px; }
+    .btn-success:hover { background: #059669; transform: translateY(-1px); }
+
+    .qr-container {
+      text-align: center;
+      margin-top: 24px;
+      display: none;
+      border-top: 1px border-style: dashed;
+      border-color: var(--border-color);
+      padding-top: 20px;
+    }
+
+    .qr-container img {
+      width: 100%;
+      max-width: 240px;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .timer-box {
+      background: rgba(234, 179, 8, 0.1);
+      border: 1px solid rgba(234, 179, 8, 0.2);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #eab308;
+      margin: 15px 0;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .info-box {
+      background: #0d1117;
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
     .info-row:last-child { margin-bottom: 0; }
-    .price { color: #4ade80; font-weight: bold; font-size: 16px; }
-    .code { background: #1e293b; padding: 4px 8px; border-radius: 4px; color: #facc15; font-weight: bold; }
+    .price { color: #4ade80; font-weight: 700; font-size: 17px; }
+    .code { background: #21262d; padding: 4px 10px; border-radius: 6px; color: #facc15; font-weight: 700; font-family: monospace; }
+
+    /* Modal kết quả đơn hàng */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 99;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      border-radius: 16px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .order-id {
+      font-size: 20px;
+      font-weight: bold;
+      color: #38bdf8;
+      margin: 15px 0;
+      letter-spacing: 1px;
+      background: #0d1117;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px dashed #38bdf8;
+    }
   </style>
 </head>
 <body>
 
 <div class="card">
-  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-    <h2 style="margin: 0; color: #fff;">⚡ DIGITAL <span style="color: #3b82f6;">STORE</span></h2>
+  <div class="header">
+    <h2>DIGITAL <span>STORE</span> ⚡</h2>
   </div>
 
-  <!-- Chọn Sản Phẩm -->
+  <!-- Chọn Dịch Vụ -->
   <div class="form-group">
-    <label>Chọn dịch vụ:</label>
+    <label>Dịch vụ</label>
     <select id="serviceSelect" onchange="updateOptions()">
       <option value="gemini">Gemini Pro</option>
       <option value="spotify">Spotify Premium</option>
@@ -51,106 +203,102 @@
 
   <!-- Chọn Thời Hạn -->
   <div class="form-group">
-    <label>Chọn gói thời hạn:</label>
+    <label>Gói thời hạn</label>
     <select id="planSelect" onchange="updatePrice()"></select>
   </div>
 
-  <button class="btn-generate" onclick="generatePayment()">Tạo Mã QR Thanh Toán</button>
+  <button class="btn btn-primary" onclick="generatePayment()">Tạo Mã QR Thanh Toán</button>
 
-  <!-- Khung Hiển Thị QR -->
+  <!-- Khung QR -->
   <div id="qrSection" class="qr-container">
     <img id="qrImage" src="" alt="Mã QR Thanh Toán">
     
     <div class="timer-box">
-      <span>Đang chờ chuyển khoản... Hạn mã:</span>
-      <span class="timer-text" id="timerDisplay">10:00</span>
+      ⏱️ Đang chờ chuyển khoản... Hạn mã: <b id="timerDisplay">10:00</b>
     </div>
 
     <div class="info-box">
       <div class="info-row">
-        <span style="color: #94a3b8;">Số tiền cần chuyển:</span>
+        <span style="color: var(--text-muted);">Số tiền:</span>
         <span id="priceDisplay" class="price">0 đ</span>
       </div>
       <div class="info-row">
-        <span style="color: #94a3b8;">Nội dung chuyển khoản:</span>
+        <span style="color: var(--text-muted);">Nội dung CK:</span>
         <span id="codeDisplay" class="code"></span>
       </div>
-      <p style="font-size: 12px; color: #64748b; margin: 10px 0 0 0; text-align: center; font-style: italic;">
-        *Vui lòng nhập chính xác nội dung trên để tự động duyệt
-      </p>
     </div>
 
-    <button class="btn-confirm" onclick="confirmPayment()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-      Tôi đã hoàn tất chuyển khoản
+    <button class="btn btn-success" onclick="confirmPayment()">
+      ✔ Tôi đã hoàn tất chuyển khoản
     </button>
+  </div>
+</div>
+
+<!-- Modal hiển thị sau khi hoàn tất -->
+<div id="orderModal" class="modal">
+  <div class="modal-content">
+    <h3 style="color: #4ade80;">Thanh Toán Hoàn Tất!</h3>
+    <p style="font-size: 14px; color: var(--text-muted); margin-top: 8px;">Mã đơn hàng của bạn là:</p>
+    
+    <div id="orderIdDisplay" class="order-id">---</div>
+
+    <p style="font-size: 13px; color: #8b949e; margin-bottom: 20px;">
+      Vui lòng gửi mã đơn hàng này cho Support qua Telegram để nhận dịch vụ ngay lập tức.
+    </p>
+
+    <a id="teleLink" href="#" target="_blank" style="text-decoration: none;">
+      <button class="btn btn-primary">✈️ Mở Telegram (@iues1hihi)</button>
+    </a>
   </div>
 </div>
 
 <script>
   const products = {
-    gemini: [
-      { label: "1 Năm - 45.000đ", value: 45000 },
-      { label: "6 Tháng - 25.000đ", value: 25000 }
-    ],
-    spotify: [
-      { label: "3 Tháng - 50.000đ", value: 50000 },
-      { label: "1 Tháng - 20.000đ", value: 20000 }
-    ],
-    youtube: [
-      { label: "1 Tháng - 30.000đ", value: 30000 },
-      { label: "6 Tháng - 150.000đ", value: 150000 }
-    ],
-    chatgpt: [
-      { label: "1 Tháng - 90.000đ", value: 90000 }
-    ],
-    capcut: [
-      { label: "1 Tháng - 40.000đ", value: 40000 },
-      { label: "1 Năm - 250.000đ", value: 250000 }
-    ]
+    gemini: { name: "GEMINI", plans: [{ label: "1 Năm - 45.000đ", value: 45000 }, { label: "6 Tháng - 25.000đ", value: 25000 }] },
+    spotify: { name: "SPOTIFY", plans: [{ label: "3 Tháng - 50.000đ", value: 50000 }, { label: "1 Tháng - 20.000đ", value: 20000 }] },
+    youtube: { name: "YOUTUBE", plans: [{ label: "1 Tháng - 30.000đ", value: 30000 }, { label: "6 Tháng - 150.000đ", value: 150000 }] },
+    chatgpt: { name: "CHATGPT", plans: [{ label: "1 Tháng - 90.000đ", value: 90000 }] },
+    capcut: { name: "CAPCUT", plans: [{ label: "1 Tháng - 40.000đ", value: 40000 }, { label: "1 Năm - 250.000đ", value: 250000 }] }
   };
 
   const BANK_ID = 'MB';
   const ACCOUNT_NO = '274233';
+  const TELE_USERNAME = 'iues1hihi';
   let countdownInterval;
 
   function updateOptions() {
-    const service = document.getElementById('serviceSelect').value;
+    const serviceKey = document.getElementById('serviceSelect').value;
     const planSelect = document.getElementById('planSelect');
     
     planSelect.innerHTML = '';
-    products[service].forEach(item => {
+    products[serviceKey].plans.forEach(item => {
       const option = document.createElement('option');
       option.value = item.value;
       option.innerText = item.label;
       planSelect.appendChild(option);
     });
+    updatePrice();
   }
 
   function updatePrice() {
-    // Ẩn QR khi đổi gói
     document.getElementById('qrSection').style.display = 'none';
     clearInterval(countdownInterval);
   }
 
-  function startTimer(durationInSeconds) {
+  function startTimer(duration) {
     clearInterval(countdownInterval);
-    let timer = durationInSeconds;
+    let timer = duration;
     const display = document.getElementById('timerDisplay');
 
-    countdownInterval = setInterval(function () {
-      let minutes = parseInt(timer / 60, 10);
-      let seconds = parseInt(timer % 60, 10);
-
-      minutes = minutes < 10 ? "0" + minutes : minutes;
-      seconds = seconds < 10 ? "0" + seconds : seconds;
-
-      display.textContent = minutes + ":" + seconds;
+    countdownInterval = setInterval(() => {
+      let m = parseInt(timer / 60, 10);
+      let s = parseInt(timer % 60, 10);
+      display.textContent = `${m < 10 ? "0" + m : m}:${s < 10 ? "0" + s : s}`;
 
       if (--timer < 0) {
         clearInterval(countdownInterval);
         document.getElementById('qrSection').style.display = 'none';
-        alert("Mã QR đã hết hạn. Vui lòng tạo lại mã mới để thanh toán!");
+        alert("Mã QR đã hết hạn. Vui lòng tạo lại mã mới!");
       }
     }, 1000);
   }
@@ -158,25 +306,32 @@
   function generatePayment() {
     const amount = document.getElementById('planSelect').value;
     const randomCode = 'KH ' + Math.random().toString(36).substring(2, 8).toUpperCase();
-    
     const qrUrl = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(randomCode)}`;
 
     document.getElementById('qrImage').src = qrUrl;
     document.getElementById('priceDisplay').innerText = Number(amount).toLocaleString('vi-VN') + ' đ';
     document.getElementById('codeDisplay').innerText = randomCode;
-    
     document.getElementById('qrSection').style.display = 'block';
     
-    // Bắt đầu đếm ngược 10 phút (600 giây)
     startTimer(600);
   }
 
   function confirmPayment() {
-    alert("Hệ thống đang kiểm tra giao dịch của bạn. Vui lòng đợi trong giây lát...");
-    // Thực tế sẽ gọi API check lịch sử giao dịch MB Bank tại đây
+    const serviceKey = document.getElementById('serviceSelect').value;
+    const prefix = products[serviceKey].name;
+    
+    // Sinh mã đơn ngẫu nhiên kèm tên sản phẩm (VD: GEMINI-98234)
+    const orderId = `${prefix}-${Math.floor(10000 + Math.random() * 90000)}`;
+    
+    document.getElementById('orderIdDisplay').innerText = orderId;
+    
+    // Tạo link Telegram truyền sẵn tin nhắn xác nhận
+    const message = encodeURIComponent(`Chào shop, mình đã chuyển khoản thành công đơn hàng ${orderId}. Nhờ shop kích hoạt giúp mình!`);
+    document.getElementById('teleLink').href = `https://t.me/${TELE_USERNAME}?text=${message}`;
+    
+    document.getElementById('orderModal').style.display = 'flex';
   }
 
-  // Khởi tạo ban đầu
   updateOptions();
 </script>
 
