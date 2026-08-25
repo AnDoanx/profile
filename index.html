@@ -5,23 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Digital Store - Thanh Toán</title>
   <style>
-    body { font-family: sans-serif; background: #0f172a; color: #fff; padding: 20px; display: flex; justify-content: center; }
+    body { font-family: sans-serif; background: #0f172a; color: #fff; padding: 20px; display: flex; justify-content: center; margin: 0; }
     .card { background: #1e293b; padding: 20px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     .form-group { margin-bottom: 15px; }
     label { display: block; margin-bottom: 5px; font-size: 14px; color: #94a3b8; }
     select, button { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 15px; }
-    button { background: #2563eb; font-weight: bold; cursor: pointer; border: none; margin-top: 10px; }
-    button:hover { background: #1d4ed8; }
+    
+    .btn-generate { background: #3b82f6; font-weight: bold; cursor: pointer; border: none; margin-top: 10px; transition: 0.2s; }
+    .btn-generate:hover { background: #2563eb; }
+    
+    .btn-confirm { background: #10b981; font-weight: bold; cursor: pointer; border: none; margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+    .btn-confirm:hover { background: #059669; }
+
     .qr-container { text-align: center; margin-top: 20px; display: none; }
-    .qr-container img { width: 100%; max-width: 280px; border-radius: 8px; background: #fff; padding: 10px; }
-    .info-box { background: #0f172a; padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 14px; }
-    .price { color: #4ade80; font-weight: bold; font-size: 18px; }
+    .qr-container img { width: 100%; max-width: 250px; border-radius: 12px; background: #fff; padding: 10px; margin-bottom: 15px; }
+    
+    .timer-box { border: 1px solid #334155; padding: 12px; border-radius: 8px; font-size: 14px; text-align: center; margin-bottom: 15px; display: flex; justify-content: center; gap: 5px; }
+    .timer-text { color: #facc15; font-weight: bold; }
+
+    .info-box { background: #0f172a; padding: 15px; border-radius: 8px; font-size: 14px; text-align: left; border: 1px solid #334155; }
+    .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .info-row:last-child { margin-bottom: 0; }
+    .price { color: #4ade80; font-weight: bold; font-size: 16px; }
+    .code { background: #1e293b; padding: 4px 8px; border-radius: 4px; color: #facc15; font-weight: bold; }
   </style>
 </head>
 <body>
 
 <div class="card">
-  <h2>DIGITAL STORE ⚡</h2>
+  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+    <h2 style="margin: 0; color: #fff;">⚡ DIGITAL <span style="color: #3b82f6;">STORE</span></h2>
+  </div>
 
   <!-- Chọn Sản Phẩm -->
   <div class="form-group">
@@ -29,35 +43,51 @@
     <select id="serviceSelect" onchange="updateOptions()">
       <option value="gemini">Gemini Pro</option>
       <option value="spotify">Spotify Premium</option>
+      <option value="youtube">YouTube Premium</option>
+      <option value="chatgpt">ChatGPT Plus</option>
+      <option value="capcut">CapCut Pro</option>
     </select>
   </div>
 
-  <!-- Chọn Thời Han -->
+  <!-- Chọn Thời Hạn -->
   <div class="form-group">
     <label>Chọn gói thời hạn:</label>
     <select id="planSelect" onchange="updatePrice()"></select>
   </div>
 
-  <!-- Hiển thị giá -->
-  <div class="info-box">
-    <span>Số tiền cần thanh toán: </span>
-    <span id="priceDisplay" class="price">0 đ</span>
-  </div>
-
-  <button onclick="generatePayment()">Tạo Mã QR Thanh Toán</button>
+  <button class="btn-generate" onclick="generatePayment()">Tạo Mã QR Thanh Toán</button>
 
   <!-- Khung Hiển Thị QR -->
   <div id="qrSection" class="qr-container">
     <img id="qrImage" src="" alt="Mã QR Thanh Toán">
-    <div class="info-box" style="text-align: left;">
-      <p>Nội dung CK: <b id="codeDisplay" style="color: #facc15;"></b></p>
-      <p style="font-size: 12px; color: #94a3b8;">*Vui lòng nhập chính xác nội dung để được tự động duyệt.</p>
+    
+    <div class="timer-box">
+      <span>Đang chờ chuyển khoản... Hạn mã:</span>
+      <span class="timer-text" id="timerDisplay">10:00</span>
     </div>
+
+    <div class="info-box">
+      <div class="info-row">
+        <span style="color: #94a3b8;">Số tiền cần chuyển:</span>
+        <span id="priceDisplay" class="price">0 đ</span>
+      </div>
+      <div class="info-row">
+        <span style="color: #94a3b8;">Nội dung chuyển khoản:</span>
+        <span id="codeDisplay" class="code"></span>
+      </div>
+      <p style="font-size: 12px; color: #64748b; margin: 10px 0 0 0; text-align: center; font-style: italic;">
+        *Vui lòng nhập chính xác nội dung trên để tự động duyệt
+      </p>
+    </div>
+
+    <button class="btn-confirm" onclick="confirmPayment()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      Tôi đã hoàn tất chuyển khoản
+    </button>
   </div>
 </div>
 
 <script>
-  // Cấu hình danh sách sản phẩm & giá
   const products = {
     gemini: [
       { label: "1 Năm - 45.000đ", value: 45000 },
@@ -66,50 +96,87 @@
     spotify: [
       { label: "3 Tháng - 50.000đ", value: 50000 },
       { label: "1 Tháng - 20.000đ", value: 20000 }
+    ],
+    youtube: [
+      { label: "1 Tháng - 30.000đ", value: 30000 },
+      { label: "6 Tháng - 150.000đ", value: 150000 }
+    ],
+    chatgpt: [
+      { label: "1 Tháng - 90.000đ", value: 90000 }
+    ],
+    capcut: [
+      { label: "1 Tháng - 40.000đ", value: 40000 },
+      { label: "1 Năm - 250.000đ", value: 250000 }
     ]
   };
 
   const BANK_ID = 'MB';
   const ACCOUNT_NO = '274233';
+  let countdownInterval;
 
-  // Cập nhật danh sách gói theo sản phẩm chọn
   function updateOptions() {
     const service = document.getElementById('serviceSelect').value;
     const planSelect = document.getElementById('planSelect');
     
     planSelect.innerHTML = '';
-    products[service].forEach((item, index) => {
+    products[service].forEach(item => {
       const option = document.createElement('option');
       option.value = item.value;
       option.innerText = item.label;
       planSelect.appendChild(option);
     });
-
-    updatePrice();
   }
 
-  // Cập nhật giá hiển thị
   function updatePrice() {
-    const amount = document.getElementById('planSelect').value;
-    document.getElementById('priceDisplay').innerText = Number(amount).toLocaleString('vi-VN') + ' đ';
+    // Ẩn QR khi đổi gói
+    document.getElementById('qrSection').style.display = 'none';
+    clearInterval(countdownInterval);
   }
 
-  // Tạo Mã QR
+  function startTimer(durationInSeconds) {
+    clearInterval(countdownInterval);
+    let timer = durationInSeconds;
+    const display = document.getElementById('timerDisplay');
+
+    countdownInterval = setInterval(function () {
+      let minutes = parseInt(timer / 60, 10);
+      let seconds = parseInt(timer % 60, 10);
+
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+
+      display.textContent = minutes + ":" + seconds;
+
+      if (--timer < 0) {
+        clearInterval(countdownInterval);
+        document.getElementById('qrSection').style.display = 'none';
+        alert("Mã QR đã hết hạn. Vui lòng tạo lại mã mới để thanh toán!");
+      }
+    }, 1000);
+  }
+
   function generatePayment() {
     const amount = document.getElementById('planSelect').value;
-    
-    // Tạo mã nội dung ngẫu nhiên (Ví dụ: KH XT4PNX)
     const randomCode = 'KH ' + Math.random().toString(36).substring(2, 8).toUpperCase();
     
-    // Gọi API VietQR MB 274233
     const qrUrl = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(randomCode)}`;
 
     document.getElementById('qrImage').src = qrUrl;
+    document.getElementById('priceDisplay').innerText = Number(amount).toLocaleString('vi-VN') + ' đ';
     document.getElementById('codeDisplay').innerText = randomCode;
+    
     document.getElementById('qrSection').style.display = 'block';
+    
+    // Bắt đầu đếm ngược 10 phút (600 giây)
+    startTimer(600);
   }
 
-  // Khởi tạo giao diện lần đầu
+  function confirmPayment() {
+    alert("Hệ thống đang kiểm tra giao dịch của bạn. Vui lòng đợi trong giây lát...");
+    // Thực tế sẽ gọi API check lịch sử giao dịch MB Bank tại đây
+  }
+
+  // Khởi tạo ban đầu
   updateOptions();
 </script>
 
