@@ -5,31 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web Mail 10 Phút Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Inter & Material Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .glass {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+  </style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col items-center p-3 sm:p-6 font-sans">
+<body class="bg-gradient-to-br from-gray-950 via-gray-900 to-slate-950 text-gray-100 min-h-screen flex flex-col items-center p-3 sm:p-6">
 
-  <div class="max-w-3xl w-full bg-gray-900 p-5 sm:p-7 rounded-3xl shadow-2xl border border-gray-800 space-y-6">
+  <div class="max-w-3xl w-full glass p-5 sm:p-8 rounded-3xl border border-gray-800/80 shadow-2xl shadow-blue-950/20 space-y-6">
     
     <!-- Header -->
-    <div class="text-center space-y-1">
-      <h1 class="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
-        ⚡ WEB MAIL 10 PHÚT PRO
-      </h1>
-      <p class="text-xs sm:text-sm text-gray-400">Tự chọn Domain & Custom tên theo ý muốn • Live Sync 24/7</p>
+    <div class="flex items-center justify-between pb-4 border-b border-gray-800/80">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 bg-blue-600/10 border border-blue-500/20 rounded-2xl text-blue-400">
+          <span class="material-icons-outlined text-2xl">mark_email_unread</span>
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">
+            TempMail Pro
+          </h1>
+          <p class="text-xs text-gray-400">Hệ thống Email Tạm Thời • Bảo Mật & Tự Động Live Sync</p>
+        </div>
+      </div>
+      <!-- Nút xin quyền thông báo -->
+      <button onclick="requestNotificationPermission()" id="notifyBtn" class="flex items-center gap-1.5 text-xs bg-gray-800/80 hover:bg-gray-800 text-gray-300 border border-gray-700/60 px-3 py-1.5 rounded-xl transition">
+        <span class="material-icons-outlined text-sm text-yellow-400">notifications</span>
+        <span class="hidden sm:inline">Bật thông báo</span>
+      </button>
     </div>
 
-    <!-- Khối Tùy Chỉnh Email (Custom Name & Select Domain) -->
-    <div class="bg-gray-950 p-4 sm:p-5 rounded-2xl border border-gray-800 space-y-4">
-      <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Tùy chỉnh hòm thư của bạn</div>
+    <!-- Khối Custom Email & Control -->
+    <div class="bg-gray-950/60 p-4 sm:p-5 rounded-2xl border border-gray-800/80 space-y-4">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="material-icons-outlined text-sm text-blue-400">tune</span> Tùy chỉnh hòm thư
+        </span>
+        <span id="timerDisplay" class="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg flex items-center gap-1">
+          <span class="material-icons-outlined text-xs">timer</span> 10:00
+        </span>
+      </div>
       
-      <div class="flex flex-col sm:flex-row gap-2">
-        <!-- Input Tên -->
-        <input type="text" id="customUser" placeholder="Nhập tên mail (ví dụ: myaccount)" 
-          class="flex-1 bg-gray-900 border border-gray-700 focus:border-blue-500 rounded-xl px-3.5 py-2 text-sm text-white outline-none font-mono transition">
+      <!-- Input Custom Username & Select Domain -->
+      <div class="flex flex-col sm:flex-row gap-2.5">
+        <input type="text" id="customUser" placeholder="Nhập tên mail mong muốn..." 
+          class="flex-1 bg-gray-900 border border-gray-700/80 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm text-white outline-none font-mono transition">
         
-        <!-- Select Domain -->
         <select id="domainSelect" 
-          class="bg-gray-900 border border-gray-700 focus:border-blue-500 rounded-xl px-3.5 py-2 text-sm text-blue-400 font-mono outline-none cursor-pointer transition">
+          class="bg-gray-900 border border-gray-700/80 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-sm text-blue-400 font-mono outline-none cursor-pointer transition">
           <option value="guerrillamail.com">@guerrillamail.com</option>
           <option value="guerrillamail.net">@guerrillamail.net</option>
           <option value="guerrillamail.org">@guerrillamail.org</option>
@@ -38,62 +67,56 @@
           <option value="grr.la">@grr.la</option>
         </select>
 
-        <!-- Button Đổi Email -->
         <button onclick="applyCustomEmail()" 
-          class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition flex items-center justify-center gap-1.5 shadow-lg shadow-blue-600/20">
-          <span>⚡ Cập nhật</span>
+          class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-1.5 shadow-lg shadow-blue-600/25 active:scale-95">
+          <span class="material-icons-outlined text-sm">bolt</span> Áp dụng
         </button>
       </div>
 
-      <!-- Địa chỉ hiển thị & Đếm ngược -->
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-2 border-t border-gray-800/80">
-        <div>
-          <span class="text-[11px] text-gray-500 block">Địa chỉ đang hoạt động:</span>
-          <span id="emailAddress" class="text-base sm:text-lg font-mono font-bold text-green-400 break-all">Đang khởi tạo...</span>
-        </div>
-        
-        <div class="flex items-center gap-3 self-end sm:self-auto">
-          <div class="text-right">
-            <span class="text-[10px] text-gray-500 block">Hết hạn sau</span>
-            <span id="timerDisplay" class="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md">10:00</span>
-          </div>
+      <!-- Địa chỉ Email hiện tại -->
+      <div class="p-3 bg-gray-900/90 rounded-xl border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div class="overflow-hidden w-full">
+          <span class="text-[10px] text-gray-500 font-semibold block uppercase">Địa chỉ email hiện tại</span>
+          <span id="emailAddress" class="text-base sm:text-lg font-mono font-bold text-emerald-400 break-all">Đang tải...</span>
         </div>
       </div>
 
-      <!-- Button Thao tác nhanh -->
-      <div class="flex flex-wrap gap-2 pt-1">
-        <button onclick="copyEmail()" class="flex-1 bg-gray-900 hover:bg-gray-800 border border-gray-700 text-xs font-semibold py-2 px-3 rounded-xl transition text-blue-400">
-          📋 Sao chép Mail
+      <!-- Thao tác nhanh -->
+      <div class="flex flex-wrap gap-2">
+        <button onclick="copyEmail()" class="flex-1 bg-gray-900 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-blue-400 flex items-center justify-center gap-1.5">
+          <span class="material-icons-outlined text-sm">content_copy</span> Sao chép Mail
         </button>
-        <button onclick="resetTimer()" class="flex-1 bg-gray-900 hover:bg-gray-800 border border-gray-700 text-xs font-semibold py-2 px-3 rounded-xl transition text-amber-400">
-          ⏳ Gia hạn 10p
+        <button onclick="resetTimer()" class="flex-1 bg-gray-900 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-amber-400 flex items-center justify-center gap-1.5">
+          <span class="material-icons-outlined text-sm">update</span> Gia hạn 10p
         </button>
-        <button onclick="generateRandomEmail()" class="flex-1 bg-gray-900 hover:bg-gray-800 border border-gray-700 text-xs font-semibold py-2 px-3 rounded-xl transition text-emerald-400">
-          🎲 Ngẫu nhiên
+        <button onclick="generateRandomEmail()" class="flex-1 bg-gray-900 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-emerald-400 flex items-center justify-center gap-1.5">
+          <span class="material-icons-outlined text-sm">shuffle</span> Mail Ngẫu Nhiên
         </button>
       </div>
     </div>
 
-    <!-- Hòm thư đến & Thanh trạng thái live -->
+    <!-- Hòm thư đến -->
     <div class="space-y-3">
-      <div class="flex justify-between items-end px-1">
-        <div>
-          <h2 class="text-base font-bold text-gray-200">Hòm Thư Đến (<span id="mailCount" class="text-blue-400">0</span>)</h2>
-        </div>
+      <div class="flex justify-between items-center px-1">
+        <h2 class="text-base font-bold text-gray-200 flex items-center gap-2">
+          Hòm Thư Đến 
+          <span id="mailCount" class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-full font-mono">0</span>
+        </h2>
         
-        <!-- Bộ đếm quét liên tục -->
+        <!-- Live Status indicator -->
         <div class="flex items-center gap-2 text-xs text-gray-400">
           <span class="relative flex h-2 w-2">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span id="syncStatus">Tự động quét trong <b id="syncCountdown" class="text-emerald-400">3</b>s</span>
+          <span>Sync sau <b id="syncCountdown" class="text-emerald-400 font-mono">3</b>s</span>
         </div>
       </div>
 
-      <!-- Danh sách Mail -->
+      <!-- Inbox List -->
       <div id="inboxList" class="space-y-3">
-        <div class="text-center py-10 text-gray-500 text-xs sm:text-sm bg-gray-950 rounded-2xl border border-dashed border-gray-800">
+        <div class="text-center py-12 text-gray-500 text-xs sm:text-sm bg-gray-950/40 rounded-2xl border border-dashed border-gray-800">
+          <span class="material-icons-outlined text-3xl mb-1 text-gray-600 block">inbox</span>
           Đang chờ thư mới gửi đến...
         </div>
       </div>
@@ -110,8 +133,28 @@
     let countdownInterval = null;
     let timeLeft = 600;
     let syncTime = 3;
+    let knownMailIds = new Set();
+    const originalTitle = "Web Mail 10 Phút Pro";
 
-    // 1. Khởi tạo Mail Ngẫu Nhiên
+    // 1. Quản lý thông báo trình duyệt (Browser Push Notification)
+    function requestNotificationPermission() {
+      if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            alert('Đã bật thông báo thành công!');
+            document.getElementById('notifyBtn').classList.add('hidden');
+          }
+        });
+      }
+    }
+
+    function sendNotification(title, body) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body: body, icon: 'https://cdn-icons-png.flaticon.com/512/732/732200.png' });
+      }
+    }
+
+    // 2. Tạo Mail Ngẫu Nhiên
     async function generateRandomEmail() {
       try {
         const res = await fetch(`${API_BASE}?f=get_email_address`);
@@ -119,6 +162,7 @@
         
         sidToken = data.sid_token;
         currentEmail = data.email_addr;
+        knownMailIds.clear();
 
         const parts = currentEmail.split('@');
         document.getElementById('customUser').value = parts[0];
@@ -128,36 +172,34 @@
         resetTimer();
         startPolling();
       } catch (err) {
-        alert('Lỗi khởi tạo API!');
+        console.error('Lỗi khởi tạo API');
       }
     }
 
-    // 2. Áp dụng Tùy chọn Tên & Domain
+    // 3. Tùy chỉnh Email
     async function applyCustomEmail() {
       const user = document.getElementById('customUser').value.trim();
       const domain = document.getElementById('domainSelect').value;
-
-      if (!user) return alert('Vui lòng nhập tên username!');
+      if (!user) return alert('Vui lòng nhập username!');
 
       try {
-        // Đổi tên Username trước
         const resUser = await fetch(`${API_BASE}?f=set_email_user&email_user=${encodeURIComponent(user)}&sid_token=${sidToken}`);
         const dataUser = await resUser.json();
         sidToken = dataUser.sid_token;
 
-        // Đổi tiếp Domain
-        const resDomain = await fetch(`${API_BASE}?f=set_forget_me&lang=en&site=${domain}&sid_token=${sidToken}`);
+        await fetch(`${API_BASE}?f=set_forget_me&lang=en&site=${domain}&sid_token=${sidToken}`);
         
         currentEmail = `${user}@${domain}`;
+        knownMailIds.clear();
         updateUI();
         resetTimer();
         checkInbox();
       } catch (err) {
-        alert('Không thể đổi domain/tên!');
+        alert('Không thể cập nhật mail!');
       }
     }
 
-    // 3. Quản lý Đếm Ngược Gia Hạn 10 phút
+    // 4. Gia hạn 10 phút
     function resetTimer() {
       timeLeft = 600;
       if (timerInterval) clearInterval(timerInterval);
@@ -175,7 +217,7 @@
       }, 1000);
     }
 
-    // 4. Lặp quét thư & Hiển thị đồng hồ đếm giây live
+    // 5. Polling Sync 3 giây & Đổi Title Tab
     function startPolling() {
       if (pollInterval) clearInterval(pollInterval);
       if (countdownInterval) clearInterval(countdownInterval);
@@ -183,20 +225,16 @@
       syncTime = 3;
       checkInbox();
 
-      // Đồng hồ đếm 3s->2s->1s
       countdownInterval = setInterval(() => {
         syncTime--;
         if (syncTime <= 0) syncTime = 3;
         document.getElementById('syncCountdown').innerText = syncTime;
       }, 1000);
 
-      // Gọi API quét mỗi 3 giây
-      pollInterval = setInterval(() => {
-        checkInbox();
-      }, 3000);
+      pollInterval = setInterval(checkInbox, 3000);
     }
 
-    // 5. Quét hòm thư
+    // 6. Quét Inbox & Phát hiện mail mới
     async function checkInbox() {
       if (!sidToken) return;
 
@@ -206,15 +244,31 @@
         const messages = data.list || [];
 
         document.getElementById('mailCount').innerText = messages.length;
+        
+        // Kiểm tra xem có thư mới chưa từng xuất hiện không
+        let hasNewMail = false;
+        messages.forEach(msg => {
+          if (!knownMailIds.has(msg.mail_id)) {
+            knownMailIds.add(msg.mail_id);
+            hasNewMail = true;
+          }
+        });
+
         if (messages.length > 0) {
           renderInbox(messages);
+        }
+
+        // Đổi Title Tab & Bắn Push Notification khi phát hiện thư mới
+        if (hasNewMail && knownMailIds.size > messages.length) {
+          document.title = `(1) ✉️ Thư mới đến! - ${originalTitle}`;
+          sendNotification("⚡ Bạn có email mới!", messages[0]?.mail_subject || "Nhấn để kiểm tra hòm thư.");
         }
       } catch (err) {
         console.error("Lỗi quét thư:", err);
       }
     }
 
-    // 6. Hiển thị danh sách & Tự bóc OTP
+    // 7. Render danh sách hòm thư & Nút Copy OTP 1-Click
     function renderInbox(messages) {
       const container = document.getElementById('inboxList');
       container.innerHTML = '';
@@ -222,34 +276,53 @@
       messages.forEach(msg => {
         const fullContent = (msg.mail_subject || '') + ' ' + (msg.mail_excerpt || '');
         const otpMatch = fullContent.match(/\b\d{4,8}\b/);
-        const otpBadge = otpMatch 
-          ? `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2 py-0.5 rounded-md">OTP: ${otpMatch[0]}</span>` 
+        const otpCode = otpMatch ? otpMatch[0] : null;
+
+        const otpBadge = otpCode 
+          ? `<div class="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2.5 py-1 rounded-lg">
+               <span class="text-xs font-bold font-mono">OTP: ${otpCode}</span>
+               <button onclick="event.stopPropagation(); copyText('${otpCode}')" class="hover:bg-emerald-500/20 p-0.5 rounded transition" title="Copy OTP">
+                 <span class="material-icons-outlined text-xs">content_copy</span>
+               </button>
+             </div>` 
           : '';
 
         const mailItem = document.createElement('div');
-        mailItem.className = 'bg-gray-950 p-4 rounded-2xl border border-gray-800 hover:border-blue-500/50 transition cursor-pointer space-y-2';
-        mailItem.onclick = () => fetchMailBody(msg.mail_id);
+        mailItem.className = 'bg-gray-950/70 p-4 rounded-2xl border border-gray-800/80 hover:border-blue-500/40 transition cursor-pointer space-y-2.5';
+        mailItem.onclick = () => {
+          document.title = originalTitle; // Reset title khi bấm đọc
+          fetchMailBody(msg.mail_id);
+        };
 
         mailItem.innerHTML = `
           <div class="flex justify-between items-start gap-2">
             <span class="font-bold text-xs text-blue-400 truncate">${msg.mail_from}</span>
-            <span class="text-[10px] text-gray-500 whitespace-nowrap">${msg.mail_date}</span>
+            <span class="text-[10px] text-gray-500 font-mono whitespace-nowrap">${msg.mail_date}</span>
           </div>
           <div class="font-medium text-gray-200 text-sm flex items-center justify-between gap-2">
             <span class="truncate">${msg.mail_subject || '(Không tiêu đề)'}</span>
             ${otpBadge}
           </div>
-          <div id="msg-body-${msg.mail_id}" class="hidden mt-3 pt-3 border-t border-gray-900 text-xs text-gray-300 overflow-x-auto bg-gray-900/60 p-3 rounded-xl font-mono">
-            Đang tải nội dung chi tiết...
+          
+          <div id="msg-body-${msg.mail_id}" class="hidden mt-3 pt-3 border-t border-gray-900 text-xs text-gray-300 overflow-x-auto bg-gray-900/90 p-4 rounded-xl space-y-3 font-sans">
+            <div id="msg-content-${msg.mail_id}">Đang tải nội dung...</div>
+            <div class="flex justify-end pt-2 border-t border-gray-800">
+              <button onclick="event.stopPropagation(); downloadMail('${msg.mail_id}', '${msg.mail_subject}')" class="flex items-center gap-1 bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg text-xs transition">
+                <span class="material-icons-outlined text-xs">download</span> Tải file (.txt)
+              </button>
+            </div>
           </div>
         `;
         container.appendChild(mailItem);
       });
     }
 
-    // 7. Xem chi tiết nội dung thư
+    // 8. Đọc nội dung & Lưu file (.txt)
+    let fetchedMailData = {};
+
     async function fetchMailBody(mailId) {
       const bodyDiv = document.getElementById(`msg-body-${mailId}`);
+      const contentDiv = document.getElementById(`msg-content-${mailId}`);
       if (!bodyDiv) return;
 
       if (!bodyDiv.classList.contains('hidden')) {
@@ -261,24 +334,41 @@
       try {
         const res = await fetch(`${API_BASE}?f=fetch_email&email_id=${mailId}&sid_token=${sidToken}`);
         const data = await res.json();
-        bodyDiv.innerHTML = data.mail_body || 'Không có nội dung.';
+        
+        const mailBody = data.mail_body || 'Không có nội dung.';
+        fetchedMailData[mailId] = mailBody;
+        contentDiv.innerHTML = mailBody;
       } catch (err) {
-        bodyDiv.innerText = 'Lỗi tải nội dung.';
+        contentDiv.innerText = 'Lỗi tải nội dung thư.';
       }
     }
 
+    function downloadMail(mailId, subject) {
+      const content = fetchedMailData[mailId] || 'Rỗng';
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${subject || 'mail'}_${mailId}.txt`;
+      a.click();
+    }
+
+    // Helper Functions
     function updateUI() {
       document.getElementById('emailAddress').innerText = currentEmail;
     }
 
     function copyEmail() {
-      if (currentEmail) {
-        navigator.clipboard.writeText(currentEmail);
-        alert('Đã sao chép địa chỉ email!');
+      copyText(currentEmail);
+    }
+
+    function copyText(text) {
+      if (text) {
+        navigator.clipboard.writeText(text);
+        alert(`Đã sao chép: ${text}`);
       }
     }
 
-    // Khởi chạy ứng dụng
+    // Khởi động
     generateRandomEmail();
   </script>
 </body>
