@@ -69,6 +69,12 @@
     let currentToken = '';
     let pollInterval = null;
 
+    // Hàm cập nhật trạng thái (Hàm bị thiếu ở bản trước)
+    function setStatus(msg) {
+      const statusEl = document.getElementById('statusText');
+      if (statusEl) statusEl.innerText = msg;
+    }
+
     // 1. Tạo Email Mới hoàn toàn
     async function createNewEmail() {
       setStatus('Đang lấy tên miền...');
