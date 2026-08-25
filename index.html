@@ -3,167 +3,430 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Đang Bảo Trì</title>
-    <!-- FontAwesome icons -->
+    <title>Bot Control Center</title>
+    <!-- FontAwesome & Google Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-green: #2ea043;
+            --accent-red: #da3633;
+            --accent-blue: #58a6ff;
+            --accent-yellow: #d29922;
+            --terminal-bg: #010409;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #f8fafc;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
             min-height: 100vh;
+            padding: 24px;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
         }
 
-        .container {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 40px 30px;
-            max-width: 500px;
+        .dashboard {
+            max-width: 1100px;
             width: 100%;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .icon-box {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, #3b82f6, #06b6d4);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
-            animation: pulse 2s infinite;
-        }
-
-        .icon-box i {
-            font-size: 40px;
-            color: #ffffff;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-        }
-
-        h1 {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #ffffff;
-        }
-
-        p {
-            color: #94a3b8;
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .contact-title {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #64748b;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .contact-group {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 20px;
         }
 
-        .btn-contact {
+        /* Header section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .header .title {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 12px;
-            padding: 14px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.3s ease;
         }
 
-        .btn-zalo {
-            background-color: #0068ff;
-            color: #ffffff;
-        }
-
-        .btn-zalo:hover {
-            background-color: #0056d6;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 104, 255, 0.3);
-        }
-
-        .btn-gmail {
-            background-color: #ea4335;
-            color: #ffffff;
-        }
-
-        .btn-gmail:hover {
-            background-color: #d33828;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(234, 67, 53, 0.3);
-        }
-
-        .btn-contact i {
+        .header h1 {
             font-size: 18px;
+            font-weight: 600;
         }
 
-        .footer-note {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #475569;
-            margin-bottom: 0;
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(46, 160, 67, 0.15);
+            color: var(--accent-green);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid rgba(46, 160, 67, 0.3);
         }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-green);
+        }
+
+        /* System Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 18px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .metric-value {
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-blue);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Action Controls */
+        .controls-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            background: var(--border-color);
+            color: var(--text-primary);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-start { background: var(--accent-green); color: #fff; }
+        .btn-stop { background: var(--accent-red); color: #fff; }
+        .btn-restart { background: var(--accent-yellow); color: #000; }
+
+        /* Terminal Console */
+        .terminal-container {
+            background: var(--terminal-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-header {
+            background: var(--card-bg);
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .terminal-body {
+            padding: 16px;
+            height: 320px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .log-line {
+            display: flex;
+            gap: 10px;
+        }
+
+        .log-time { color: var(--text-secondary); }
+        .log-info { color: var(--accent-blue); }
+        .log-success { color: var(--accent-green); }
+        .log-warn { color: var(--accent-yellow); }
+        .log-error { color: var(--accent-red); }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="icon-box">
-            <i class="fa-solid fa-screwdriver-wrench"></i>
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <div class="title">
+                <i class="fa-solid fa-robot" style="font-size: 20px; color: var(--accent-blue);"></i>
+                <h1>Telegram Auto Bot Control</h1>
+            </div>
+            <div class="status-badge" id="statusBadge">
+                <span class="status-dot"></span>
+                <span id="statusText">ONLINE</span>
+            </div>
         </div>
 
-        <h1>Hệ Thống Đang Bảo Trì</h1>
-        <p>Chúng tôi đang tiến hành nâng cấp hệ thống để mang lại trải nghiệm tốt hơn. Rất mong bạn thông cảm vì sự bất tiện này!</p>
+        <!-- System Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>CPU Usage</span>
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <div class="metric-value" id="cpuValue">0%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="cpuBar"></div>
+                </div>
+            </div>
 
-        <div class="contact-title">Liên hệ quản trị viên</div>
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>RAM Usage</span>
+                    <i class="fa-solid fa-memory"></i>
+                </div>
+                <div class="metric-value" id="ramValue">0 MB</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="ramBar" style="background: var(--accent-green);"></div>
+                </div>
+            </div>
 
-        <div class="contact-group">
-            <!-- Thay SĐT Zalo của bạn vào phần href bên dưới -->
-            <a href="https://zalo.me/0123456789" target="_blank" class="btn-contact btn-zalo">
-                <i class="fa-solid fa-comment-dots"></i>
-                Chat qua Zalo Admin
-            </a>
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>System Uptime</span>
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="metric-value" id="uptimeValue">00:00:00</div>
+            </div>
 
-            <!-- Thay Gmail của bạn vào phần href bên dưới -->
-            <a href="mailto:admin@example.com" class="btn-contact btn-gmail">
-                <i class="fa-solid fa-envelope"></i>
-                Gửi Email Cho Admin
-            </a>
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>Tasks Executed</span>
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div class="metric-value" id="tasksValue">0</div>
+            </div>
         </div>
 
-        <p class="footer-note">&copy; 2026 Admin System. All rights reserved.</p>
+        <!-- Action Controls -->
+        <div class="controls-card">
+            <div>
+                <h3 style="font-size: 15px; margin-bottom: 4px;">Quản lý trạng thái</h3>
+                <p style="font-size: 13px; color: var(--text-secondary);">Gửi lệnh điều khiển trực tiếp tới tiến trình Bot</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-start" onclick="startBot()"><i class="fa-solid fa-play"></i> Start</button>
+                <button class="btn btn-restart" onclick="restartBot()"><i class="fa-solid fa-rotate-right"></i> Restart</button>
+                <button class="btn btn-stop" onclick="stopBot()"><i class="fa-solid fa-stop"></i> Stop</button>
+            </div>
+        </div>
+
+        <!-- Terminal Console Logs -->
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <div class="window-dots">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                </div>
+                <span>Console Logs (Realtime)</span>
+                <i class="fa-solid fa-terminal"></i>
+            </div>
+            <div class="terminal-body" id="terminal">
+                <!-- Log lines will be appended here -->
+            </div>
+        </div>
     </div>
 
+    <script>
+        let isRunning = true;
+        let uptimeSeconds = 0;
+        let taskCount = 142;
+
+        const terminal = document.getElementById('terminal');
+
+        function getTime() {
+            const now = new Date();
+            return now.toTimeString().split(' ')[0];
+        }
+
+        function addLog(message, type = 'info') {
+            const line = document.createElement('div');
+            line.className = 'log-line';
+            
+            let colorClass = 'log-info';
+            if (type === 'success') colorClass = 'log-success';
+            if (type === 'warn') colorClass = 'log-warn';
+            if (type === 'error') colorClass = 'log-error';
+
+            line.innerHTML = `
+                <span class="log-time">[${getTime()}]</span>
+                <span class="${colorClass}">${message}</span>
+            `;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // Simulating metrics update
+        setInterval(() => {
+            if (!isRunning) return;
+
+            // CPU Simulation
+            const cpu = Math.floor(Math.random() * 35) + 5;
+            document.getElementById('cpuValue').innerText = `${cpu}%`;
+            document.getElementById('cpuBar').style.width = `${cpu}%`;
+
+            // RAM Simulation
+            const ram = Math.floor(Math.random() * 120) + 180;
+            const ramPercent = Math.floor((ram / 512) * 100);
+            document.getElementById('ramValue').innerText = `${ram} MB`;
+            document.getElementById('ramBar').style.width = `${ramPercent}%`;
+
+            // Uptime Timer
+            uptimeSeconds++;
+            const hrs = String(Math.floor(uptimeSeconds / 3600)).padStart(2, '0');
+            const mins = String(Math.floor((uptimeSeconds % 3600) / 60)).padStart(2, '0');
+            const secs = String(uptimeSeconds % 60).padStart(2, '0');
+            document.getElementById('uptimeValue').innerText = `${hrs}:${mins}:${secs}`;
+
+            // Random Log Generator
+            if (Math.random() > 0.65) {
+                taskCount++;
+                document.getElementById('tasksValue').innerText = taskCount;
+                const actions = [
+                    'API Request GET /v1/media - Status 200 OK',
+                    'Processed background task #${taskCount}',
+                    'Webhook ping delivered successfully',
+                    'Database sync completed'
+                ];
+                const randomAction = actions[Math.floor(Math.random() * actions.length)];
+                addLog(randomAction, 'info');
+            }
+        }, 1000);
+
+        // Control Actions
+        function startBot() {
+            if (isRunning) {
+                addLog('WARNING: Bot process is already running!', 'warn');
+                return;
+            }
+            isRunning = true;
+            document.getElementById('statusBadge').style.background = 'rgba(46, 160, 67, 0.15)';
+            document.getElementById('statusBadge').style.color = 'var(--accent-green)';
+            document.getElementById('statusText').innerText = 'ONLINE';
+            addLog('Starting bot process...', 'info');
+            setTimeout(() => addLog('Bot initialization success! Ready for requests.', 'success'), 600);
+        }
+
+        function stopBot() {
+            if (!isRunning) return;
+            isRunning = false;
+            document.getElementById('statusBadge').style.background = 'rgba(218, 54, 51, 0.15)';
+            document.getElementById('statusBadge').style.color = 'var(--accent-red)';
+            document.getElementById('statusText').innerText = 'OFFLINE';
+            document.getElementById('cpuValue').innerText = '0%';
+            document.getElementById('cpuBar').style.width = '0%';
+            document.getElementById('ramValue').innerText = '0 MB';
+            document.getElementById('ramBar').style.width = '0%';
+            addLog('Stopping bot service...', 'warn');
+            setTimeout(() => addLog('Bot process stopped completely.', 'error'), 500);
+        }
+
+        function restartBot() {
+            addLog('Initiating system restart...', 'warn');
+            stopBot();
+            setTimeout(() => {
+                startBot();
+                addLog('System rebooted successfully.', 'success');
+            }, 1200);
+        }
+
+        // Initial setup logs
+        addLog('System Dashboard initialized.', 'success');
+        addLog('Connected to Bot Instance #1', 'info');
+    </script>
 </body>
 </html>
