@@ -3,16 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Mail 10 Phút Pro</title>
+  <title>TempMail Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      darkMode: 'class',
-    }
+    tailwind.config = { darkMode: 'class' }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-  <!-- QR Code Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     body { font-family: 'Inter', sans-serif; }
@@ -29,6 +26,11 @@
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
     ::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.4); border-radius: 4px; }
+    @keyframes pulse-red {
+      0%, 100% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      50% { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 15px 2px rgba(239, 68, 68, 0.6); }
+    }
+    .warning-expired { animation: pulse-red 1.5s infinite; }
   </style>
 </head>
 <body class="bg-slate-950 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col items-center p-3 sm:p-6 transition-colors duration-300">
@@ -72,8 +74,16 @@
           <span class="material-icons-outlined text-sm">qr_code_2</span>
         </button>
 
+        <button onclick="toggleFakeInfoModal(true)" class="p-2 bg-slate-800/80 hover:bg-slate-700 rounded-xl border border-slate-700/80 text-purple-400 transition hover:scale-105 active:scale-95" title="Tạo thông tin ảo">
+          <span class="material-icons-outlined text-sm">badge</span>
+        </button>
+
         <button onclick="togglePassModal(true)" class="p-2 bg-slate-800/80 hover:bg-slate-700 rounded-xl border border-slate-700/80 text-emerald-400 transition hover:scale-105 active:scale-95" title="Tạo Mật Khẩu">
           <span class="material-icons-outlined text-sm">vpn_key</span>
+        </button>
+
+        <button onclick="toggleHistoryModal(true)" class="p-2 bg-slate-800/80 hover:bg-slate-700 rounded-xl border border-slate-700/80 text-orange-400 transition hover:scale-105 active:scale-95" title="Lịch sử Mail">
+          <span class="material-icons-outlined text-sm">history</span>
         </button>
 
         <button onclick="toggleGuide(true)" class="p-2 bg-slate-800/80 hover:bg-slate-700 rounded-xl border border-slate-700/80 text-amber-400 transition hover:scale-105 active:scale-95" title="Hướng dẫn">
@@ -152,18 +162,28 @@
           <span id="mailCount" class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-full font-mono">0</span>
         </h2>
         
-        <div class="flex items-center gap-4 text-xs">
+        <div class="flex flex-wrap items-center gap-3 text-xs">
+          <label class="flex items-center gap-1.5 cursor-pointer text-slate-400 hover:text-slate-200 transition select-none">
+            <input type="checkbox" id="autoCopyOtpCheck" class="rounded border-slate-700 text-emerald-600 focus:ring-0 cursor-pointer" checked>
+            <span>Auto Copy OTP</span>
+          </label>
+
           <label class="flex items-center gap-1.5 cursor-pointer text-slate-400 hover:text-slate-200 transition select-none">
             <input type="checkbox" id="filterSystemCheck" onchange="toggleFilterSystemMail()" class="rounded border-slate-700 text-blue-600 focus:ring-0 cursor-pointer">
             <span data-i18n="filterSystem">Ẩn thư hệ thống</span>
           </label>
 
-          <div class="flex items-center gap-1.5 text-slate-400">
+          <button onclick="manualRefreshMail()" class="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 py-1 rounded-lg transition active:scale-95">
+            <span class="material-icons-outlined text-xs">refresh</span>
+            <span>Quét ngay</span>
+          </button>
+
+          <div class="flex items-center gap-1.5 text-slate-400 font-mono">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span>Sync <b id="syncCountdown" class="text-emerald-400 font-mono">20</b>s</span>
+            <span>Sync <b id="syncCountdown" class="text-emerald-400">20</b>s</span>
           </div>
         </div>
       </div>
@@ -177,8 +197,67 @@
 
   </div>
 
+  <!-- POPUP FAKE IDENTITY GENERATOR MODAL -->
+  <div id="fakeInfoModal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 text-slate-200 max-w-sm w-full rounded-3xl p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-purple-400 flex items-center gap-2">
+          <span class="material-icons-outlined">badge</span> Tạo Thông Tin Ảo
+        </h3>
+        <button onclick="toggleFakeInfoModal(false)" class="text-slate-400 hover:text-white">
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </div>
+      
+      <div class="space-y-2 text-xs">
+        <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex justify-between items-center">
+          <div><span class="text-slate-500 block">Họ và tên:</span> <b id="fakeName" class="text-slate-200 font-mono">---</b></div>
+          <button onclick="copyText(document.getElementById('fakeName').innerText)" class="text-blue-400 hover:underline">Copy</button>
+        </div>
+        <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex justify-between items-center">
+          <div><span class="text-slate-500 block">Số điện thoại:</span> <b id="fakePhone" class="text-slate-200 font-mono">---</b></div>
+          <button onclick="copyText(document.getElementById('fakePhone').innerText)" class="text-blue-400 hover:underline">Copy</button>
+        </div>
+        <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex justify-between items-center">
+          <div><span class="text-slate-500 block">Địa chỉ ảo:</span> <b id="fakeAddress" class="text-slate-200 font-mono">---</b></div>
+          <button onclick="copyText(document.getElementById('fakeAddress').innerText)" class="text-blue-400 hover:underline">Copy</button>
+        </div>
+
+        <button onclick="generateFakeIdentity()" class="w-full mt-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2 rounded-xl transition flex items-center justify-center gap-1">
+          <span class="material-icons-outlined text-sm">refresh</span> Tạo mới thông tin
+        </button>
+      </div>
+
+      <div class="pt-2 border-t border-slate-800">
+        <button onclick="toggleFakeInfoModal(false)" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-xl font-semibold">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP MAIL HISTORY MODAL -->
+  <div id="historyModal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 text-slate-200 max-w-sm w-full rounded-3xl p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-orange-400 flex items-center gap-2">
+          <span class="material-icons-outlined">history</span> Lịch Sử Email Đã Dùng
+        </h3>
+        <button onclick="toggleHistoryModal(false)" class="text-slate-400 hover:text-white">
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </div>
+      
+      <div id="historyList" class="space-y-2 max-h-60 overflow-y-auto text-xs">
+        <div class="text-center text-slate-500 py-4">Chưa có lịch sử</div>
+      </div>
+
+      <div class="pt-2 border-t border-slate-800">
+        <button onclick="toggleHistoryModal(false)" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-xl font-semibold">Đóng</button>
+      </div>
+    </div>
+  </div>
+
   <!-- POPUP GUIDE MODAL -->
-  <div id="guideModal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden flex items-center justify-center p-4 z-50 transition-all">
+  <div id="guideModal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
     <div class="bg-slate-900 border border-slate-800 text-slate-200 max-w-lg w-full rounded-3xl p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2">
@@ -194,15 +273,12 @@
           <p class="font-bold text-blue-400 flex items-center gap-1">
             <span class="material-icons-outlined text-sm">stars</span> Về TempMail Pro:
           </p>
-          <p>Trang web hỗ trợ tạo email tạm thời an toàn, bảo mật cao và hoàn toàn miễn phí. Giúp bạn nhận thư kích hoạt, đăng ký dịch vụ mà không lo lộ email cá nhân hay bị dội thư rác (Spam).</p>
+          <p>Hệ thống email tạm thời bảo mật, hỗ trợ tự động bóc tách OTP, phát âm thanh thông báo và tạo thông tin ảo đăng ký tài khoản siêu tốc.</p>
         </div>
-
-        <p><b>1. Tạo email ngẫu nhiên:</b> Hệ thống tự động khởi tạo 1 hòm thư mới sẵn sàng nhận mail lập tức.</p>
-        <p><b>2. Tùy chỉnh Tên & Domain:</b> Bạn có thể chọn tên mail cá nhân hóa cùng 6 đuôi domain độc lạ khác nhau.</p>
-        <p><b>3. Tự bóc mã OTP 1-Click:</b> Thư gửi tới chứa mã xác minh sẽ được bóc tách sẵn mã OTP kèm nút copy siêu nhanh.</p>
-        <p><b>4. Quét mã QR trên di động:</b> Nhấn biểu tượng QR góc trên để dùng điện thoại quét lấy địa chỉ email tức thì.</p>
-        <p><b>5. Bộ lọc thư hệ thống:</b> Tích chọn <i>"Ẩn thư hệ thống"</i> để giấu thư chào mừng mặc định, tập trung đọc thư quan trọng.</p>
-        <p><b>6. Trình tạo mật khẩu an toàn:</b> Tích hợp bộ tạo mật khẩu ngẫu nhiên độ bảo mật cao phục vụ đăng ký tài khoản nhanh.</p>
+        <p><b>1. Auto-Copy OTP:</b> Tự động sao chép mã OTP vào bộ nhớ tạm ngay khi có thư đến.</p>
+        <p><b>2. Âm thanh báo thư:</b> Tự động phát âm báo "ting" khi thư cập nhật.</p>
+        <p><b>3. Lịch sử hòm thư:</b> Xem lại các email đã khởi tạo trong phiên và dễ dàng khôi phục lại.</p>
+        <p><b>4. Xuất File thư:</b> Tải về nội dung từng thư dưới dạng file `.eml` để lưu trữ.</p>
       </div>
 
       <div class="pt-3 border-t border-slate-800 text-right">
@@ -222,15 +298,12 @@
           <span class="material-icons-outlined">close</span>
         </button>
       </div>
-      
       <div class="flex flex-col items-center justify-center space-y-3 py-2">
         <div id="qrcode" class="p-3 bg-white rounded-2xl shadow-lg border border-slate-200"></div>
         <p id="qrEmailText" class="text-xs font-mono text-emerald-400 break-all font-semibold"></p>
-        <p class="text-[11px] text-slate-400">Quét bằng camera điện thoại để lấy email đăng ký nhanh chóng.</p>
       </div>
-
       <div class="pt-2 border-t border-slate-800">
-        <button onclick="toggleQRModal(false)" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-xl font-semibold transition">Đóng</button>
+        <button onclick="toggleQRModal(false)" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-xl font-semibold">Đóng</button>
       </div>
     </div>
   </div>
@@ -246,22 +319,19 @@
           <span class="material-icons-outlined">close</span>
         </button>
       </div>
-      
       <div class="space-y-3">
         <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between gap-2">
           <span id="generatedPassword" class="font-mono text-sm font-bold text-amber-400 break-all">Click Tạo Mới</span>
-          <button onclick="copyGeneratedPassword()" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-blue-400 rounded-lg transition" title="Copy Mật Khẩu">
+          <button onclick="copyGeneratedPassword()" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-blue-400 rounded-lg transition">
             <span class="material-icons-outlined text-sm">content_copy</span>
           </button>
         </div>
-
         <button onclick="generateRandomPassword()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
           <span class="material-icons-outlined text-sm">autorenew</span> Tạo mật khẩu mạnh
         </button>
       </div>
-
       <div class="pt-2 border-t border-slate-800">
-        <button onclick="togglePassModal(false)" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-xl font-semibold transition">Đóng</button>
+        <button onclick="togglePassModal(false)" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-xl font-semibold">Đóng</button>
       </div>
     </div>
   </div>
@@ -278,22 +348,32 @@
     let syncTime = 20;
     let uptimeSeconds = 0;
     let knownMailIds = new Set();
+    let isInitialLoad = true;
     let filterSystemMail = false;
     let lastFetchedMessages = [];
-    let qrcodeObj = null;
+    let emailHistory = [];
 
     const i18n = {
       vn: { uptime: "Hoạt động:", customMailTitle: "⚙️ Tùy chỉnh hòm thư", applyBtn: "Áp dụng", currentAddress: "Địa chỉ hiện tại", copyBtn: "Sao chép", extendBtn: "Gia hạn 10p", randomBtn: "Ngẫu nhiên", destructBtn: "Tiêu hủy", inboxTitle: "Hòm Thư Đến", filterSystem: "Ẩn thư hệ thống", waitingMail: "Đang chờ thư mới gửi đến..." },
-      us: { uptime: "Uptime:", customMailTitle: "⚙️ Custom Mailbox", applyBtn: "Apply", currentAddress: "Current Address", copyBtn: "Copy", extendBtn: "Extend 10m", randomBtn: "Random", destructBtn: "Destruct", inboxTitle: "Inbox", filterSystem: "Hide system mail", waitingMail: "Waiting for incoming emails..." },
-      uk: { uptime: "Uptime:", customMailTitle: "⚙️ Custom Mailbox", applyBtn: "Apply", currentAddress: "Current Address", copyBtn: "Copy", extendBtn: "Extend 10m", randomBtn: "Random", destructBtn: "Destruct", inboxTitle: "Inbox", filterSystem: "Hide system mail", waitingMail: "Waiting for incoming emails..." },
-      np: { uptime: "सञ्चालन समय:", customMailTitle: "⚙️ अनुकूलन मेलबक्स", applyBtn: "लागू गर्नुहोस्", currentAddress: "वर्तमान ठेगाना", copyBtn: "प्रतिलिपि", extendBtn: "१० मिनेट थप्नुहोस्", randomBtn: "अनियमित", destructBtn: "नष्ट गर्नुहोस्", inboxTitle: "इनबक्स", filterSystem: "प्रणाली मेल लुकाउनुहोस्", waitingMail: "नयाँ इमेलको पर्खाइमा..." },
-      jp: { uptime: "稼働時間:", customMailTitle: "⚙️ メールボックス設定", applyBtn: "適用", currentAddress: "現在のメールアドレス", copyBtn: "コピー", extendBtn: "10分延長", randomBtn: "ランダム", destructBtn: "破棄", inboxTitle: "受信トレイ", filterSystem: "システムメールを非表示", waitingMail: "新着メールを待っています..." },
-      kr: { uptime: "가동 시간:", customMailTitle: "⚙️ 이메일 맞춤설정", applyBtn: "적용", currentAddress: "현재 이메일 주소", copyBtn: "복사", extendBtn: "10분 연장", randomBtn: "랜덤", destructBtn: "파기", inboxTitle: "수신함", filterSystem: "시스템 메일 숨기기", waitingMail: "새 이메일을 기다리는 중..." },
-      cn: { uptime: "运行时间:", customMailTitle: "⚙️ 自定义邮箱", applyBtn: "应用", currentAddress: "当前邮箱地址", copyBtn: "复制", extendBtn: "延长10分钟", randomBtn: "随机", destructBtn: "销毁", inboxTitle: "收件箱", filterSystem: "隐藏系统邮件", waitingMail: "正在等待新邮件..." },
-      fr: { uptime: "Temps d'activité:", customMailTitle: "⚙️ Personnaliser la boîte", applyBtn: "Appliquer", currentAddress: "Adresse actuelle", copyBtn: "Copier", extendBtn: "Prolonger 10m", randomBtn: "Aleatoire", destructBtn: "Détruire", inboxTitle: "Boîte de réception", filterSystem: "Masquer les mails système", waitingMail: "En attente de nouveaux e-mails..." },
-      de: { uptime: "Betriebszeit:", customMailTitle: "⚙️ Postfach anpassen", applyBtn: "Anwenden", currentAddress: "Aktuelle Adresse", copyBtn: "Kopieren", extendBtn: "10m verlängern", randomBtn: "Zufall", destructBtn: "Zerstören", inboxTitle: "Posteingang", filterSystem: "System-Mails ausblenden", waitingMail: "Warten auf neue E-Mails..." },
-      es: { uptime: "Tiempo activo:", customMailTitle: "⚙️ Personalizar buzón", applyBtn: "Aplicar", currentAddress: "Dirección actual", copyBtn: "Copiar", extendBtn: "Ampliar 10m", randomBtn: "Aleatorio", destructBtn: "Destruir", inboxTitle: "Buzón de entrada", filterSystem: "Ocultar correos del sistema", waitingMail: "Esperando nuevos correos..." }
+      us: { uptime: "Uptime:", customMailTitle: "⚙️ Custom Mailbox", applyBtn: "Apply", currentAddress: "Current Address", copyBtn: "Copy", extendBtn: "Extend 10m", randomBtn: "Random", destructBtn: "Destruct", inboxTitle: "Inbox", filterSystem: "Hide system mail", waitingMail: "Waiting for incoming emails..." }
     };
+
+    function playNotificationSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.15);
+      } catch (e) {}
+    }
 
     function changeLanguage(lang) {
       const dict = i18n[lang] || i18n.vn;
@@ -307,7 +387,6 @@
       const isDark = document.documentElement.classList.toggle('dark');
       const icon = document.getElementById('themeIcon');
       const card = document.getElementById('mainCard');
-      
       if (isDark) {
         icon.innerText = 'light_mode';
         card.className = card.className.replace('glass-light', 'glass-dark');
@@ -322,7 +401,14 @@
       document.getElementById('passModal').classList.toggle('hidden', !show); 
       if(show) generateRandomPassword();
     }
-    
+    function toggleFakeInfoModal(show) {
+      document.getElementById('fakeInfoModal').classList.toggle('hidden', !show);
+      if(show) generateFakeIdentity();
+    }
+    function toggleHistoryModal(show) {
+      document.getElementById('historyModal').classList.toggle('hidden', !show);
+      if(show) renderHistory();
+    }
     function toggleQRModal(show) { 
       const modal = document.getElementById('qrModal');
       modal.classList.toggle('hidden', !show); 
@@ -330,15 +416,58 @@
         document.getElementById('qrEmailText').innerText = currentEmail;
         const qrContainer = document.getElementById('qrcode');
         qrContainer.innerHTML = '';
-        qrcodeObj = new QRCode(qrContainer, {
-          text: currentEmail,
-          width: 160,
-          height: 160,
-          colorDark : "#0f172a",
-          colorLight : "#ffffff",
-          correctLevel : QRCode.CorrectLevel.H
-        });
+        new QRCode(qrContainer, { text: currentEmail, width: 160, height: 160, colorDark: "#0f172a", colorLight: "#ffffff" });
       }
+    }
+
+    function generateFakeIdentity() {
+      const firstNames = ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Vũ", "Đặng", "Bùi"];
+      const middleNames = ["Văn", "Thị", "Đức", "Minh", "Quang", "Gia", "Thành"];
+      const lastNames = ["An", "Bình", "Cường", "Dũng", "Hải", "Khánh", "Linh", "Nam", "Việt"];
+      const streets = ["Nguyễn Trãi", "Lê Lợi", "Trần Hưng Đạo", "Giải Phóng", "Cầu Giấy", "Nguyễn Huệ"];
+      
+      const fname = firstNames[Math.floor(Math.random()*firstNames.length)];
+      const mname = middleNames[Math.floor(Math.random()*middleNames.length)];
+      const lname = lastNames[Math.floor(Math.random()*lastNames.length)];
+      
+      document.getElementById('fakeName').innerText = `${fname} ${mname} ${lname}`;
+      document.getElementById('fakePhone').innerText = `09${Math.floor(10000000 + Math.random() * 90000000)}`;
+      document.getElementById('fakeAddress').innerText = `${Math.floor(Math.random()*200 + 1)} Đường ${streets[Math.floor(Math.random()*streets.length)]}, Việt Nam`;
+    }
+
+    function saveToHistory(email, sid) {
+      if(!email) return;
+      emailHistory = emailHistory.filter(item => item.email !== email);
+      emailHistory.unshift({ email, sid });
+      if(emailHistory.length > 8) emailHistory.pop();
+    }
+
+    function renderHistory() {
+      const container = document.getElementById('historyList');
+      if(emailHistory.length === 0) {
+        container.innerHTML = '<div class="text-center text-slate-500 py-4">Chưa có lịch sử</div>';
+        return;
+      }
+      container.innerHTML = emailHistory.map(item => `
+        <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between gap-2">
+          <span class="font-mono text-emerald-400 truncate">${item.email}</span>
+          <button onclick="switchEmailFromHistory('${item.email}', '${item.sid}')" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] px-2.5 py-1 rounded-lg">Dùng lại</button>
+        </div>
+      `).join('');
+    }
+
+    function switchEmailFromHistory(email, sid) {
+      currentEmail = email;
+      sidToken = sid;
+      knownMailIds.clear();
+      isInitialLoad = true;
+      const parts = email.split('@');
+      document.getElementById('customUser').value = parts[0];
+      document.getElementById('domainSelect').value = parts[1] || 'guerrillamail.com';
+      updateUI();
+      resetTimer();
+      startPolling();
+      toggleHistoryModal(false);
     }
 
     function startUptimeTracker() {
@@ -354,9 +483,7 @@
     function generateRandomPassword() {
       const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=";
       let pass = "";
-      for (let i = 0; i < 16; i++) {
-        pass += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
+      for (let i = 0; i < 16; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
       document.getElementById('generatedPassword').innerText = pass;
     }
 
@@ -372,6 +499,9 @@
         sidToken = data.sid_token;
         currentEmail = data.email_addr;
         knownMailIds.clear();
+        isInitialLoad = true;
+
+        saveToHistory(currentEmail, sidToken);
 
         const parts = currentEmail.split('@');
         document.getElementById('customUser').value = parts[0];
@@ -396,6 +526,10 @@
         await fetch(`${API_BASE}?f=set_forget_me&lang=en&site=${domain}&sid_token=${sidToken}`);
         currentEmail = `${user}@${domain}`;
         knownMailIds.clear();
+        isInitialLoad = true;
+
+        saveToHistory(currentEmail, sidToken);
+
         updateUI();
         resetTimer();
         checkInbox();
@@ -410,10 +544,15 @@
 
     function resetTimer() {
       timeLeft = 600;
+      const card = document.getElementById('mainCard');
+      card.classList.remove('warning-expired');
       if (timerInterval) clearInterval(timerInterval);
+      
       timerInterval = setInterval(() => {
         timeLeft--;
-        if (timeLeft <= 0) {
+        if (timeLeft <= 60 && timeLeft > 0) {
+          card.classList.add('warning-expired');
+        } else if (timeLeft <= 0) {
           clearInterval(timerInterval);
           document.getElementById('timerDisplay').innerText = 'Hết hạn';
           return;
@@ -439,6 +578,12 @@
       pollInterval = setInterval(checkInbox, 20000);
     }
 
+    function manualRefreshMail() {
+      syncTime = 20;
+      document.getElementById('syncCountdown').innerText = syncTime;
+      checkInbox();
+    }
+
     async function checkInbox() {
       if (!sidToken) return;
       try {
@@ -446,6 +591,29 @@
         const data = await res.json();
         lastFetchedMessages = data.list || [];
 
+        let hasNewMail = false;
+        lastFetchedMessages.forEach(msg => {
+          if (!knownMailIds.has(msg.mail_id)) {
+            knownMailIds.add(msg.mail_id);
+            if (!isInitialLoad) {
+              hasNewMail = true;
+              const fullText = (msg.mail_subject || '') + ' ' + (msg.mail_excerpt || '');
+              const otpMatch = fullText.match(/\b\d{4,8}\b/);
+              if (otpMatch && document.getElementById('autoCopyOtpCheck').checked) {
+                copyText(otpMatch[0]);
+              }
+            }
+          }
+        });
+
+        if (hasNewMail && !isInitialLoad) {
+          playNotificationSound();
+          if (Notification.permission === 'granted') {
+            new Notification('TempMail Pro', { body: 'Bạn có thư mới gửi đến!' });
+          }
+        }
+
+        isInitialLoad = false;
         renderInbox(lastFetchedMessages);
       } catch (err) { console.error("Lỗi quét thư:", err); }
     }
@@ -465,7 +633,9 @@
         return !from.includes('guerrillamail') && !from.includes('system');
       });
 
-      document.getElementById('mailCount').innerText = filtered.length;
+      const unreadCount = filtered.length;
+      document.getElementById('mailCount').innerText = unreadCount;
+      document.title = unreadCount > 0 ? `(${unreadCount}) TempMail Pro` : 'TempMail Pro';
 
       if (filtered.length === 0) {
         container.innerHTML = `
@@ -506,6 +676,11 @@
           
           <div id="msg-body-${msg.mail_id}" class="hidden mt-3 pt-3 border-t border-slate-800 text-xs overflow-x-auto bg-slate-950 p-4 rounded-xl space-y-3 font-sans">
             <div id="msg-content-${msg.mail_id}">Đang tải nội dung...</div>
+            <div class="flex justify-end pt-2 border-t border-slate-900">
+              <button onclick="event.stopPropagation(); exportMail('${msg.mail_id}', '${encodeURIComponent(msg.mail_subject || 'email')}')" class="flex items-center gap-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-400 px-2.5 py-1 rounded-lg">
+                <span class="material-icons-outlined text-xs">download</span> Tải file EML
+              </button>
+            </div>
           </div>
         `;
         container.appendChild(mailItem);
@@ -528,6 +703,15 @@
         const data = await res.json();
         contentDiv.innerHTML = data.mail_body || 'Không có nội dung.';
       } catch (err) { contentDiv.innerText = 'Lỗi tải nội dung.'; }
+    }
+
+    function exportMail(mailId, title) {
+      const content = document.getElementById(`msg-content-${mailId}`).innerText;
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${decodeURIComponent(title)}_${mailId}.eml`;
+      link.click();
     }
 
     function updateUI() {
