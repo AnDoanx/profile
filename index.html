@@ -10,28 +10,25 @@
 
   <div class="max-w-2xl w-full mt-6 bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700">
     <h1 class="text-3xl font-bold text-blue-500 mb-1 text-center">⚡ Web Mail 10 Phút Pro</h1>
-    <p class="text-gray-400 text-center mb-6 text-sm">Tự động nhận OTP Facebook, TikTok, Netflix... Đọc lại mail cũ & Gia hạn thời gian.</p>
+    <p class="text-gray-400 text-center mb-6 text-sm">Hệ thống API Trực Tiếp (Mail.tm) - Không Proxy - Không Lỗi Vặt</p>
 
-    <!-- Khối Địa Chỉ Email & Đếm Thời Gian -->
+    <!-- Khối Địa Chỉ Email -->
     <div class="bg-gray-900 p-4 rounded-xl border border-gray-700 mb-4">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3">
-        <div>
+        <div class="flex-1">
           <span class="text-xs text-gray-400 block">Địa chỉ email hiện tại:</span>
           <span id="emailAddress" class="text-lg font-mono font-bold text-green-400 break-all">Đang khởi tạo...</span>
         </div>
-        <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-400">Hết hạn sau:</span>
-          <span id="timerDisplay" class="text-sm font-bold text-yellow-400 bg-gray-800 px-2 py-1 rounded border border-gray-700">10:00</span>
+        <div class="flex flex-col items-end">
+          <span class="text-xs text-gray-400">Mật khẩu khôi phục:</span>
+          <span id="mailPassword" class="text-sm font-bold text-pink-400 bg-gray-800 px-2 py-1 rounded border border-gray-700">...</span>
         </div>
       </div>
 
       <!-- Các nút thao tác -->
       <div class="flex flex-wrap gap-2">
-        <button onclick="copyEmail()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-xs font-semibold py-2 px-3 rounded-lg transition">
-          📋 Sao chép Mail
-        </button>
-        <button onclick="resetTimer()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-xs font-semibold py-2 px-3 rounded-lg transition">
-          ⏳ Reset Time (10p)
+        <button onclick="copyData()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-xs font-semibold py-2 px-3 rounded-lg transition">
+          📋 Copy Email & Pass
         </button>
         <button onclick="createNewEmail()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-xs font-semibold py-2 px-3 rounded-lg transition">
           🔄 Tạo Mail Mới
@@ -41,12 +38,12 @@
 
     <!-- Khối Tìm & Khôi Phục Mail Cũ -->
     <div class="bg-gray-900/60 p-3 rounded-xl border border-gray-700/60 mb-6">
-      <span class="text-xs font-semibold text-gray-300 block mb-2">🔍 Tìm & Đọc lại hòm thư cũ:</span>
+      <span class="text-xs font-semibold text-gray-300 block mb-2">🔍 Đăng nhập lại hòm thư cũ:</span>
       <div class="flex gap-2">
-        <input type="text" id="recoverInput" placeholder="Nhập tên user cũ (Ví dụ: user123 hoặc user123@1secmail.com)" 
-          class="flex-1 px-3 py-1.5 bg-gray-900 border border-gray-700 rounded-lg text-xs focus:outline-none focus:border-blue-500 text-white">
-        <button onclick="recoverOldEmail()" class="bg-indigo-600 hover:bg-indigo-700 text-xs font-semibold px-4 py-1.5 rounded-lg transition">
-          Khôi phục
+        <input type="text" id="recoverEmail" placeholder="Nhập Email cũ" class="flex-1 px-3 py-1.5 bg-gray-900 border border-gray-700 rounded-lg text-xs text-white focus:border-blue-500 outline-none">
+        <input type="text" id="recoverPass" placeholder="Nhập Mật khẩu" class="flex-1 px-3 py-1.5 bg-gray-900 border border-gray-700 rounded-lg text-xs text-white focus:border-blue-500 outline-none">
+        <button onclick="loginOldEmail()" class="bg-indigo-600 hover:bg-indigo-700 text-xs font-semibold px-4 py-1.5 rounded-lg transition">
+          Đăng nhập
         </button>
       </div>
     </div>
@@ -54,7 +51,7 @@
     <!-- Danh sách Hòm thư -->
     <div class="mb-3 flex justify-between items-center">
       <h2 class="text-base font-semibold text-gray-200">Hòm thư đến (<span id="mailCount">0</span>)</h2>
-      <span id="statusText" class="text-xs text-yellow-400 animate-pulse">Đang kiểm tra...</span>
+      <span id="statusText" class="text-xs text-yellow-400 animate-pulse">Đang kết nối máy chủ...</span>
     </div>
 
     <div id="inboxList" class="space-y-3">
@@ -65,83 +62,77 @@
   </div>
 
   <script>
-    // Hàm gọi Fetch thông qua CORS Proxy chống bị chặn trên trình duyệt
-    async function apiFetch(targetUrl) {
-      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
-      const res = await fetch(proxyUrl);
-      if (!res.ok) throw new Error('Network error');
-      return await res.json();
-    }
-
-    const API_BASE = 'https://www.1secmail.com/api/v1/';
+    const API_BASE = 'https://api.mail.tm';
     
-    let currentLogin = '';
-    let currentDomain = '';
+    let currentEmail = '';
+    let currentPass = '';
+    let currentToken = '';
     let pollInterval = null;
-    let timerInterval = null;
-    let timeLeft = 600;
 
-    // 1. Tạo Email mới
+    // 1. Tạo Email Mới hoàn toàn
     async function createNewEmail() {
-      setStatus('Đang tạo email mới...');
+      setStatus('Đang lấy tên miền...');
       try {
-        const domains = await apiFetch(`${API_BASE}?action=getDomainList`);
-        
-        currentLogin = Math.random().toString(36).substring(2, 10);
-        currentDomain = (Array.isArray(domains) && domains.length > 0) ? domains[0] : '1secmail.com';
+        // Lấy danh sách domain
+        const domRes = await fetch(`${API_BASE}/domains`);
+        const domData = await domRes.json();
+        const domain = domData['hydra:member'][0].domain;
 
-        updateEmailUI();
-        resetTimer();
-        startPolling();
+        currentEmail = Math.random().toString(36).substring(2, 12) + '@' + domain;
+        currentPass = Math.random().toString(36).substring(2, 10);
+
+        setStatus('Đang đăng ký hòm thư...');
+        // Tạo tài khoản
+        await fetch(`${API_BASE}/accounts`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ address: currentEmail, password: currentPass })
+        });
+
+        // Đăng nhập lấy Token
+        await authAccount(currentEmail, currentPass);
       } catch (err) {
-        setStatus('❌ Lỗi kết nối API Proxy! Bấm Tạo Mail Mới để thử lại.');
+        setStatus('❌ Lỗi kết nối API Mail.tm! Bấm Tạo Lại.');
       }
     }
 
-    // 2. Khôi phục mail cũ
-    async function recoverOldEmail() {
-      const input = document.getElementById('recoverInput').value.trim();
-      if (!input) return alert('Vui lòng nhập username hoặc email cũ!');
-
-      let cleanUser = input;
-      let targetDomain = '1secmail.com';
-
-      if (input.includes('@')) {
-        const parts = input.split('@');
-        cleanUser = parts[0];
-        targetDomain = parts[1];
-      }
-
-      currentLogin = cleanUser;
-      currentDomain = targetDomain;
-
-      updateEmailUI();
-      resetTimer();
-      startPolling();
-      alert(`Đã chuyển sang hòm thư: ${currentLogin}@${currentDomain}`);
-    }
-
-    // 3. Reset thời gian đếm ngược
-    function resetTimer() {
-      timeLeft = 600;
-      if (timerInterval) clearInterval(timerInterval);
+    // 2. Đăng nhập / Khôi phục mail cũ
+    async function loginOldEmail() {
+      const email = document.getElementById('recoverEmail').value.trim();
+      const pass = document.getElementById('recoverPass').value.trim();
       
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          document.getElementById('timerDisplay').innerText = 'Hết hạn';
-          setStatus('⚠️ Email đã hết hạn! Bấm Reset Time hoặc Tạo Mail Mới.');
-          return;
-        }
-
-        const mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-        const secs = (timeLeft % 60).toString().padStart(2, '0');
-        document.getElementById('timerDisplay').innerText = `${mins}:${secs}`;
-      }, 1000);
+      if (!email || !pass) return alert('Vui lòng nhập đủ Email và Mật khẩu!');
+      
+      setStatus('Đang xác thực hòm thư cũ...');
+      try {
+        await authAccount(email, pass);
+        alert('Đăng nhập thành công!');
+      } catch (err) {
+        alert('Sai Email hoặc Mật khẩu, hoặc hòm thư đã bị xóa!');
+        setStatus('❌ Đăng nhập thất bại.');
+      }
     }
 
-    // 4. Lặp quét thư (Polling 3s/lần)
+    // 3. Hàm cấp Token chung
+    async function authAccount(email, pass) {
+      const tokenRes = await fetch(`${API_BASE}/token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address: email, password: pass })
+      });
+      
+      if (!tokenRes.ok) throw new Error('Auth failed');
+      
+      const tokenData = await tokenRes.json();
+      currentToken = tokenData.token;
+      currentEmail = email;
+      currentPass = pass;
+
+      updateUI();
+      startPolling();
+    }
+
+    // 4. Lặp kiểm tra hòm thư (3s/lần)
     function startPolling() {
       if (pollInterval) clearInterval(pollInterval);
       checkInbox();
@@ -149,33 +140,37 @@
     }
 
     async function checkInbox() {
-      if (!currentLogin || !currentDomain) return;
+      if (!currentToken) return;
 
       try {
-        const messages = await apiFetch(`${API_BASE}?action=getMessages&login=${currentLogin}&domain=${currentDomain}`);
+        const res = await fetch(`${API_BASE}/messages?page=1`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        const data = await res.json();
+        const messages = data['hydra:member'] || [];
         
-        if (Array.isArray(messages)) {
-          document.getElementById('mailCount').innerText = messages.length;
-          if (messages.length > 0) {
-            renderInbox(messages);
-            setStatus('✅ Đã nhận thư mới!');
-          } else {
-            setStatus('Đang chờ thư mới gửi đến (mỗi 3s)...');
-          }
+        document.getElementById('mailCount').innerText = messages.length;
+        if (messages.length > 0) {
+          renderInbox(messages);
+          setStatus('✅ Đã nhận thư mới!');
+        } else {
+          setStatus('Đang chờ thư gửi đến (quét mỗi 3s)...');
         }
       } catch (err) {
         console.error("Lỗi quét thư:", err);
       }
     }
 
-    // 5. Hiển thị danh sách thư & Bóc tách OTP
+    // 5. Hiển thị thư & Bóc OTP
     function renderInbox(messages) {
       const container = document.getElementById('inboxList');
       container.innerHTML = '';
 
       messages.forEach(msg => {
-        const fullText = (msg.subject || '') + ' ' + (msg.from || '');
+        const fromAddr = msg.from ? (msg.from.address || msg.from.name) : 'Hệ thống';
+        const fullText = (msg.subject || '') + ' ' + (msg.intro || '');
         const otpMatch = fullText.match(/\b\d{4,8}\b/);
+        
         const otpBadge = otpMatch 
           ? `<span class="bg-green-500/20 text-green-400 border border-green-500/30 text-xs font-bold px-2 py-1 rounded">Mã OTP: ${otpMatch[0]}</span>` 
           : '';
@@ -186,18 +181,20 @@
 
         mailItem.innerHTML = `
           <div class="flex justify-between items-start mb-1">
-            <span class="font-bold text-xs text-blue-400 break-all">${msg.from}</span>
-            <span class="text-[10px] text-gray-500">${msg.date}</span>
+            <span class="font-bold text-xs text-blue-400 break-all">${fromAddr}</span>
+            <span class="text-[10px] text-gray-500">${new Date(msg.createdAt).toLocaleTimeString()}</span>
           </div>
-          <div class="font-medium text-gray-200 text-sm mb-2">${msg.subject}</div>
+          <div class="font-medium text-gray-200 text-sm mb-2">${msg.subject || '(Không tiêu đề)'}</div>
           ${otpBadge}
-          <div id="msg-body-${msg.id}" class="hidden mt-3 pt-3 border-t border-gray-800 text-xs text-gray-300 overflow-x-auto">Đang tải nội dung...</div>
+          <div id="msg-body-${msg.id}" class="hidden mt-3 pt-3 border-t border-gray-800 text-xs text-gray-300 overflow-x-auto bg-gray-950 p-2 rounded">
+            Đang tải nội dung...
+          </div>
         `;
         container.appendChild(mailItem);
       });
     }
 
-    // 6. Đọc chi tiết nội dung thư
+    // 6. Tải chi tiết thư
     async function fetchMailBody(id) {
       const bodyDiv = document.getElementById(`msg-body-${id}`);
       if (!bodyDiv) return;
@@ -209,31 +206,39 @@
 
       bodyDiv.classList.remove('hidden');
       try {
-        const data = await apiFetch(`${API_BASE}?action=readMessage&login=${currentLogin}&domain=${currentDomain}&id=${id}`);
-        bodyDiv.innerHTML = data.htmlBody || data.textBody || 'Không có nội dung.';
+        const res = await fetch(`${API_BASE}/messages/${id}`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        const data = await res.json();
+        
+        // Cố gắng lấy HTML, nếu không có thì lấy text
+        let htmlContent = 'Không có nội dung.';
+        if (data.html && Array.isArray(data.html)) {
+            htmlContent = data.html[0];
+        } else if (data.text) {
+            htmlContent = `<pre class="whitespace-pre-wrap font-sans">${data.text}</pre>`;
+        }
+        
+        bodyDiv.innerHTML = htmlContent;
       } catch (err) {
         bodyDiv.innerText = 'Lỗi khi tải chi tiết thư.';
       }
     }
 
-    function updateEmailUI() {
-      document.getElementById('emailAddress').innerText = `${currentLogin}@${currentDomain}`;
-      document.getElementById('recoverInput').value = '';
+    // 7. Cập nhật UI & Copy
+    function updateUI() {
+      document.getElementById('emailAddress').innerText = currentEmail;
+      document.getElementById('mailPassword').innerText = currentPass;
     }
 
-    function setStatus(msg) {
-      document.getElementById('statusText').innerText = msg;
-    }
-
-    function copyEmail() {
-      const email = document.getElementById('emailAddress').innerText;
-      if (email && !email.includes('...')) {
-        navigator.clipboard.writeText(email);
-        alert('Đã sao chép địa chỉ email!');
+    function copyData() {
+      if (currentEmail) {
+        navigator.clipboard.writeText(`Email: ${currentEmail}\nPass: ${currentPass}`);
+        alert('Đã copy Email và Password!');
       }
     }
 
-    // Chạy app
+    // Khởi động app
     createNewEmail();
   </script>
 </body>
