@@ -65,33 +65,40 @@
   </div>
 
   <script>
-    const API_HOST = 'https://www.1secmail.com/api/v1/';
+    // Hàm gọi Fetch thông qua CORS Proxy chống bị chặn trên trình duyệt
+    async function apiFetch(targetUrl) {
+      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+      const res = await fetch(proxyUrl);
+      if (!res.ok) throw new Error('Network error');
+      return await res.json();
+    }
+
+    const API_BASE = 'https://www.1secmail.com/api/v1/';
     
     let currentLogin = '';
     let currentDomain = '';
     let pollInterval = null;
     let timerInterval = null;
-    let timeLeft = 600; // 10 phút
+    let timeLeft = 600;
 
-    // 1. Tạo Email mới ổn định
+    // 1. Tạo Email mới
     async function createNewEmail() {
       setStatus('Đang tạo email mới...');
       try {
-        const res = await fetch(`${API_HOST}?action=getDomainList`);
-        const domains = await res.json();
+        const domains = await apiFetch(`${API_BASE}?action=getDomainList`);
         
         currentLogin = Math.random().toString(36).substring(2, 10);
-        currentDomain = domains[0] || '1secmail.com';
+        currentDomain = (Array.isArray(domains) && domains.length > 0) ? domains[0] : '1secmail.com';
 
         updateEmailUI();
         resetTimer();
         startPolling();
       } catch (err) {
-        setStatus('❌ Lỗi kết nối API! Vui lòng thử lại.');
+        setStatus('❌ Lỗi kết nối API Proxy! Bấm Tạo Mail Mới để thử lại.');
       }
     }
 
-    // 2. Tìm & Đọc lại mail cũ
+    // 2. Khôi phục mail cũ
     async function recoverOldEmail() {
       const input = document.getElementById('recoverInput').value.trim();
       if (!input) return alert('Vui lòng nhập username hoặc email cũ!');
@@ -114,7 +121,7 @@
       alert(`Đã chuyển sang hòm thư: ${currentLogin}@${currentDomain}`);
     }
 
-    // 3. Reset time 10 phút
+    // 3. Reset thời gian đếm ngược
     function resetTimer() {
       timeLeft = 600;
       if (timerInterval) clearInterval(timerInterval);
@@ -134,7 +141,7 @@
       }, 1000);
     }
 
-    // 4. Lặp quét thư (Polling 3s)
+    // 4. Lặp quét thư (Polling 3s/lần)
     function startPolling() {
       if (pollInterval) clearInterval(pollInterval);
       checkInbox();
@@ -145,22 +152,23 @@
       if (!currentLogin || !currentDomain) return;
 
       try {
-        const res = await fetch(`${API_HOST}?action=getMessages&login=${currentLogin}&domain=${currentDomain}`);
-        const messages = await res.json();
+        const messages = await apiFetch(`${API_BASE}?action=getMessages&login=${currentLogin}&domain=${currentDomain}`);
         
-        document.getElementById('mailCount').innerText = messages.length;
-        if (messages.length > 0) {
-          renderInbox(messages);
-          setStatus('✅ Đã nhận thư mới!');
-        } else {
-          setStatus('Đang chờ thư mới gửi đến (mỗi 3s)...');
+        if (Array.isArray(messages)) {
+          document.getElementById('mailCount').innerText = messages.length;
+          if (messages.length > 0) {
+            renderInbox(messages);
+            setStatus('✅ Đã nhận thư mới!');
+          } else {
+            setStatus('Đang chờ thư mới gửi đến (mỗi 3s)...');
+          }
         }
       } catch (err) {
         console.error("Lỗi quét thư:", err);
       }
     }
 
-    // 5. Hiển thị danh sách thư & tách OTP
+    // 5. Hiển thị danh sách thư & Bóc tách OTP
     function renderInbox(messages) {
       const container = document.getElementById('inboxList');
       container.innerHTML = '';
@@ -189,7 +197,7 @@
       });
     }
 
-    // 6. Đọc chi tiết thư
+    // 6. Đọc chi tiết nội dung thư
     async function fetchMailBody(id) {
       const bodyDiv = document.getElementById(`msg-body-${id}`);
       if (!bodyDiv) return;
@@ -201,8 +209,7 @@
 
       bodyDiv.classList.remove('hidden');
       try {
-        const res = await fetch(`${API_HOST}?action=readMessage&login=${currentLogin}&domain=${currentDomain}&id=${id}`);
-        const data = await res.json();
+        const data = await apiFetch(`${API_BASE}?action=readMessage&login=${currentLogin}&domain=${currentDomain}&id=${id}`);
         bodyDiv.innerHTML = data.htmlBody || data.textBody || 'Không có nội dung.';
       } catch (err) {
         bodyDiv.innerText = 'Lỗi khi tải chi tiết thư.';
@@ -226,7 +233,7 @@
       }
     }
 
-    // Chạy web
+    // Chạy app
     createNewEmail();
   </script>
 </body>
