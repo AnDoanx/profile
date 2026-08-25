@@ -12,29 +12,41 @@
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <!-- QR Code Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     body { font-family: 'Inter', sans-serif; }
-    .glass-dark { background: rgba(17, 24, 39, 0.8); backdrop-filter: blur(16px); }
-    .glass-light { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); }
+    .glass-dark {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .glass-light {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+    ::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.4); border-radius: 4px; }
   </style>
 </head>
-<body class="bg-gray-950 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col items-center p-3 sm:p-6 transition-colors duration-300">
+<body class="bg-slate-950 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col items-center p-3 sm:p-6 transition-colors duration-300">
 
-  <div id="mainCard" class="max-w-3xl w-full glass-dark border border-gray-800 rounded-3xl p-5 sm:p-8 shadow-2xl space-y-6 transition-colors duration-300">
+  <div id="mainCard" class="max-w-3xl w-full glass-dark border border-slate-800/80 rounded-3xl p-5 sm:p-8 shadow-2xl shadow-blue-950/30 space-y-6 transition-colors duration-300">
     
-    <!-- Top Bar: Header + Theme Toggle + Language Select + Guide + Uptime -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-800">
+    <!-- Top Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80">
       <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-blue-600/10 border border-blue-500/20 rounded-2xl text-blue-500">
+        <div class="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl text-white shadow-lg shadow-blue-500/20 flex items-center justify-center">
           <span class="material-icons-outlined text-2xl">mark_email_unread</span>
         </div>
         <div>
-          <h1 class="text-xl sm:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+          <h1 class="text-xl sm:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">
             TempMail Pro
           </h1>
-          <!-- Uptime Tracker -->
-          <p class="text-[11px] text-gray-500 flex items-center gap-1 font-mono">
-            <span class="material-icons-outlined text-xs text-emerald-500">schedule</span>
+          <p class="text-[11px] text-slate-400 flex items-center gap-1 font-mono mt-0.5">
+            <span class="material-icons-outlined text-xs text-emerald-400">schedule</span>
             <span data-i18n="uptime">Hoạt động:</span> <span id="uptimeDisplay" class="text-emerald-400 font-bold">00:00:00</span>
           </p>
         </div>
@@ -42,9 +54,8 @@
 
       <!-- Quick Controls -->
       <div class="flex flex-wrap items-center gap-2">
-        <!-- Select Language -->
         <select id="langSelect" onchange="changeLanguage(this.value)" 
-          class="bg-gray-900 dark:bg-gray-900 border border-gray-700/80 rounded-xl px-2.5 py-1.5 text-xs text-blue-400 font-semibold outline-none cursor-pointer">
+          class="bg-slate-900 dark:bg-slate-900 border border-slate-700/80 rounded-xl px-2.5 py-1.5 text-xs text-blue-400 font-semibold outline-none cursor-pointer hover:border-blue-500 transition">
           <option value="vn">🇻🇳 VN</option>
           <option value="us">🇺🇸 US</option>
           <option value="uk">🇬🇧 UK</option>
@@ -57,41 +68,45 @@
           <option value="es">🇪🇸 ES</option>
         </select>
 
-        <!-- Guide Button -->
-        <button onclick="toggleGuide(true)" class="p-2 bg-gray-800/80 hover:bg-gray-700 rounded-xl border border-gray-700/80 text-amber-400 transition" title="Hướng dẫn">
+        <button onclick="toggleQRModal(true)" class="p-2 bg-slate-800/80 hover:bg-slate-700 rounded-xl border border-slate-700/80 text-cyan-400 transition hover:scale-105 active:scale-95" title="Mã QR Mail">
+          <span class="material-icons-outlined text-sm">qr_code_2</span>
+        </button>
+
+        <button onclick="togglePassModal(true)" class="p-2 bg-slate-800/80 hover:bg-slate-700 rounded-xl border border-slate-700/80 text-emerald-400 transition hover:scale-105 active:scale-95" title="Tạo Mật Khẩu">
+          <span class="material-icons-outlined text-sm">vpn_key</span>
+        </button>
+
+        <button onclick="toggleGuide(true)" class="p-2 bg-slate-800/80 hover:bg-slate-700 rounded-xl border border-slate-700/80 text-amber-400 transition hover:scale-105 active:scale-95" title="Hướng dẫn">
           <span class="material-icons-outlined text-sm">help_outline</span>
         </button>
 
-        <!-- Dark/Light Toggle -->
-        <button onclick="toggleTheme()" class="p-2 bg-gray-800/80 hover:bg-gray-700 rounded-xl border border-gray-700/80 text-yellow-400 transition" title="Đổi giao diện">
+        <button onclick="toggleTheme()" class="p-2 bg-slate-800/80 hover:bg-slate-700 rounded-xl border border-slate-700/80 text-yellow-400 transition hover:scale-105 active:scale-95" title="Đổi giao diện">
           <span id="themeIcon" class="material-icons-outlined text-sm">light_mode</span>
         </button>
 
-        <!-- Notification Button -->
-        <button onclick="requestNotificationPermission()" id="notifyBtn" class="p-2 bg-gray-800/80 hover:bg-gray-700 rounded-xl border border-gray-700/80 text-blue-400 transition" title="Bật thông báo">
+        <button onclick="requestNotificationPermission()" id="notifyBtn" class="p-2 bg-slate-800/80 hover:bg-slate-700 rounded-xl border border-slate-700/80 text-blue-400 transition hover:scale-105 active:scale-95" title="Bật thông báo">
           <span class="material-icons-outlined text-sm">notifications</span>
         </button>
       </div>
     </div>
 
-    <!-- Khối Custom Email -->
-    <div class="bg-gray-900/60 p-4 sm:p-5 rounded-2xl border border-gray-800 space-y-4">
+    <!-- Custom Email & Controls -->
+    <div class="bg-slate-900/60 p-4 sm:p-5 rounded-2xl border border-slate-800/80 space-y-4">
       <div class="flex items-center justify-between">
-        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5" data-i18n="customMailTitle">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5" data-i18n="customMailTitle">
           ⚙️ Tùy chỉnh hòm thư
         </span>
-        <span id="timerDisplay" class="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg">
-          10:00
+        <span id="timerDisplay" class="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg flex items-center gap-1">
+          <span class="material-icons-outlined text-xs">timer</span> 10:00
         </span>
       </div>
       
-      <!-- Inputs -->
       <div class="flex flex-col sm:flex-row gap-2.5">
         <input type="text" id="customUser" placeholder="Tên mail..." 
-          class="flex-1 bg-gray-950 dark:bg-gray-950 border border-gray-700/80 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm outline-none font-mono transition">
+          class="flex-1 bg-slate-950 dark:bg-slate-950 border border-slate-700/80 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm outline-none font-mono transition">
         
         <select id="domainSelect" 
-          class="bg-gray-950 dark:bg-gray-950 border border-gray-700/80 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-sm text-blue-400 font-mono outline-none cursor-pointer">
+          class="bg-slate-950 dark:bg-slate-950 border border-slate-700/80 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-sm text-blue-400 font-mono outline-none cursor-pointer transition">
           <option value="guerrillamail.com">@guerrillamail.com</option>
           <option value="guerrillamail.net">@guerrillamail.net</option>
           <option value="guerrillamail.org">@guerrillamail.org</option>
@@ -101,53 +116,60 @@
         </select>
 
         <button onclick="applyCustomEmail()" 
-          class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-1.5 shadow-lg shadow-blue-600/25 active:scale-95">
+          class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-1.5 shadow-lg shadow-blue-600/25 active:scale-95">
           <span class="material-icons-outlined text-sm">bolt</span> <span data-i18n="applyBtn">Áp dụng</span>
         </button>
       </div>
 
-      <!-- Current Email Address -->
-      <div class="p-3 bg-gray-950/80 rounded-xl border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div class="overflow-hidden w-full">
-          <span class="text-[10px] text-gray-500 font-semibold block uppercase" data-i18n="currentAddress">Địa chỉ hiện tại</span>
+          <span class="text-[10px] text-slate-500 font-semibold block uppercase" data-i18n="currentAddress">Địa chỉ hiện tại</span>
           <span id="emailAddress" class="text-base sm:text-lg font-mono font-bold text-emerald-400 break-all">Đang tải...</span>
         </div>
       </div>
 
-      <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2">
-        <button onclick="copyEmail()" class="flex-1 bg-gray-950 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-blue-400 flex items-center justify-center gap-1.5">
+        <button onclick="copyEmail()" class="flex-1 bg-slate-950 hover:bg-slate-800 border border-slate-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-blue-400 flex items-center justify-center gap-1.5 active:scale-95">
           <span class="material-icons-outlined text-sm">content_copy</span> <span data-i18n="copyBtn">Sao chép</span>
         </button>
-        <button onclick="resetTimer()" class="flex-1 bg-gray-950 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-amber-400 flex items-center justify-center gap-1.5">
+        <button onclick="resetTimer()" class="flex-1 bg-slate-950 hover:bg-slate-800 border border-slate-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-amber-400 flex items-center justify-center gap-1.5 active:scale-95">
           <span class="material-icons-outlined text-sm">update</span> <span data-i18n="extendBtn">Gia hạn 10p</span>
         </button>
-        <button onclick="generateRandomEmail()" class="flex-1 bg-gray-950 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-emerald-400 flex items-center justify-center gap-1.5">
+        <button onclick="generateRandomEmail()" class="flex-1 bg-slate-950 hover:bg-slate-800 border border-slate-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-emerald-400 flex items-center justify-center gap-1.5 active:scale-95">
           <span class="material-icons-outlined text-sm">shuffle</span> <span data-i18n="randomBtn">Ngẫu nhiên</span>
+        </button>
+        <button onclick="selfDestructMail()" class="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-xs font-semibold py-2 px-3.5 rounded-xl transition text-red-400 flex items-center justify-center gap-1.5 active:scale-95" title="Tiêu hủy hòm thư">
+          <span class="material-icons-outlined text-sm">delete_forever</span> <span data-i18n="destructBtn">Tiêu hủy</span>
         </button>
       </div>
     </div>
 
-    <!-- Inbox Header -->
+    <!-- Inbox Header & Filter Bar -->
     <div class="space-y-3">
-      <div class="flex justify-between items-center px-1">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
         <h2 class="text-base font-bold flex items-center gap-2">
           <span data-i18n="inboxTitle">Hòm Thư Đến</span> 
           <span id="mailCount" class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-full font-mono">0</span>
         </h2>
         
-        <div class="flex items-center gap-2 text-xs text-gray-400">
-          <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          <span>Sync <b id="syncCountdown" class="text-emerald-400 font-mono">3</b>s</span>
+        <div class="flex items-center gap-4 text-xs">
+          <label class="flex items-center gap-1.5 cursor-pointer text-slate-400 hover:text-slate-200 transition select-none">
+            <input type="checkbox" id="filterSystemCheck" onchange="toggleFilterSystemMail()" class="rounded border-slate-700 text-blue-600 focus:ring-0 cursor-pointer">
+            <span data-i18n="filterSystem">Ẩn thư hệ thống</span>
+          </label>
+
+          <div class="flex items-center gap-1.5 text-slate-400">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Sync <b id="syncCountdown" class="text-emerald-400 font-mono">3</b>s</span>
+          </div>
         </div>
       </div>
 
-      <!-- Inbox Items List -->
       <div id="inboxList" class="space-y-3">
-        <div class="text-center py-12 text-gray-500 text-xs sm:text-sm bg-gray-900/40 rounded-2xl border border-dashed border-gray-800" data-i18n="waitingMail">
+        <div class="text-center py-12 text-slate-500 text-xs sm:text-sm bg-slate-900/40 rounded-2xl border border-dashed border-slate-800" data-i18n="waitingMail">
           Đang chờ thư mới gửi đến...
         </div>
       </div>
@@ -155,29 +177,91 @@
 
   </div>
 
-  <!-- POPUP GUIDE MODAL (A-Z) -->
-  <div id="guideModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-gray-900 border border-gray-800 text-gray-200 max-w-lg w-full rounded-3xl p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+  <!-- POPUP GUIDE MODAL -->
+  <div id="guideModal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden flex items-center justify-center p-4 z-50 transition-all">
+    <div class="bg-slate-900 border border-slate-800 text-slate-200 max-w-lg w-full rounded-3xl p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2">
-          <span class="material-icons-outlined">menu_book</span> Hướng Dẫn Sử Dụng A-Z
+          <span class="material-icons-outlined">menu_book</span> Giới Thiệu & Hướng Dẫn A-Z
         </h3>
-        <button onclick="toggleGuide(false)" class="text-gray-400 hover:text-white">
+        <button onclick="toggleGuide(false)" class="text-slate-400 hover:text-white">
           <span class="material-icons-outlined">close</span>
         </button>
       </div>
       
-      <div class="space-y-3 text-xs sm:text-sm leading-relaxed text-gray-300">
-        <p><b>1. Tạo email ngẫu nhiên:</b> Khi mở trang, web sẽ tự tạo 1 địa chỉ email tạm thời sẵn sàng sử dụng ngay.</p>
-        <p><b>2. Tùy chỉnh Tên & Domain:</b> Nhập tên bạn muốn vào ô <i>"Tên mail..."</i>, chọn Domain mong muốn và bấm <b>Áp dụng</b>.</p>
-        <p><b>3. Nhận mã OTP tự động:</b> Khi thư gửi đến, mã OTP (4-8 chữ số) sẽ được hệ thống bóc tách sẵn kèm nút <b>Copy OTP 1-click</b>.</p>
-        <p><b>4. Gia hạn thời gian:</b> Mỗi email có hiệu lực 10 phút. Bạn có thể bấm <b>Gia hạn 10p</b> bất kỳ lúc nào để không bị trôi mail.</p>
-        <p><b>5. Đọc & Tải thư:</b> Bấm trực tiếp vào thư để mở xem nội dung chi tiết. Có nút <b>Tải file (.txt)</b> để lưu trữ về máy.</p>
-        <p><b>6. Khôi phục mail cũ:</b> Muốn dùng lại mail cũ? Chỉ cần nhập đúng Tên + Domain cũ rồi bấm Áp dụng là hòm thư cũ sẽ xuất hiện trở lại!</p>
+      <div class="space-y-3 text-xs sm:text-sm leading-relaxed text-slate-300">
+        <div class="p-3 bg-blue-950/30 border border-blue-800/40 rounded-xl text-blue-200 text-xs space-y-1">
+          <p class="font-bold text-blue-400 flex items-center gap-1">
+            <span class="material-icons-outlined text-sm">stars</span> Về TempMail Pro:
+          </p>
+          <p>Trang web hỗ trợ tạo email tạm thời an toàn, bảo mật cao và hoàn toàn miễn phí. Giúp bạn nhận thư kích hoạt, đăng ký dịch vụ mà không lo lộ email cá nhân hay bị dội thư rác (Spam).</p>
+        </div>
+
+        <p><b>1. Tạo email ngẫu nhiên:</b> Hệ thống tự động khởi tạo 1 hòm thư mới sẵn sàng nhận mail lập tức.</p>
+        <p><b>2. Tùy chỉnh Tên & Domain:</b> Bạn có thể chọn tên mail cá nhân hóa cùng 6 đuôi domain độc lạ khác nhau.</p>
+        <p><b>3. Tự bóc mã OTP 1-Click:</b> Thư gửi tới chứa mã xác minh sẽ được bóc tách sẵn mã OTP kèm nút copy siêu nhanh.</p>
+        <p><b>4. Quét mã QR trên di động:</b> Nhấn biểu tượng QR góc trên để dùng điện thoại quét lấy địa chỉ email tức thì.</p>
+        <p><b>5. Bộ lọc thư hệ thống:</b> Tích chọn <i>"Ẩn thư hệ thống"</i> để giấu thư chào mừng mặc định, tập trung đọc thư quan trọng.</p>
+        <p><b>6. Trình tạo mật khẩu an toàn:</b> Tích hợp bộ tạo mật khẩu ngẫu nhiên độ bảo mật cao phục vụ đăng ký tài khoản nhanh.</p>
       </div>
 
-      <div class="pt-3 border-t border-gray-800 text-right">
-        <button onclick="toggleGuide(false)" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-semibold">Đã hiểu</button>
+      <div class="pt-3 border-t border-slate-800 text-right">
+        <button onclick="toggleGuide(false)" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-5 py-2 rounded-xl font-semibold">Đã hiểu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP QR CODE MODAL -->
+  <div id="qrModal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 text-slate-200 max-w-sm w-full rounded-3xl p-6 space-y-4 shadow-2xl text-center">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-cyan-400 flex items-center gap-2">
+          <span class="material-icons-outlined">qr_code_2</span> Mã QR Email Hiện Tại
+        </h3>
+        <button onclick="toggleQRModal(false)" class="text-slate-400 hover:text-white">
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </div>
+      
+      <div class="flex flex-col items-center justify-center space-y-3 py-2">
+        <div id="qrcode" class="p-3 bg-white rounded-2xl shadow-lg border border-slate-200"></div>
+        <p id="qrEmailText" class="text-xs font-mono text-emerald-400 break-all font-semibold"></p>
+        <p class="text-[11px] text-slate-400">Quét bằng camera điện thoại để lấy email đăng ký nhanh chóng.</p>
+      </div>
+
+      <div class="pt-2 border-t border-slate-800">
+        <button onclick="toggleQRModal(false)" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-xl font-semibold transition">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP PASSWORD GENERATOR MODAL -->
+  <div id="passModal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 text-slate-200 max-w-sm w-full rounded-3xl p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-emerald-400 flex items-center gap-2">
+          <span class="material-icons-outlined">vpn_key</span> Tạo Mật Khẩu Ngẫu Nhiên
+        </h3>
+        <button onclick="togglePassModal(false)" class="text-slate-400 hover:text-white">
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </div>
+      
+      <div class="space-y-3">
+        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between gap-2">
+          <span id="generatedPassword" class="font-mono text-sm font-bold text-amber-400 break-all">Click Tạo Mới</span>
+          <button onclick="copyGeneratedPassword()" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-blue-400 rounded-lg transition" title="Copy Mật Khẩu">
+            <span class="material-icons-outlined text-sm">content_copy</span>
+          </button>
+        </div>
+
+        <button onclick="generateRandomPassword()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+          <span class="material-icons-outlined text-sm">autorenew</span> Tạo mật khẩu mạnh
+        </button>
+      </div>
+
+      <div class="pt-2 border-t border-slate-800">
+        <button onclick="togglePassModal(false)" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-xl font-semibold transition">Đóng</button>
       </div>
     </div>
   </div>
@@ -194,20 +278,21 @@
     let syncTime = 3;
     let uptimeSeconds = 0;
     let knownMailIds = new Set();
-    const originalTitle = "Web Mail 10 Phút Pro";
+    let filterSystemMail = false;
+    let lastFetchedMessages = [];
+    let qrcodeObj = null;
 
-    // 1. Tải Dictionary Đa Ngôn Ngữ
     const i18n = {
-      vn: { uptime: "Hoạt động:", customMailTitle: "⚙️ Tùy chỉnh hòm thư", applyBtn: "Áp dụng", currentAddress: "Địa chỉ hiện tại", copyBtn: "Sao chép", extendBtn: "Gia hạn 10p", randomBtn: "Ngẫu nhiên", inboxTitle: "Hòm Thư Đến", waitingMail: "Đang chờ thư mới gửi đến..." },
-      us: { uptime: "Uptime:", customMailTitle: "⚙️ Custom Mailbox", applyBtn: "Apply", currentAddress: "Current Address", copyBtn: "Copy", extendBtn: "Extend 10m", randomBtn: "Random", inboxTitle: "Inbox", waitingMail: "Waiting for incoming emails..." },
-      uk: { uptime: "Uptime:", customMailTitle: "⚙️ Custom Mailbox", applyBtn: "Apply", currentAddress: "Current Address", copyBtn: "Copy", extendBtn: "Extend 10m", randomBtn: "Random", inboxTitle: "Inbox", waitingMail: "Waiting for incoming emails..." },
-      np: { uptime: "सञ्चालन समय:", customMailTitle: "⚙️ अनुकूलन मेलबक्स", applyBtn: "लागू गर्नुहोस्", currentAddress: "वर्तमान ठेगाना", copyBtn: "प्रतिलिपि", extendBtn: "१० मिनेट थप्नुहोस्", randomBtn: "अनियमित", inboxTitle: "इनबक्स", waitingMail: "नयाँ इमेलको पर्खाइमा..." },
-      jp: { uptime: "稼働時間:", customMailTitle: "⚙️ メールボックス設定", applyBtn: "適用", currentAddress: "現在のメールアドレス", copyBtn: "コピー", extendBtn: "10分延長", randomBtn: "ランダム", inboxTitle: "受信トレイ", waitingMail: "新着メールを待っています..." },
-      kr: { uptime: "가동 시간:", customMailTitle: "⚙️ 이메일 맞춤설정", applyBtn: "적용", currentAddress: "현재 이메일 주소", copyBtn: "복사", extendBtn: "10분 연장", randomBtn: "랜덤", inboxTitle: "수신함", waitingMail: "새 이메일을 기다리는 중..." },
-      cn: { uptime: "运行时间:", customMailTitle: "⚙️ 自定义邮箱", applyBtn: "应用", currentAddress: "当前邮箱地址", copyBtn: "复制", extendBtn: "延长10分钟", randomBtn: "随机", inboxTitle: "收件箱", waitingMail: "正在等待新邮件..." },
-      fr: { uptime: "Temps d'activité:", customMailTitle: "⚙️ Personnaliser la boîte", applyBtn: "Appliquer", currentAddress: "Adresse actuelle", copyBtn: "Copier", extendBtn: "Prolonger 10m", randomBtn: "Aleatoire", inboxTitle: "Boîte de réception", waitingMail: "En attente de nouveaux e-mails..." },
-      de: { uptime: "Betriebszeit:", customMailTitle: "⚙️ Postfach anpassen", applyBtn: "Anwenden", currentAddress: "Aktuelle Adresse", copyBtn: "Kopieren", extendBtn: "10m verlängern", randomBtn: "Zufall", inboxTitle: "Posteingang", waitingMail: "Warten auf neue E-Mails..." },
-      es: { uptime: "Tiempo activo:", customMailTitle: "⚙️ Personalizar buzón", applyBtn: "Aplicar", currentAddress: "Dirección actual", copyBtn: "Copiar", extendBtn: "Ampliar 10m", randomBtn: "Aleatorio", inboxTitle: "Buzón de entrada", waitingMail: "Esperando nuevos correos..." }
+      vn: { uptime: "Hoạt động:", customMailTitle: "⚙️ Tùy chỉnh hòm thư", applyBtn: "Áp dụng", currentAddress: "Địa chỉ hiện tại", copyBtn: "Sao chép", extendBtn: "Gia hạn 10p", randomBtn: "Ngẫu nhiên", destructBtn: "Tiêu hủy", inboxTitle: "Hòm Thư Đến", filterSystem: "Ẩn thư hệ thống", waitingMail: "Đang chờ thư mới gửi đến..." },
+      us: { uptime: "Uptime:", customMailTitle: "⚙️ Custom Mailbox", applyBtn: "Apply", currentAddress: "Current Address", copyBtn: "Copy", extendBtn: "Extend 10m", randomBtn: "Random", destructBtn: "Destruct", inboxTitle: "Inbox", filterSystem: "Hide system mail", waitingMail: "Waiting for incoming emails..." },
+      uk: { uptime: "Uptime:", customMailTitle: "⚙️ Custom Mailbox", applyBtn: "Apply", currentAddress: "Current Address", copyBtn: "Copy", extendBtn: "Extend 10m", randomBtn: "Random", destructBtn: "Destruct", inboxTitle: "Inbox", filterSystem: "Hide system mail", waitingMail: "Waiting for incoming emails..." },
+      np: { uptime: "सञ्चालन समय:", customMailTitle: "⚙️ अनुकूलन मेलबक्स", applyBtn: "लागू गर्नुहोस्", currentAddress: "वर्तमान ठेगाना", copyBtn: "प्रतिलिपि", extendBtn: "१० मिनेट थप्नुहोस्", randomBtn: "अनियमित", destructBtn: "नष्ट गर्नुहोस्", inboxTitle: "इनबक्स", filterSystem: "प्रणाली मेल लुकाउनुहोस्", waitingMail: "नयाँ इमेलको पर्खाइमा..." },
+      jp: { uptime: "稼働時間:", customMailTitle: "⚙️ メールボックス設定", applyBtn: "適用", currentAddress: "現在のメールアドレス", copyBtn: "コピー", extendBtn: "10分延長", randomBtn: "ランダム", destructBtn: "破棄", inboxTitle: "受信トレイ", filterSystem: "システムメールを非表示", waitingMail: "新着メールを待っています..." },
+      kr: { uptime: "가동 시간:", customMailTitle: "⚙️ 이메일 맞춤설정", applyBtn: "적용", currentAddress: "현재 이메일 주소", copyBtn: "복사", extendBtn: "10분 연장", randomBtn: "랜덤", destructBtn: "파기", inboxTitle: "수신함", filterSystem: "시스템 메일 숨기기", waitingMail: "새 이메일을 기다리는 중..." },
+      cn: { uptime: "运行时间:", customMailTitle: "⚙️ 自定义邮箱", applyBtn: "应用", currentAddress: "当前邮箱地址", copyBtn: "复制", extendBtn: "延长10分钟", randomBtn: "随机", destructBtn: "销毁", inboxTitle: "收件箱", filterSystem: "隐藏系统邮件", waitingMail: "正在等待新邮件..." },
+      fr: { uptime: "Temps d'activité:", customMailTitle: "⚙️ Personnaliser la boîte", applyBtn: "Appliquer", currentAddress: "Adresse actuelle", copyBtn: "Copier", extendBtn: "Prolonger 10m", randomBtn: "Aleatoire", destructBtn: "Détruire", inboxTitle: "Boîte de réception", filterSystem: "Masquer les mails système", waitingMail: "En attente de nouveaux e-mails..." },
+      de: { uptime: "Betriebszeit:", customMailTitle: "⚙️ Postfach anpassen", applyBtn: "Anwenden", currentAddress: "Aktuelle Adresse", copyBtn: "Kopieren", extendBtn: "10m verlängern", randomBtn: "Zufall", destructBtn: "Zerstören", inboxTitle: "Posteingang", filterSystem: "System-Mails ausblenden", waitingMail: "Warten auf neue E-Mails..." },
+      es: { uptime: "Tiempo activo:", customMailTitle: "⚙️ Personalizar buzón", applyBtn: "Aplicar", currentAddress: "Dirección actual", copyBtn: "Copiar", extendBtn: "Ampliar 10m", randomBtn: "Aleatorio", destructBtn: "Destruir", inboxTitle: "Buzón de entrada", filterSystem: "Ocultar correos del sistema", waitingMail: "Esperando nuevos correos..." }
     };
 
     function changeLanguage(lang) {
@@ -218,7 +303,6 @@
       });
     }
 
-    // 2. Dark/Light Mode Toggle
     function toggleTheme() {
       const isDark = document.documentElement.classList.toggle('dark');
       const icon = document.getElementById('themeIcon');
@@ -233,9 +317,28 @@
       }
     }
 
-    // 3. Modals & Uptime Tracker
-    function toggleGuide(show) {
-      document.getElementById('guideModal').classList.toggle('hidden', !show);
+    function toggleGuide(show) { document.getElementById('guideModal').classList.toggle('hidden', !show); }
+    function togglePassModal(show) { 
+      document.getElementById('passModal').classList.toggle('hidden', !show); 
+      if(show) generateRandomPassword();
+    }
+    
+    function toggleQRModal(show) { 
+      const modal = document.getElementById('qrModal');
+      modal.classList.toggle('hidden', !show); 
+      if(show) {
+        document.getElementById('qrEmailText').innerText = currentEmail;
+        const qrContainer = document.getElementById('qrcode');
+        qrContainer.innerHTML = '';
+        qrcodeObj = new QRCode(qrContainer, {
+          text: currentEmail,
+          width: 160,
+          height: 160,
+          colorDark : "#0f172a",
+          colorLight : "#ffffff",
+          correctLevel : QRCode.CorrectLevel.H
+        });
+      }
     }
 
     function startUptimeTracker() {
@@ -248,7 +351,20 @@
       }, 1000);
     }
 
-    // 4. API & Mail logic
+    function generateRandomPassword() {
+      const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=";
+      let pass = "";
+      for (let i = 0; i < 16; i++) {
+        pass += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      document.getElementById('generatedPassword').innerText = pass;
+    }
+
+    function copyGeneratedPassword() {
+      const pass = document.getElementById('generatedPassword').innerText;
+      if (pass && pass !== 'Click Tạo Mới') copyText(pass);
+    }
+
     async function generateRandomEmail() {
       try {
         const res = await fetch(`${API_BASE}?f=get_email_address`);
@@ -284,6 +400,12 @@
         resetTimer();
         checkInbox();
       } catch (err) { alert('Không thể cập nhật mail!'); }
+    }
+
+    function selfDestructMail() {
+      if (confirm("Bạn có chắc chắn muốn tiêu hủy hòm thư này và tạo mail mới?")) {
+        generateRandomEmail();
+      }
     }
 
     function resetTimer() {
@@ -322,18 +444,39 @@
       try {
         const res = await fetch(`${API_BASE}?f=check_email&sid_token=${sidToken}&seq=0`);
         const data = await res.json();
-        const messages = data.list || [];
+        lastFetchedMessages = data.list || [];
 
-        document.getElementById('mailCount').innerText = messages.length;
-        if (messages.length > 0) renderInbox(messages);
+        renderInbox(lastFetchedMessages);
       } catch (err) { console.error("Lỗi quét thư:", err); }
+    }
+
+    function toggleFilterSystemMail() {
+      filterSystemMail = document.getElementById('filterSystemCheck').checked;
+      renderInbox(lastFetchedMessages);
     }
 
     function renderInbox(messages) {
       const container = document.getElementById('inboxList');
       container.innerHTML = '';
 
-      messages.forEach(msg => {
+      const filtered = messages.filter(msg => {
+        if (!filterSystemMail) return true;
+        const from = (msg.mail_from || '').toLowerCase();
+        return !from.includes('guerrillamail') && !from.includes('system');
+      });
+
+      document.getElementById('mailCount').innerText = filtered.length;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 text-slate-500 text-xs sm:text-sm bg-slate-900/40 rounded-2xl border border-dashed border-slate-800" data-i18n="waitingMail">
+            Đang chờ thư mới gửi đến...
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(msg => {
         const fullContent = (msg.mail_subject || '') + ' ' + (msg.mail_excerpt || '');
         const otpMatch = fullContent.match(/\b\d{4,8}\b/);
         const otpCode = otpMatch ? otpMatch[0] : null;
@@ -341,27 +484,27 @@
         const otpBadge = otpCode 
           ? `<div class="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2.5 py-1 rounded-lg">
                <span class="text-xs font-bold font-mono">OTP: ${otpCode}</span>
-               <button onclick="event.stopPropagation(); copyText('${otpCode}')" class="hover:bg-emerald-500/20 p-0.5 rounded transition">
+               <button onclick="event.stopPropagation(); copyText('${otpCode}')" class="hover:bg-emerald-500/20 p-0.5 rounded transition" title="Copy OTP">
                  <span class="material-icons-outlined text-xs">content_copy</span>
                </button>
              </div>` 
           : '';
 
         const mailItem = document.createElement('div');
-        mailItem.className = 'bg-gray-900/80 p-4 rounded-2xl border border-gray-800 hover:border-blue-500/40 transition cursor-pointer space-y-2.5';
+        mailItem.className = 'bg-slate-900/80 p-4 rounded-2xl border border-slate-800 hover:border-blue-500/40 transition cursor-pointer space-y-2.5 shadow-sm';
         mailItem.onclick = () => fetchMailBody(msg.mail_id);
 
         mailItem.innerHTML = `
           <div class="flex justify-between items-start gap-2">
             <span class="font-bold text-xs text-blue-400 truncate">${msg.mail_from}</span>
-            <span class="text-[10px] text-gray-500 font-mono whitespace-nowrap">${msg.mail_date}</span>
+            <span class="text-[10px] text-slate-500 font-mono whitespace-nowrap">${msg.mail_date}</span>
           </div>
           <div class="font-medium text-sm flex items-center justify-between gap-2">
             <span class="truncate">${msg.mail_subject || '(Không tiêu đề)'}</span>
             ${otpBadge}
           </div>
           
-          <div id="msg-body-${msg.mail_id}" class="hidden mt-3 pt-3 border-t border-gray-800 text-xs overflow-x-auto bg-gray-950 p-4 rounded-xl space-y-3 font-sans">
+          <div id="msg-body-${msg.mail_id}" class="hidden mt-3 pt-3 border-t border-slate-800 text-xs overflow-x-auto bg-slate-950 p-4 rounded-xl space-y-3 font-sans">
             <div id="msg-content-${msg.mail_id}">Đang tải nội dung...</div>
           </div>
         `;
@@ -402,11 +545,10 @@
 
     function requestNotificationPermission() {
       if ('Notification' in window) {
-        Notification.requestPermission().then(p => { if (p === 'granted') alert('Đã bật thông báo!'); });
+        Notification.requestPermission().then(p => { if (p === 'granted') alert('Đã bật thông báo thành công!'); });
       }
     }
 
-    // Init App
     document.documentElement.classList.add('dark');
     startUptimeTracker();
     generateRandomEmail();
