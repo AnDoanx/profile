@@ -163,7 +163,7 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span>Sync <b id="syncCountdown" class="text-emerald-400 font-mono">3</b>s</span>
+            <span>Sync <b id="syncCountdown" class="text-emerald-400 font-mono">20</b>s</span>
           </div>
         </div>
       </div>
@@ -275,7 +275,7 @@
     let countdownInterval = null;
     let uptimeInterval = null;
     let timeLeft = 600;
-    let syncTime = 3;
+    let syncTime = 20;
     let uptimeSeconds = 0;
     let knownMailIds = new Set();
     let filterSystemMail = false;
@@ -427,16 +427,16 @@
     function startPolling() {
       if (pollInterval) clearInterval(pollInterval);
       if (countdownInterval) clearInterval(countdownInterval);
-      syncTime = 3;
+      syncTime = 20;
       checkInbox();
 
       countdownInterval = setInterval(() => {
         syncTime--;
-        if (syncTime <= 0) syncTime = 3;
+        if (syncTime <= 0) syncTime = 20;
         document.getElementById('syncCountdown').innerText = syncTime;
       }, 1000);
 
-      pollInterval = setInterval(checkInbox, 3000);
+      pollInterval = setInterval(checkInbox, 20000);
     }
 
     async function checkInbox() {
