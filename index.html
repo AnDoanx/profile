@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store Dịch Vụ Số - Thanh Toán QR</title>
+    <title>Digital Store - Thanh Toán QR Tự Động</title>
     <!-- Tailwind CSS & FontAwesome Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,7 +13,6 @@
         .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .gradient-text { background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Hiệu ứng xoay tròn */
         @keyframes spinner {
             to { transform: rotate(360deg); }
         }
@@ -87,7 +86,7 @@
                 <!-- Khung hiển thị QR & Thanh Xoay Chờ -->
                 <div id="qrArea" class="hidden mt-6 text-center border-t border-slate-700/60 pt-5 space-y-4">
                     
-                    <!-- Mã QR cố định của bạn -->
+                    <!-- Mã QR cố định -->
                     <div class="bg-white p-3 rounded-2xl inline-block shadow-xl relative group">
                         <img id="qrImg" src="https://kommodo.ai/i/kbyeAMVBPtkK1oIH5ttD" alt="QR STK Thanh Toán" class="w-52 h-52 mx-auto rounded-lg object-contain">
                     </div>
@@ -98,18 +97,19 @@
                         <span>Đang chờ chuyển khoản... Hạn mã: <strong id="timer" class="text-amber-400 font-mono">10:00</strong></span>
                     </div>
 
-                    <!-- Thông tin chi tiết đơn -->
+                    <!-- Thông tin chi tiết đơn & Nội dung Random -->
                     <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 text-left text-xs space-y-2">
                         <div class="flex justify-between">
                             <span class="text-slate-400">Số tiền cần chuyển:</span>
                             <span class="font-extrabold text-emerald-400 text-sm" id="payAmount">0 đ</span>
                         </div>
-                        <div class="flex justify-between border-t border-slate-800 pt-2">
+                        <div class="flex justify-between items-center border-t border-slate-800 pt-2">
                             <span class="text-slate-400">Nội dung chuyển khoản:</span>
-                            <span class="font-mono font-bold text-amber-400 flex items-center cursor-pointer" onclick="copyText('transferCode')">
-                                <span id="transferCode">--</span> <i class="fa-regular fa-copy ml-1"></i>
+                            <span class="font-mono font-bold text-amber-400 flex items-center cursor-pointer bg-slate-800 px-2 py-1 rounded border border-amber-500/30 hover:bg-slate-700" onclick="copyText('transferCode')">
+                                <span id="transferCode">--</span> <i class="fa-regular fa-copy ml-1.5 text-xs"></i>
                             </span>
                         </div>
+                        <p class="text-[10px] text-slate-500 italic text-right">*Vui lòng nhập chính xác nội dung trên để tự động duyệt</p>
                     </div>
 
                     <!-- Nút xác nhận thanh toán -->
@@ -123,16 +123,34 @@
     </main>
 
     <script>
+        // Danh sách sản phẩm cập nhật theo yêu cầu
         const products = [
-            { id: 1, name: "YouTube Premium 1 Tháng", price: 35000, desc: "Nâng cấp chính chủ, không quảng cáo" },
-            { id: 2, name: "YouTube Premium 1 Năm", price: 320000, desc: "Gói gia đình trọn gói tiết kiệm" },
-            { id: 3, name: "CapCut Pro 1 Tháng", price: 45000, desc: "Mở khóa full tính năng VIP & Mẫu" },
-            { id: 4, name: "Canva Pro vĩnh viễn", price: 69000, desc: "Thiết kế không giới hạn tài nguyên" }
+            { id: 1, name: "YouTube Premium 1 Tháng", price: 15000, desc: "Nâng cấp chính chủ, xem video không QC" },
+            { id: 2, name: "YouTube Premium 1 Năm", price: 320000, desc: "Gói gia đình trọn gói tiết kiệm nhất" },
+            { id: 3, name: "Gemini Advanced 1 Năm", price: 30000, desc: "AI trợ lý cao cấp Google, model 1.5 Pro" },
+            { id: 4, name: "Gemini Advanced 6 Tháng", price: 30000, desc: "Trải nghiệm AI thế hệ mới 6 tháng" },
+            { id: 5, name: "Netflix Premium 1 Tháng", price: 35000, desc: "Xem phim Ultra HD 4K, 1 thiết bị" },
+            { id: 6, name: "Canva Pro 1 Năm", price: 140000, desc: "Thiết kế không giới hạn tài nguyên VIP" },
+            { id: 7, name: "CapCut Pro 1 Tháng", price: 45000, desc: "Mở khóa full tính năng VIP & Mẫu Hot" }
         ];
 
         let selectedProduct = null;
         let currentOrderCode = "";
         let timerInterval = null;
+
+        // Hàm tạo Nội dung Chuyển khoản Ngẫu nhiên
+        function generateRandomSyntax() {
+            const prefixes = ["PAY", "STORE", "KH", "BILL", "NAP"];
+            const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+            
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let randomStr = "";
+            for (let i = 0; i < 6; i++) {
+                randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            return `${randomPrefix} ${randomStr}`;
+        }
 
         function renderProducts() {
             const container = document.getElementById('productList');
@@ -169,14 +187,15 @@
         function generateQR() {
             if (!selectedProduct) return;
 
-            currentOrderCode = "STORE" + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('orderIdTag').innerText = "#" + currentOrderCode;
+            // Tạo nội dung chuyển khoản random
+            currentOrderCode = generateRandomSyntax();
+            
+            document.getElementById('orderIdTag').innerText = "#" + currentOrderCode.replace(" ", "");
             document.getElementById('transferCode').innerText = currentOrderCode;
             document.getElementById('payAmount').innerText = selectedProduct.price.toLocaleString('vi-VN') + " đ";
 
             document.getElementById('qrArea').classList.remove('hidden');
 
-            // Khởi chạy đếm ngược 10 phút (600s)
             startTimer(600);
         }
 
@@ -209,14 +228,14 @@
             clearInterval(timerInterval);
             const statusBox = document.getElementById('waitingStatus');
             statusBox.className = "flex items-center justify-center space-x-2 bg-emerald-500/20 py-2.5 px-4 rounded-xl border border-emerald-500/50 text-emerald-300 text-xs font-semibold";
-            statusBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 text-base"></i><span>Đã xác nhận! Hệ thống đang xử lý đơn hàng #${currentOrderCode}...</span>`;
+            statusBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 text-base"></i><span>Đã nhận xác nhận! Đang kiểm tra đơn ${currentOrderCode}...</span>`;
 
             const btnConfirm = document.getElementById('btnConfirm');
             btnConfirm.disabled = true;
             btnConfirm.classList.add('opacity-50', 'cursor-not-allowed');
             btnConfirm.innerText = "Đã nhận xác nhận";
             
-            alert(`Cảm ơn bạn! Đã nhận xác nhận chuyển khoản cho đơn hàng #${currentOrderCode}.\nHệ thống sẽ kiểm tra và kích hoạt dịch vụ cho bạn trong giây lát!`);
+            alert(`Cảm ơn bạn! Hệ thống đã nhận thông báo thanh toán cho nội dung [${currentOrderCode}]. Dịch vụ sẽ được duyệt tự động ngay!`);
         }
 
         renderProducts();
