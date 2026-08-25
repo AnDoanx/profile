@@ -1,244 +1,117 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Store - Thanh Toán QR Tự Động</title>
-    <!-- Tailwind CSS & FontAwesome Icons -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .gradient-text { background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        @keyframes spinner {
-            to { transform: rotate(360deg); }
-        }
-        .animate-spin-custom {
-            animation: spinner 1.2s linear infinite;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Store - Thanh Toán</title>
+  <style>
+    body { font-family: sans-serif; background: #0f172a; color: #fff; padding: 20px; display: flex; justify-content: center; }
+    .card { background: #1e293b; padding: 20px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-size: 14px; color: #94a3b8; }
+    select, button { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 15px; }
+    button { background: #2563eb; font-weight: bold; cursor: pointer; border: none; margin-top: 10px; }
+    button:hover { background: #1d4ed8; }
+    .qr-container { text-align: center; margin-top: 20px; display: none; }
+    .qr-container img { width: 100%; max-width: 280px; border-radius: 8px; background: #fff; padding: 10px; }
+    .info-box { background: #0f172a; padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 14px; }
+    .price { color: #4ade80; font-weight: bold; font-size: 18px; }
+  </style>
 </head>
-<body class="min-h-screen pb-12">
+<body>
 
-    <!-- Header -->
-    <header class="sticky top-0 z-40 glass-card border-b border-slate-800 shadow-lg">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-sky-500/20">
-                    <i class="fa-solid fa-bolt text-white text-xl"></i>
-                </div>
-                <span class="text-xl font-bold tracking-tight text-white">DIGITAL <span class="gradient-text">STORE</span></span>
-            </div>
-            <div class="text-xs sm:text-sm font-medium text-slate-400">
-                <i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i> Thanh toán tự động 24/7
-            </div>
-        </div>
-    </header>
+<div class="card">
+  <h2>DIGITAL STORE ⚡</h2>
 
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <!-- Danh sách sản phẩm -->
-        <section class="lg:col-span-7 space-y-4">
-            <h2 class="text-lg font-bold text-slate-200 flex items-center">
-                <i class="fa-solid fa-cubes text-sky-400 mr-2"></i> Chọn gói dịch vụ
-            </h2>
-            <div id="productList" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-        </section>
+  <!-- Chọn Sản Phẩm -->
+  <div class="form-group">
+    <label>Chọn dịch vụ:</label>
+    <select id="serviceSelect" onchange="updateOptions()">
+      <option value="gemini">Gemini Pro</option>
+      <option value="spotify">Spotify Premium</option>
+    </select>
+  </div>
 
-        <!-- Hóa đơn & QR Thanh toán -->
-        <section class="lg:col-span-5">
-            <div class="glass-card rounded-2xl p-6 sticky top-24 shadow-2xl">
-                <h2 class="text-lg font-bold text-slate-200 border-b border-slate-700/60 pb-3 flex items-center justify-between">
-                    <span><i class="fa-solid fa-receipt text-indigo-400 mr-2"></i> Đơn hàng của bạn</span>
-                    <span id="orderIdTag" class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full font-mono">#---</span>
-                </h2>
+  <!-- Chọn Thời Han -->
+  <div class="form-group">
+    <label>Chọn gói thời hạn:</label>
+    <select id="planSelect" onchange="updatePrice()"></select>
+  </div>
 
-                <!-- Form nhập thông tin -->
-                <div class="mt-4 space-y-3">
-                    <div>
-                        <label class="text-xs font-semibold text-slate-400 block mb-1">SẢN PHẨM ĐÃ CHỌN</label>
-                        <div id="selectedProdName" class="p-3 bg-slate-900/80 border border-slate-700/50 rounded-xl font-medium text-sky-300">
-                            Vui lòng chọn 1 sản phẩm
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-semibold text-slate-400 block mb-1">HỌ VÀ TÊN</label>
-                            <input type="text" id="custName" placeholder="Nguyễn Văn A" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500">
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-slate-400 block mb-1">SỐ ĐIỆN THOẠI</label>
-                            <input type="text" id="custPhone" placeholder="09xxx..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500">
-                        </div>
-                    </div>
-                </div>
+  <!-- Hiển thị giá -->
+  <div class="info-box">
+    <span>Số tiền cần thanh toán: </span>
+    <span id="priceDisplay" class="price">0 đ</span>
+  </div>
 
-                <!-- Nút bấm tạo mã QR -->
-                <button id="btnPay" onclick="generateQR()" class="w-full mt-5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-sky-500/25 flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed" disabled>
-                    <i class="fa-solid fa-qrcode"></i>
-                    <span>Tạo Mã QR Thanh Toán</span>
-                </button>
+  <button onclick="generatePayment()">Tạo Mã QR Thanh Toán</button>
 
-                <!-- Khung hiển thị QR & Thanh Xoay Chờ -->
-                <div id="qrArea" class="hidden mt-6 text-center border-t border-slate-700/60 pt-5 space-y-4">
-                    
-                    <!-- Mã QR cố định -->
-                    <div class="bg-white p-3 rounded-2xl inline-block shadow-xl relative group">
-                        <img id="qrImg" src="https://kommodo.ai/i/kbyeAMVBPtkK1oIH5ttD" alt="QR STK Thanh Toán" class="w-52 h-52 mx-auto rounded-lg object-contain">
-                    </div>
+  <!-- Khung Hiển Thị QR -->
+  <div id="qrSection" class="qr-container">
+    <img id="qrImage" src="" alt="Mã QR Thanh Toán">
+    <div class="info-box" style="text-align: left;">
+      <p>Nội dung CK: <b id="codeDisplay" style="color: #facc15;"></b></p>
+      <p style="font-size: 12px; color: #94a3b8;">*Vui lòng nhập chính xác nội dung để được tự động duyệt.</p>
+    </div>
+  </div>
+</div>
 
-                    <!-- Thanh xoay trạng thái chờ -->
-                    <div id="waitingStatus" class="flex items-center justify-center space-x-2 bg-slate-900/90 py-2.5 px-4 rounded-xl border border-sky-500/30 text-sky-400 text-xs font-medium">
-                        <div class="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin-custom"></div>
-                        <span>Đang chờ chuyển khoản... Hạn mã: <strong id="timer" class="text-amber-400 font-mono">10:00</strong></span>
-                    </div>
+<script>
+  // Cấu hình danh sách sản phẩm & giá
+  const products = {
+    gemini: [
+      { label: "1 Năm - 45.000đ", value: 45000 },
+      { label: "6 Tháng - 25.000đ", value: 25000 }
+    ],
+    spotify: [
+      { label: "3 Tháng - 50.000đ", value: 50000 },
+      { label: "1 Tháng - 20.000đ", value: 20000 }
+    ]
+  };
 
-                    <!-- Thông tin chi tiết đơn & Nội dung Random -->
-                    <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 text-left text-xs space-y-2">
-                        <div class="flex justify-between">
-                            <span class="text-slate-400">Số tiền cần chuyển:</span>
-                            <span class="font-extrabold text-emerald-400 text-sm" id="payAmount">0 đ</span>
-                        </div>
-                        <div class="flex justify-between items-center border-t border-slate-800 pt-2">
-                            <span class="text-slate-400">Nội dung chuyển khoản:</span>
-                            <span class="font-mono font-bold text-amber-400 flex items-center cursor-pointer bg-slate-800 px-2 py-1 rounded border border-amber-500/30 hover:bg-slate-700" onclick="copyText('transferCode')">
-                                <span id="transferCode">--</span> <i class="fa-regular fa-copy ml-1.5 text-xs"></i>
-                            </span>
-                        </div>
-                        <p class="text-[10px] text-slate-500 italic text-right">*Vui lòng nhập chính xác nội dung trên để tự động duyệt</p>
-                    </div>
+  const BANK_ID = 'MB';
+  const ACCOUNT_NO = '274233';
 
-                    <!-- Nút xác nhận thanh toán -->
-                    <button id="btnConfirm" onclick="confirmPayment()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20">
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>Tôi đã hoàn tất chuyển khoản</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-    </main>
+  // Cập nhật danh sách gói theo sản phẩm chọn
+  function updateOptions() {
+    const service = document.getElementById('serviceSelect').value;
+    const planSelect = document.getElementById('planSelect');
+    
+    planSelect.innerHTML = '';
+    products[service].forEach((item, index) => {
+      const option = document.createElement('option');
+      option.value = item.value;
+      option.innerText = item.label;
+      planSelect.appendChild(option);
+    });
 
-    <script>
-        // Danh sách sản phẩm cập nhật theo yêu cầu
-        const products = [
-            { id: 1, name: "YouTube Premium 1 Tháng", price: 15000, desc: "Nâng cấp chính chủ, xem video không QC" },
-            { id: 2, name: "YouTube Premium 1 Năm", price: 320000, desc: "Gói gia đình trọn gói tiết kiệm nhất" },
-            { id: 3, name: "Gemini Advanced 1 Năm", price: 30000, desc: "AI trợ lý cao cấp Google, model 1.5 Pro" },
-            { id: 4, name: "Gemini Advanced 6 Tháng", price: 30000, desc: "Trải nghiệm AI thế hệ mới 6 tháng" },
-            { id: 5, name: "Netflix Premium 1 Tháng", price: 35000, desc: "Xem phim Ultra HD 4K, 1 thiết bị" },
-            { id: 6, name: "Canva Pro 1 Năm", price: 140000, desc: "Thiết kế không giới hạn tài nguyên VIP" },
-            { id: 7, name: "CapCut Pro 1 Tháng", price: 45000, desc: "Mở khóa full tính năng VIP & Mẫu Hot" }
-        ];
+    updatePrice();
+  }
 
-        let selectedProduct = null;
-        let currentOrderCode = "";
-        let timerInterval = null;
+  // Cập nhật giá hiển thị
+  function updatePrice() {
+    const amount = document.getElementById('planSelect').value;
+    document.getElementById('priceDisplay').innerText = Number(amount).toLocaleString('vi-VN') + ' đ';
+  }
 
-        // Hàm tạo Nội dung Chuyển khoản Ngẫu nhiên
-        function generateRandomSyntax() {
-            const prefixes = ["PAY", "STORE", "KH", "BILL", "NAP"];
-            const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-            
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            let randomStr = "";
-            for (let i = 0; i < 6; i++) {
-                randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            
-            return `${randomPrefix} ${randomStr}`;
-        }
+  // Tạo Mã QR
+  function generatePayment() {
+    const amount = document.getElementById('planSelect').value;
+    
+    // Tạo mã nội dung ngẫu nhiên (Ví dụ: KH XT4PNX)
+    const randomCode = 'KH ' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    
+    // Gọi API VietQR MB 274233
+    const qrUrl = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(randomCode)}`;
 
-        function renderProducts() {
-            const container = document.getElementById('productList');
-            container.innerHTML = products.map(p => `
-                <div onclick="selectProduct(${p.id})" id="prod-${p.id}" class="glass-card p-5 rounded-2xl cursor-pointer transition-all hover:border-sky-500/50 relative overflow-hidden group">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-bold text-base text-white group-hover:text-sky-300 transition-colors">${p.name}</h3>
-                        <span class="text-xs bg-sky-500/10 text-sky-400 font-bold px-2 py-1 rounded-lg">HOT</span>
-                    </div>
-                    <p class="text-slate-400 text-xs mb-4">${p.desc}</p>
-                    <div class="text-lg font-extrabold text-emerald-400">${p.price.toLocaleString('vi-VN')} đ</div>
-                </div>
-            `).join('');
-        }
+    document.getElementById('qrImage').src = qrUrl;
+    document.getElementById('codeDisplay').innerText = randomCode;
+    document.getElementById('qrSection').style.display = 'block';
+  }
 
-        function selectProduct(id) {
-            products.forEach(p => {
-                const el = document.getElementById(`prod-${p.id}`);
-                if (p.id === id) {
-                    el.classList.add('border-sky-500', 'bg-sky-500/10');
-                    selectedProduct = p;
-                } else {
-                    el.classList.remove('border-sky-500', 'bg-sky-500/10');
-                }
-            });
-            
-            document.getElementById('selectedProdName').innerText = `${selectedProduct.name} - ${selectedProduct.price.toLocaleString('vi-VN')} đ`;
-            
-            const btn = document.getElementById('btnPay');
-            btn.disabled = false;
-            btn.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
+  // Khởi tạo giao diện lần đầu
+  updateOptions();
+</script>
 
-        function generateQR() {
-            if (!selectedProduct) return;
-
-            // Tạo nội dung chuyển khoản random
-            currentOrderCode = generateRandomSyntax();
-            
-            document.getElementById('orderIdTag').innerText = "#" + currentOrderCode.replace(" ", "");
-            document.getElementById('transferCode').innerText = currentOrderCode;
-            document.getElementById('payAmount').innerText = selectedProduct.price.toLocaleString('vi-VN') + " đ";
-
-            document.getElementById('qrArea').classList.remove('hidden');
-
-            startTimer(600);
-        }
-
-        function startTimer(duration) {
-            clearInterval(timerInterval);
-            let timer = duration, minutes, seconds;
-            timerInterval = setInterval(function () {
-                minutes = parseInt(timer / 60, 10);
-                seconds = parseInt(timer % 60, 10);
-
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                document.getElementById('timer').textContent = minutes + ":" + seconds;
-
-                if (--timer < 0) {
-                    clearInterval(timerInterval);
-                    document.getElementById('waitingStatus').innerHTML = `<span class="text-rose-400 font-bold">Mã đã hết hạn, vui lòng tạo mới!</span>`;
-                }
-            }, 1000);
-        }
-
-        function copyText(id) {
-            const text = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(text);
-            alert("Đã sao chép nội dung chuyển khoản: " + text);
-        }
-
-        function confirmPayment() {
-            clearInterval(timerInterval);
-            const statusBox = document.getElementById('waitingStatus');
-            statusBox.className = "flex items-center justify-center space-x-2 bg-emerald-500/20 py-2.5 px-4 rounded-xl border border-emerald-500/50 text-emerald-300 text-xs font-semibold";
-            statusBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 text-base"></i><span>Đã nhận xác nhận! Đang kiểm tra đơn ${currentOrderCode}...</span>`;
-
-            const btnConfirm = document.getElementById('btnConfirm');
-            btnConfirm.disabled = true;
-            btnConfirm.classList.add('opacity-50', 'cursor-not-allowed');
-            btnConfirm.innerText = "Đã nhận xác nhận";
-            
-            alert(`Cảm ơn bạn! Hệ thống đã nhận thông báo thanh toán cho nội dung [${currentOrderCode}]. Dịch vụ sẽ được duyệt tự động ngay!`);
-        }
-
-        renderProducts();
-    </script>
 </body>
 </html>
