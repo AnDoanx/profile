@@ -5,60 +5,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web Mail 10 Phút Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Inter & Material Icons -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
-    .glass {
-      background: rgba(17, 24, 39, 0.7);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
+    .glass-dark { background: rgba(17, 24, 39, 0.8); backdrop-filter: blur(16px); }
+    .glass-light { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-950 via-gray-900 to-slate-950 text-gray-100 min-h-screen flex flex-col items-center p-3 sm:p-6">
+<body class="bg-gray-950 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col items-center p-3 sm:p-6 transition-colors duration-300">
 
-  <div class="max-w-3xl w-full glass p-5 sm:p-8 rounded-3xl border border-gray-800/80 shadow-2xl shadow-blue-950/20 space-y-6">
+  <div id="mainCard" class="max-w-3xl w-full glass-dark border border-gray-800 rounded-3xl p-5 sm:p-8 shadow-2xl space-y-6 transition-colors duration-300">
     
-    <!-- Header -->
-    <div class="flex items-center justify-between pb-4 border-b border-gray-800/80">
+    <!-- Top Bar: Header + Theme Toggle + Language Select + Guide + Uptime -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-800">
       <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-blue-600/10 border border-blue-500/20 rounded-2xl text-blue-400">
+        <div class="p-2.5 bg-blue-600/10 border border-blue-500/20 rounded-2xl text-blue-500">
           <span class="material-icons-outlined text-2xl">mark_email_unread</span>
         </div>
         <div>
-          <h1 class="text-xl sm:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">
+          <h1 class="text-xl sm:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
             TempMail Pro
           </h1>
-          <p class="text-xs text-gray-400">Hệ thống Email Tạm Thời • Bảo Mật & Tự Động Live Sync</p>
+          <!-- Uptime Tracker -->
+          <p class="text-[11px] text-gray-500 flex items-center gap-1 font-mono">
+            <span class="material-icons-outlined text-xs text-emerald-500">schedule</span>
+            <span data-i18n="uptime">Hoạt động:</span> <span id="uptimeDisplay" class="text-emerald-400 font-bold">00:00:00</span>
+          </p>
         </div>
       </div>
-      <!-- Nút xin quyền thông báo -->
-      <button onclick="requestNotificationPermission()" id="notifyBtn" class="flex items-center gap-1.5 text-xs bg-gray-800/80 hover:bg-gray-800 text-gray-300 border border-gray-700/60 px-3 py-1.5 rounded-xl transition">
-        <span class="material-icons-outlined text-sm text-yellow-400">notifications</span>
-        <span class="hidden sm:inline">Bật thông báo</span>
-      </button>
+
+      <!-- Quick Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Select Language -->
+        <select id="langSelect" onchange="changeLanguage(this.value)" 
+          class="bg-gray-900 dark:bg-gray-900 border border-gray-700/80 rounded-xl px-2.5 py-1.5 text-xs text-blue-400 font-semibold outline-none cursor-pointer">
+          <option value="vn">🇻🇳 VN</option>
+          <option value="us">🇺🇸 US</option>
+          <option value="uk">🇬🇧 UK</option>
+          <option value="np">🇳🇵 Nepal</option>
+          <option value="jp">🇯🇵 JP</option>
+          <option value="kr">🇰🇷 KR</option>
+          <option value="cn">🇨🇳 CN</option>
+          <option value="fr">🇫🇷 FR</option>
+          <option value="de">🇩🇪 DE</option>
+          <option value="es">🇪🇸 ES</option>
+        </select>
+
+        <!-- Guide Button -->
+        <button onclick="toggleGuide(true)" class="p-2 bg-gray-800/80 hover:bg-gray-700 rounded-xl border border-gray-700/80 text-amber-400 transition" title="Hướng dẫn">
+          <span class="material-icons-outlined text-sm">help_outline</span>
+        </button>
+
+        <!-- Dark/Light Toggle -->
+        <button onclick="toggleTheme()" class="p-2 bg-gray-800/80 hover:bg-gray-700 rounded-xl border border-gray-700/80 text-yellow-400 transition" title="Đổi giao diện">
+          <span id="themeIcon" class="material-icons-outlined text-sm">light_mode</span>
+        </button>
+
+        <!-- Notification Button -->
+        <button onclick="requestNotificationPermission()" id="notifyBtn" class="p-2 bg-gray-800/80 hover:bg-gray-700 rounded-xl border border-gray-700/80 text-blue-400 transition" title="Bật thông báo">
+          <span class="material-icons-outlined text-sm">notifications</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Khối Custom Email & Control -->
-    <div class="bg-gray-950/60 p-4 sm:p-5 rounded-2xl border border-gray-800/80 space-y-4">
+    <!-- Khối Custom Email -->
+    <div class="bg-gray-900/60 p-4 sm:p-5 rounded-2xl border border-gray-800 space-y-4">
       <div class="flex items-center justify-between">
-        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-          <span class="material-icons-outlined text-sm text-blue-400">tune</span> Tùy chỉnh hòm thư
+        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5" data-i18n="customMailTitle">
+          ⚙️ Tùy chỉnh hòm thư
         </span>
-        <span id="timerDisplay" class="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg flex items-center gap-1">
-          <span class="material-icons-outlined text-xs">timer</span> 10:00
+        <span id="timerDisplay" class="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg">
+          10:00
         </span>
       </div>
       
-      <!-- Input Custom Username & Select Domain -->
+      <!-- Inputs -->
       <div class="flex flex-col sm:flex-row gap-2.5">
-        <input type="text" id="customUser" placeholder="Nhập tên mail mong muốn..." 
-          class="flex-1 bg-gray-900 border border-gray-700/80 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm text-white outline-none font-mono transition">
+        <input type="text" id="customUser" placeholder="Tên mail..." 
+          class="flex-1 bg-gray-950 dark:bg-gray-950 border border-gray-700/80 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm outline-none font-mono transition">
         
         <select id="domainSelect" 
-          class="bg-gray-900 border border-gray-700/80 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-sm text-blue-400 font-mono outline-none cursor-pointer transition">
+          class="bg-gray-950 dark:bg-gray-950 border border-gray-700/80 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-sm text-blue-400 font-mono outline-none cursor-pointer">
           <option value="guerrillamail.com">@guerrillamail.com</option>
           <option value="guerrillamail.net">@guerrillamail.net</option>
           <option value="guerrillamail.org">@guerrillamail.org</option>
@@ -69,59 +102,84 @@
 
         <button onclick="applyCustomEmail()" 
           class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-1.5 shadow-lg shadow-blue-600/25 active:scale-95">
-          <span class="material-icons-outlined text-sm">bolt</span> Áp dụng
+          <span class="material-icons-outlined text-sm">bolt</span> <span data-i18n="applyBtn">Áp dụng</span>
         </button>
       </div>
 
-      <!-- Địa chỉ Email hiện tại -->
-      <div class="p-3 bg-gray-900/90 rounded-xl border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <!-- Current Email Address -->
+      <div class="p-3 bg-gray-950/80 rounded-xl border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div class="overflow-hidden w-full">
-          <span class="text-[10px] text-gray-500 font-semibold block uppercase">Địa chỉ email hiện tại</span>
+          <span class="text-[10px] text-gray-500 font-semibold block uppercase" data-i18n="currentAddress">Địa chỉ hiện tại</span>
           <span id="emailAddress" class="text-base sm:text-lg font-mono font-bold text-emerald-400 break-all">Đang tải...</span>
         </div>
       </div>
 
-      <!-- Thao tác nhanh -->
+      <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2">
-        <button onclick="copyEmail()" class="flex-1 bg-gray-900 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-blue-400 flex items-center justify-center gap-1.5">
-          <span class="material-icons-outlined text-sm">content_copy</span> Sao chép Mail
+        <button onclick="copyEmail()" class="flex-1 bg-gray-950 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-blue-400 flex items-center justify-center gap-1.5">
+          <span class="material-icons-outlined text-sm">content_copy</span> <span data-i18n="copyBtn">Sao chép</span>
         </button>
-        <button onclick="resetTimer()" class="flex-1 bg-gray-900 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-amber-400 flex items-center justify-center gap-1.5">
-          <span class="material-icons-outlined text-sm">update</span> Gia hạn 10p
+        <button onclick="resetTimer()" class="flex-1 bg-gray-950 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-amber-400 flex items-center justify-center gap-1.5">
+          <span class="material-icons-outlined text-sm">update</span> <span data-i18n="extendBtn">Gia hạn 10p</span>
         </button>
-        <button onclick="generateRandomEmail()" class="flex-1 bg-gray-900 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-emerald-400 flex items-center justify-center gap-1.5">
-          <span class="material-icons-outlined text-sm">shuffle</span> Mail Ngẫu Nhiên
+        <button onclick="generateRandomEmail()" class="flex-1 bg-gray-950 hover:bg-gray-800 border border-gray-700/80 text-xs font-semibold py-2 px-3 rounded-xl transition text-emerald-400 flex items-center justify-center gap-1.5">
+          <span class="material-icons-outlined text-sm">shuffle</span> <span data-i18n="randomBtn">Ngẫu nhiên</span>
         </button>
       </div>
     </div>
 
-    <!-- Hòm thư đến -->
+    <!-- Inbox Header -->
     <div class="space-y-3">
       <div class="flex justify-between items-center px-1">
-        <h2 class="text-base font-bold text-gray-200 flex items-center gap-2">
-          Hòm Thư Đến 
+        <h2 class="text-base font-bold flex items-center gap-2">
+          <span data-i18n="inboxTitle">Hòm Thư Đến</span> 
           <span id="mailCount" class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-full font-mono">0</span>
         </h2>
         
-        <!-- Live Status indicator -->
         <div class="flex items-center gap-2 text-xs text-gray-400">
           <span class="relative flex h-2 w-2">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span>Sync sau <b id="syncCountdown" class="text-emerald-400 font-mono">3</b>s</span>
+          <span>Sync <b id="syncCountdown" class="text-emerald-400 font-mono">3</b>s</span>
         </div>
       </div>
 
-      <!-- Inbox List -->
+      <!-- Inbox Items List -->
       <div id="inboxList" class="space-y-3">
-        <div class="text-center py-12 text-gray-500 text-xs sm:text-sm bg-gray-950/40 rounded-2xl border border-dashed border-gray-800">
-          <span class="material-icons-outlined text-3xl mb-1 text-gray-600 block">inbox</span>
+        <div class="text-center py-12 text-gray-500 text-xs sm:text-sm bg-gray-900/40 rounded-2xl border border-dashed border-gray-800" data-i18n="waitingMail">
           Đang chờ thư mới gửi đến...
         </div>
       </div>
     </div>
 
+  </div>
+
+  <!-- POPUP GUIDE MODAL (A-Z) -->
+  <div id="guideModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-gray-900 border border-gray-800 text-gray-200 max-w-lg w-full rounded-3xl p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+        <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2">
+          <span class="material-icons-outlined">menu_book</span> Hướng Dẫn Sử Dụng A-Z
+        </h3>
+        <button onclick="toggleGuide(false)" class="text-gray-400 hover:text-white">
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </div>
+      
+      <div class="space-y-3 text-xs sm:text-sm leading-relaxed text-gray-300">
+        <p><b>1. Tạo email ngẫu nhiên:</b> Khi mở trang, web sẽ tự tạo 1 địa chỉ email tạm thời sẵn sàng sử dụng ngay.</p>
+        <p><b>2. Tùy chỉnh Tên & Domain:</b> Nhập tên bạn muốn vào ô <i>"Tên mail..."</i>, chọn Domain mong muốn và bấm <b>Áp dụng</b>.</p>
+        <p><b>3. Nhận mã OTP tự động:</b> Khi thư gửi đến, mã OTP (4-8 chữ số) sẽ được hệ thống bóc tách sẵn kèm nút <b>Copy OTP 1-click</b>.</p>
+        <p><b>4. Gia hạn thời gian:</b> Mỗi email có hiệu lực 10 phút. Bạn có thể bấm <b>Gia hạn 10p</b> bất kỳ lúc nào để không bị trôi mail.</p>
+        <p><b>5. Đọc & Tải thư:</b> Bấm trực tiếp vào thư để mở xem nội dung chi tiết. Có nút <b>Tải file (.txt)</b> để lưu trữ về máy.</p>
+        <p><b>6. Khôi phục mail cũ:</b> Muốn dùng lại mail cũ? Chỉ cần nhập đúng Tên + Domain cũ rồi bấm Áp dụng là hòm thư cũ sẽ xuất hiện trở lại!</p>
+      </div>
+
+      <div class="pt-3 border-t border-gray-800 text-right">
+        <button onclick="toggleGuide(false)" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-semibold">Đã hiểu</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -131,35 +189,70 @@
     let pollInterval = null;
     let timerInterval = null;
     let countdownInterval = null;
+    let uptimeInterval = null;
     let timeLeft = 600;
     let syncTime = 3;
+    let uptimeSeconds = 0;
     let knownMailIds = new Set();
     const originalTitle = "Web Mail 10 Phút Pro";
 
-    // 1. Quản lý thông báo trình duyệt (Browser Push Notification)
-    function requestNotificationPermission() {
-      if ('Notification' in window) {
-        Notification.requestPermission().then(permission => {
-          if (permission === 'granted') {
-            alert('Đã bật thông báo thành công!');
-            document.getElementById('notifyBtn').classList.add('hidden');
-          }
-        });
+    // 1. Tải Dictionary Đa Ngôn Ngữ
+    const i18n = {
+      vn: { uptime: "Hoạt động:", customMailTitle: "⚙️ Tùy chỉnh hòm thư", applyBtn: "Áp dụng", currentAddress: "Địa chỉ hiện tại", copyBtn: "Sao chép", extendBtn: "Gia hạn 10p", randomBtn: "Ngẫu nhiên", inboxTitle: "Hòm Thư Đến", waitingMail: "Đang chờ thư mới gửi đến..." },
+      us: { uptime: "Uptime:", customMailTitle: "⚙️ Custom Mailbox", applyBtn: "Apply", currentAddress: "Current Address", copyBtn: "Copy", extendBtn: "Extend 10m", randomBtn: "Random", inboxTitle: "Inbox", waitingMail: "Waiting for incoming emails..." },
+      uk: { uptime: "Uptime:", customMailTitle: "⚙️ Custom Mailbox", applyBtn: "Apply", currentAddress: "Current Address", copyBtn: "Copy", extendBtn: "Extend 10m", randomBtn: "Random", inboxTitle: "Inbox", waitingMail: "Waiting for incoming emails..." },
+      np: { uptime: "सञ्चालन समय:", customMailTitle: "⚙️ अनुकूलन मेलबक्स", applyBtn: "लागू गर्नुहोस्", currentAddress: "वर्तमान ठेगाना", copyBtn: "प्रतिलिपि", extendBtn: "१० मिनेट थप्नुहोस्", randomBtn: "अनियमित", inboxTitle: "इनबक्स", waitingMail: "नयाँ इमेलको पर्खाइमा..." },
+      jp: { uptime: "稼働時間:", customMailTitle: "⚙️ メールボックス設定", applyBtn: "適用", currentAddress: "現在のメールアドレス", copyBtn: "コピー", extendBtn: "10分延長", randomBtn: "ランダム", inboxTitle: "受信トレイ", waitingMail: "新着メールを待っています..." },
+      kr: { uptime: "가동 시간:", customMailTitle: "⚙️ 이메일 맞춤설정", applyBtn: "적용", currentAddress: "현재 이메일 주소", copyBtn: "복사", extendBtn: "10분 연장", randomBtn: "랜덤", inboxTitle: "수신함", waitingMail: "새 이메일을 기다리는 중..." },
+      cn: { uptime: "运行时间:", customMailTitle: "⚙️ 自定义邮箱", applyBtn: "应用", currentAddress: "当前邮箱地址", copyBtn: "复制", extendBtn: "延长10分钟", randomBtn: "随机", inboxTitle: "收件箱", waitingMail: "正在等待新邮件..." },
+      fr: { uptime: "Temps d'activité:", customMailTitle: "⚙️ Personnaliser la boîte", applyBtn: "Appliquer", currentAddress: "Adresse actuelle", copyBtn: "Copier", extendBtn: "Prolonger 10m", randomBtn: "Aleatoire", inboxTitle: "Boîte de réception", waitingMail: "En attente de nouveaux e-mails..." },
+      de: { uptime: "Betriebszeit:", customMailTitle: "⚙️ Postfach anpassen", applyBtn: "Anwenden", currentAddress: "Aktuelle Adresse", copyBtn: "Kopieren", extendBtn: "10m verlängern", randomBtn: "Zufall", inboxTitle: "Posteingang", waitingMail: "Warten auf neue E-Mails..." },
+      es: { uptime: "Tiempo activo:", customMailTitle: "⚙️ Personalizar buzón", applyBtn: "Aplicar", currentAddress: "Dirección actual", copyBtn: "Copiar", extendBtn: "Ampliar 10m", randomBtn: "Aleatorio", inboxTitle: "Buzón de entrada", waitingMail: "Esperando nuevos correos..." }
+    };
+
+    function changeLanguage(lang) {
+      const dict = i18n[lang] || i18n.vn;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.innerText = dict[key];
+      });
+    }
+
+    // 2. Dark/Light Mode Toggle
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      const icon = document.getElementById('themeIcon');
+      const card = document.getElementById('mainCard');
+      
+      if (isDark) {
+        icon.innerText = 'light_mode';
+        card.className = card.className.replace('glass-light', 'glass-dark');
+      } else {
+        icon.innerText = 'dark_mode';
+        card.className = card.className.replace('glass-dark', 'glass-light');
       }
     }
 
-    function sendNotification(title, body) {
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(title, { body: body, icon: 'https://cdn-icons-png.flaticon.com/512/732/732200.png' });
-      }
+    // 3. Modals & Uptime Tracker
+    function toggleGuide(show) {
+      document.getElementById('guideModal').classList.toggle('hidden', !show);
     }
 
-    // 2. Tạo Mail Ngẫu Nhiên
+    function startUptimeTracker() {
+      uptimeInterval = setInterval(() => {
+        uptimeSeconds++;
+        const hrs = Math.floor(uptimeSeconds / 3600).toString().padStart(2, '0');
+        const mins = Math.floor((uptimeSeconds % 3600) / 60).toString().padStart(2, '0');
+        const secs = (uptimeSeconds % 60).toString().padStart(2, '0');
+        document.getElementById('uptimeDisplay').innerText = `${hrs}:${mins}:${secs}`;
+      }, 1000);
+    }
+
+    // 4. API & Mail logic
     async function generateRandomEmail() {
       try {
         const res = await fetch(`${API_BASE}?f=get_email_address`);
         const data = await res.json();
-        
         sidToken = data.sid_token;
         currentEmail = data.email_addr;
         knownMailIds.clear();
@@ -171,12 +264,9 @@
         updateUI();
         resetTimer();
         startPolling();
-      } catch (err) {
-        console.error('Lỗi khởi tạo API');
-      }
+      } catch (err) { console.error('Lỗi API'); }
     }
 
-    // 3. Tùy chỉnh Email
     async function applyCustomEmail() {
       const user = document.getElementById('customUser').value.trim();
       const domain = document.getElementById('domainSelect').value;
@@ -188,22 +278,17 @@
         sidToken = dataUser.sid_token;
 
         await fetch(`${API_BASE}?f=set_forget_me&lang=en&site=${domain}&sid_token=${sidToken}`);
-        
         currentEmail = `${user}@${domain}`;
         knownMailIds.clear();
         updateUI();
         resetTimer();
         checkInbox();
-      } catch (err) {
-        alert('Không thể cập nhật mail!');
-      }
+      } catch (err) { alert('Không thể cập nhật mail!'); }
     }
 
-    // 4. Gia hạn 10 phút
     function resetTimer() {
       timeLeft = 600;
       if (timerInterval) clearInterval(timerInterval);
-      
       timerInterval = setInterval(() => {
         timeLeft--;
         if (timeLeft <= 0) {
@@ -217,11 +302,9 @@
       }, 1000);
     }
 
-    // 5. Polling Sync 3 giây & Đổi Title Tab
     function startPolling() {
       if (pollInterval) clearInterval(pollInterval);
       if (countdownInterval) clearInterval(countdownInterval);
-
       syncTime = 3;
       checkInbox();
 
@@ -234,41 +317,18 @@
       pollInterval = setInterval(checkInbox, 3000);
     }
 
-    // 6. Quét Inbox & Phát hiện mail mới
     async function checkInbox() {
       if (!sidToken) return;
-
       try {
         const res = await fetch(`${API_BASE}?f=check_email&sid_token=${sidToken}&seq=0`);
         const data = await res.json();
         const messages = data.list || [];
 
         document.getElementById('mailCount').innerText = messages.length;
-        
-        // Kiểm tra xem có thư mới chưa từng xuất hiện không
-        let hasNewMail = false;
-        messages.forEach(msg => {
-          if (!knownMailIds.has(msg.mail_id)) {
-            knownMailIds.add(msg.mail_id);
-            hasNewMail = true;
-          }
-        });
-
-        if (messages.length > 0) {
-          renderInbox(messages);
-        }
-
-        // Đổi Title Tab & Bắn Push Notification khi phát hiện thư mới
-        if (hasNewMail && knownMailIds.size > messages.length) {
-          document.title = `(1) ✉️ Thư mới đến! - ${originalTitle}`;
-          sendNotification("⚡ Bạn có email mới!", messages[0]?.mail_subject || "Nhấn để kiểm tra hòm thư.");
-        }
-      } catch (err) {
-        console.error("Lỗi quét thư:", err);
-      }
+        if (messages.length > 0) renderInbox(messages);
+      } catch (err) { console.error("Lỗi quét thư:", err); }
     }
 
-    // 7. Render danh sách hòm thư & Nút Copy OTP 1-Click
     function renderInbox(messages) {
       const container = document.getElementById('inboxList');
       container.innerHTML = '';
@@ -281,44 +341,33 @@
         const otpBadge = otpCode 
           ? `<div class="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2.5 py-1 rounded-lg">
                <span class="text-xs font-bold font-mono">OTP: ${otpCode}</span>
-               <button onclick="event.stopPropagation(); copyText('${otpCode}')" class="hover:bg-emerald-500/20 p-0.5 rounded transition" title="Copy OTP">
+               <button onclick="event.stopPropagation(); copyText('${otpCode}')" class="hover:bg-emerald-500/20 p-0.5 rounded transition">
                  <span class="material-icons-outlined text-xs">content_copy</span>
                </button>
              </div>` 
           : '';
 
         const mailItem = document.createElement('div');
-        mailItem.className = 'bg-gray-950/70 p-4 rounded-2xl border border-gray-800/80 hover:border-blue-500/40 transition cursor-pointer space-y-2.5';
-        mailItem.onclick = () => {
-          document.title = originalTitle; // Reset title khi bấm đọc
-          fetchMailBody(msg.mail_id);
-        };
+        mailItem.className = 'bg-gray-900/80 p-4 rounded-2xl border border-gray-800 hover:border-blue-500/40 transition cursor-pointer space-y-2.5';
+        mailItem.onclick = () => fetchMailBody(msg.mail_id);
 
         mailItem.innerHTML = `
           <div class="flex justify-between items-start gap-2">
             <span class="font-bold text-xs text-blue-400 truncate">${msg.mail_from}</span>
             <span class="text-[10px] text-gray-500 font-mono whitespace-nowrap">${msg.mail_date}</span>
           </div>
-          <div class="font-medium text-gray-200 text-sm flex items-center justify-between gap-2">
+          <div class="font-medium text-sm flex items-center justify-between gap-2">
             <span class="truncate">${msg.mail_subject || '(Không tiêu đề)'}</span>
             ${otpBadge}
           </div>
           
-          <div id="msg-body-${msg.mail_id}" class="hidden mt-3 pt-3 border-t border-gray-900 text-xs text-gray-300 overflow-x-auto bg-gray-900/90 p-4 rounded-xl space-y-3 font-sans">
+          <div id="msg-body-${msg.mail_id}" class="hidden mt-3 pt-3 border-t border-gray-800 text-xs overflow-x-auto bg-gray-950 p-4 rounded-xl space-y-3 font-sans">
             <div id="msg-content-${msg.mail_id}">Đang tải nội dung...</div>
-            <div class="flex justify-end pt-2 border-t border-gray-800">
-              <button onclick="event.stopPropagation(); downloadMail('${msg.mail_id}', '${msg.mail_subject}')" class="flex items-center gap-1 bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg text-xs transition">
-                <span class="material-icons-outlined text-xs">download</span> Tải file (.txt)
-              </button>
-            </div>
           </div>
         `;
         container.appendChild(mailItem);
       });
     }
-
-    // 8. Đọc nội dung & Lưu file (.txt)
-    let fetchedMailData = {};
 
     async function fetchMailBody(mailId) {
       const bodyDiv = document.getElementById(`msg-body-${mailId}`);
@@ -334,32 +383,15 @@
       try {
         const res = await fetch(`${API_BASE}?f=fetch_email&email_id=${mailId}&sid_token=${sidToken}`);
         const data = await res.json();
-        
-        const mailBody = data.mail_body || 'Không có nội dung.';
-        fetchedMailData[mailId] = mailBody;
-        contentDiv.innerHTML = mailBody;
-      } catch (err) {
-        contentDiv.innerText = 'Lỗi tải nội dung thư.';
-      }
+        contentDiv.innerHTML = data.mail_body || 'Không có nội dung.';
+      } catch (err) { contentDiv.innerText = 'Lỗi tải nội dung.'; }
     }
 
-    function downloadMail(mailId, subject) {
-      const content = fetchedMailData[mailId] || 'Rỗng';
-      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${subject || 'mail'}_${mailId}.txt`;
-      a.click();
-    }
-
-    // Helper Functions
     function updateUI() {
       document.getElementById('emailAddress').innerText = currentEmail;
     }
 
-    function copyEmail() {
-      copyText(currentEmail);
-    }
+    function copyEmail() { copyText(currentEmail); }
 
     function copyText(text) {
       if (text) {
@@ -368,7 +400,15 @@
       }
     }
 
-    // Khởi động
+    function requestNotificationPermission() {
+      if ('Notification' in window) {
+        Notification.requestPermission().then(p => { if (p === 'granted') alert('Đã bật thông báo!'); });
+      }
+    }
+
+    // Init App
+    document.documentElement.classList.add('dark');
+    startUptimeTracker();
     generateRandomEmail();
   </script>
 </body>
