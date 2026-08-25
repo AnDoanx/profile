@@ -43,7 +43,7 @@
     <div class="bg-gray-900/60 p-3 rounded-xl border border-gray-700/60 mb-6">
       <span class="text-xs font-semibold text-gray-300 block mb-2">🔍 Tìm & Đọc lại hòm thư cũ:</span>
       <div class="flex gap-2">
-        <input type="text" id="recoverInput" placeholder="Nhập tên user cũ (Ví dụ: user123)" 
+        <input type="text" id="recoverInput" placeholder="Nhập địa chỉ email cũ (Ví dụ: test@apponi.site)" 
           class="flex-1 px-3 py-1.5 bg-gray-900 border border-gray-700 rounded-lg text-xs focus:outline-none focus:border-blue-500 text-white">
         <button onclick="recoverOldEmail()" class="bg-indigo-600 hover:bg-indigo-700 text-xs font-semibold px-4 py-1.5 rounded-lg transition">
           Khôi phục
@@ -65,56 +65,69 @@
   </div>
 
   <script>
-    const API_URL = 'https://tempmailapi.io.vn/public_api.php';
-    let currentLogin = '';
-    let currentDomain = '';
+    const API_BASE = 'https://tempmailapi.io.vn/public_api.php';
+    const API_KEY = 'tm_cb239073d48c819587379a9fe064dc30e6b975eb05ac66ae';
+    
+    let currentEmail = '';
     let pollInterval = null;
     let timerInterval = null;
     let timeLeft = 600; // 10 phút
 
-    // 1. Lấy danh sách Domain từ API & Tạo Email Mới
+    // 1. Tạo Email Mới dùng API Key & Domain từ hệ thống
     async function createNewEmail() {
       setStatus('Đang tải danh sách domain...');
       try {
-        const res = await fetch(`${API_URL}?action=domains`);
-        const domains = await res.json();
+        // Lấy danh sách domain
+        const domRes = await fetch(`${API_BASE}?action=domains`);
+        const domains = await domRes.json();
         
-        // Random username & lấy domain đầu tiên từ API của bạn
-        currentLogin = Math.random().toString(36).substring(2, 10);
-        currentDomain = Array.isArray(domains) ? domains[0] : (domains.domain || domains[0].domain);
+        let targetDomain = 'apponi.site';
+        if (Array.isArray(domains) && domains.length > 0) {
+          targetDomain = typeof domains[0] === 'string' ? domains[0] : (domains[0].domain || targetDomain);
+        }
+
+        setStatus('Đang tạo email...');
+        // Gọi API tạo mail
+        const createRes = await fetch(`${API_BASE}?action=create&api_key=${API_KEY}&domain=${targetDomain}`);
+        const createData = await createRes.json();
+
+        // Lấy địa chỉ email trả về từ API
+        if (createData.email) {
+          currentEmail = createData.email;
+        } else if (createData.data && createData.data.email) {
+          currentEmail = createData.data.email;
+        } else {
+          // Tạo ngẫu nhiên nếu API trả về dạng mảng
+          const randomUser = Math.random().toString(36).substring(2, 10);
+          currentEmail = `${randomUser}@${targetDomain}`;
+        }
 
         updateEmailUI();
         resetTimer();
         startPolling();
       } catch (err) {
-        setStatus('❌ Lỗi kết nối API tempmailapi.io.vn!');
+        setStatus('❌ Lỗi khi kết nối API tạo mail!');
       }
     }
 
-    // 2. Tìm & Khôi phục lại Mail cũ bằng tên Username
+    // 2. Tìm & Đọc lại mail cũ (Nhập đầy đủ email hoặc tên user)
     async function recoverOldEmail() {
       const input = document.getElementById('recoverInput').value.trim();
-      if (!input) return alert('Vui lòng nhập tên username cũ!');
+      if (!input) return alert('Vui lòng nhập email hoặc username cũ!');
 
-      const cleanUser = input.split('@')[0];
-      
-      try {
-        const res = await fetch(`${API_URL}?action=domains`);
-        const domains = await res.json();
-
-        currentLogin = cleanUser;
-        currentDomain = Array.isArray(domains) ? domains[0] : (domains.domain || domains[0].domain);
-
-        updateEmailUI();
-        resetTimer();
-        startPolling();
-        alert(`Đã khôi phục hòm thư: ${currentLogin}@${currentDomain}`);
-      } catch (err) {
-        setStatus('❌ Lỗi khi tìm hòm thư cũ!');
+      let targetEmail = input;
+      if (!targetEmail.includes('@')) {
+        targetEmail = `${targetEmail}@apponi.site`;
       }
+
+      currentEmail = targetEmail;
+      updateEmailUI();
+      resetTimer();
+      startPolling();
+      alert(`Đã khôi phục hòm thư: ${currentEmail}`);
     }
 
-    // 3. Reset đếm ngược thời gian (10 phút)
+    // 3. Reset thời gian đếm ngược (10 phút)
     function resetTimer() {
       timeLeft = 600;
       if (timerInterval) clearInterval(timerInterval);
@@ -134,7 +147,7 @@
       }, 1000);
     }
 
-    // 4. Lặp kiểm tra hòm thư (Polling 3s/lần)
+    // 4. Lặp kiểm tra thư mới (Polling 3s/lần)
     function startPolling() {
       if (pollInterval) clearInterval(pollInterval);
       checkInbox();
@@ -142,22 +155,28 @@
     }
 
     async function checkInbox() {
-      if (!currentLogin || !currentDomain) return;
+      if (!currentEmail) return;
 
       try {
-        const res = await fetch(`${API_URL}?action=getMessages&login=${currentLogin}&domain=${currentDomain}`);
-        const messages = await res.json();
+        const res = await fetch(`${API_BASE}?action=list&email=${encodeURIComponent(currentEmail)}&limit=20`);
+        const data = await res.json();
         
-        if (Array.isArray(messages)) {
-          document.getElementById('mailCount').innerText = messages.length;
-          if (messages.length > 0) {
-            renderInbox(messages);
-            setStatus('✅ Đã nhận thư mới!');
-          } else {
-            setStatus('Đang chờ thư mới gửi đến (mỗi 3s)...');
-          }
+        // Kiểm tra dữ liệu danh sách thư trả về
+        let messages = [];
+        if (Array.isArray(data)) {
+          messages = data;
+        } else if (data.data && Array.isArray(data.data)) {
+          messages = data.data;
+        } else if (data.messages && Array.isArray(data.messages)) {
+          messages = data.messages;
+        }
+
+        document.getElementById('mailCount').innerText = messages.length;
+        if (messages.length > 0) {
+          renderInbox(messages);
+          setStatus('✅ Đã nhận thư mới!');
         } else {
-          document.getElementById('mailCount').innerText = '0';
+          setStatus('Đang chờ thư mới gửi đến (mỗi 3s)...');
         }
       } catch (err) {
         console.error("Lỗi quét thư:", err);
@@ -169,8 +188,12 @@
       const container = document.getElementById('inboxList');
       container.innerHTML = '';
 
-      messages.forEach(msg => {
-        const fullContent = (msg.subject || '') + ' ' + (msg.snippet || msg.body || '');
+      messages.forEach((msg, index) => {
+        const subjectText = msg.subject || msg.title || '(Không có tiêu đề)';
+        const snippetText = msg.snippet || msg.excerpt || msg.body || '';
+        const fullContent = subjectText + ' ' + snippetText;
+
+        // Tìm mã OTP
         const otpMatch = fullContent.match(/\b\d{4,8}\b/);
         const otpBadge = otpMatch 
           ? `<span class="bg-green-500/20 text-green-400 border border-green-500/30 text-xs font-bold px-2 py-1 rounded">Mã OTP: ${otpMatch[0]}</span>` 
@@ -178,22 +201,22 @@
 
         const mailItem = document.createElement('div');
         mailItem.className = 'bg-gray-900 p-4 rounded-xl border border-gray-700 hover:border-blue-500 transition cursor-pointer';
-        mailItem.onclick = () => fetchMailBody(msg.id);
+        mailItem.onclick = () => fetchMailBody(msg.id || index);
 
         mailItem.innerHTML = `
           <div class="flex justify-between items-start mb-1">
-            <span class="font-bold text-xs text-blue-400 break-all">${msg.from || msg.sender}</span>
-            <span class="text-[10px] text-gray-500">${msg.date || ''}</span>
+            <span class="font-bold text-xs text-blue-400 break-all">${msg.from || msg.sender || 'Hệ thống'}</span>
+            <span class="text-[10px] text-gray-500">${msg.date || msg.created_at || ''}</span>
           </div>
-          <div class="font-medium text-gray-200 text-sm mb-2">${msg.subject || '(Không có tiêu đề)'}</div>
+          <div class="font-medium text-gray-200 text-sm mb-2">${subjectText}</div>
           ${otpBadge}
-          <div id="msg-body-${msg.id}" class="hidden mt-3 pt-3 border-t border-gray-800 text-xs text-gray-300 overflow-x-auto">Đang tải nội dung...</div>
+          <div id="msg-body-${msg.id || index}" class="hidden mt-3 pt-3 border-t border-gray-800 text-xs text-gray-300 overflow-x-auto">Đang tải nội dung...</div>
         `;
         container.appendChild(mailItem);
       });
     }
 
-    // 6. Tải chi tiết nội dung thư khi nhấp vào
+    // 6. Đọc nội dung chi tiết thư
     async function fetchMailBody(id) {
       const bodyDiv = document.getElementById(`msg-body-${id}`);
       if (!bodyDiv) return;
@@ -205,16 +228,24 @@
 
       bodyDiv.classList.remove('hidden');
       try {
-        const res = await fetch(`${API_URL}?action=readMessage&login=${currentLogin}&domain=${currentDomain}&id=${id}`);
+        const res = await fetch(`${API_BASE}?action=read&email=${encodeURIComponent(currentEmail)}`);
         const data = await res.json();
-        bodyDiv.innerHTML = data.htmlBody || data.textBody || data.body || 'Không có nội dung.';
+        
+        let content = 'Không có nội dung.';
+        if (typeof data === 'string') {
+          content = data;
+        } else {
+          content = data.html || data.body || data.content || data.message || JSON.stringify(data);
+        }
+
+        bodyDiv.innerHTML = content;
       } catch (err) {
-        bodyDiv.innerText = 'Lỗi khi tải nội dung thư.';
+        bodyDiv.innerText = 'Lỗi khi tải chi tiết thư.';
       }
     }
 
     function updateEmailUI() {
-      document.getElementById('emailAddress').innerText = `${currentLogin}@${currentDomain}`;
+      document.getElementById('emailAddress').innerText = currentEmail;
       document.getElementById('recoverInput').value = '';
     }
 
@@ -223,9 +254,8 @@
     }
 
     function copyEmail() {
-      const email = document.getElementById('emailAddress').innerText;
-      if (email && !email.includes('...')) {
-        navigator.clipboard.writeText(email);
+      if (currentEmail && !currentEmail.includes('...')) {
+        navigator.clipboard.writeText(currentEmail);
         alert('Đã sao chép địa chỉ email!');
       }
     }
