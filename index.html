@@ -1,134 +1,628 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title></title>
-  <link rel="stylesheet" type="text/css" href="styles.css"> 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <link rel="icon" type="image/x-icon" href="./assets/favico/default.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lookup Facebook UID | Modern Glassmorphism</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"></script>
-  <link rel="stylesheet" href="./assets/css/tilt-effect.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 26, 43, 0.65);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --accent: #06b6d4;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Background Glow Effects */
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: -1;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+    .orb-1 {
+      width: 420px;
+      height: 420px;
+      background: #2563eb;
+      top: -80px;
+      left: 10%;
+    }
+    .orb-2 {
+      width: 360px;
+      height: 360px;
+      background: #06b6d4;
+      bottom: 10%;
+      right: 10%;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 640px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 440px;
+      line-height: 1.5;
+    }
+
+    /* Glass Card */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Input Field */
+    .input-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 16px 18px;
+      background: rgba(13, 20, 36, 0.85);
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-glow);
+      background: rgba(13, 20, 36, 0.95);
+    }
+
+    .input-field::placeholder {
+      color: #475569;
+    }
+
+    .btn-submit {
+      margin-top: 14px;
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -4px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Result Card */
+    .result-container {
+      display: none;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      object-fit: cover;
+      background: #1e293b;
+    }
+
+    .profile-info h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .profile-info span {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .uid-badge-card {
+      background: rgba(13, 20, 36, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .uid-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: 1px;
+      word-break: break-all;
+    }
+
+    .btn-copy {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+
+    .btn-copy:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: #38bdf8;
+    }
+
+    /* History section */
+    .history-card {
+      padding: 20px 28px;
+    }
+
+    .history-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-clear-history {
+      background: none;
+      border: none;
+      color: #ef4444;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .history-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(13, 20, 36, 0.5);
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .history-uid {
+      font-family: 'JetBrains Mono', monospace;
+      color: #7dd3fc;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
 </head>
+<body>
 
-  <div id="terminal">
-    <div id="terminal-header">
-      <div id="terminal-buttons">
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
 
-        <div class="terminal-button" id="close-button"></div>
-        <div class="terminal-button" id="minimize-button"></div>
-        <div class="terminal-button" id="maximize-button"></div>
+  <div class="container">
+    <div class="header">
+      <div class="badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Instant FB Tool
+      </div>
+      <h1 class="title">Tra Cứu UID Facebook</h1>
+      <p class="subtitle">Dán liên kết trang cá nhân, ID hoặc username để tìm chính xác UID Facebook số trong 1 giây.</p>
+    </div>
+
+    <!-- Main Tool Card -->
+    <div class="card">
+      <div class="input-box">
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            id="fbInput" 
+            class="input-field" 
+            placeholder="Ví dụ: https://www.facebook.com/zuck hoặc zuck"
+            autocomplete="off"
+            spellcheck="false"
+          >
+        </div>
+        <button id="btnGet" class="btn-submit">
+          <div class="spinner" id="btnSpinner"></div>
+          <span id="btnText">Tra cứu ngay</span>
+        </button>
+      </div>
+
+      <!-- Result Container -->
+      <div id="resultBox" class="result-container">
+        <div class="profile-meta">
+          <img id="resAvatar" class="avatar" src="" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=FB&background=1e293b&color=fff'">
+          <div class="profile-info">
+            <h3 id="resTitle">Kết quả tìm kiếm</h3>
+            <span id="resTarget">facebook.com/...</span>
+          </div>
+        </div>
+
+        <div class="uid-badge-card">
+          <span class="uid-text" id="resUid">100000000000000</span>
+          <button class="btn-copy" id="btnCopy">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Sao chép
+          </button>
+        </div>
       </div>
     </div>
-    <div id="terminal-content">
-      <p id="terminal-text"></p>
+
+    <!-- History Card -->
+    <div class="card history-card" id="historyCard" style="display: none;">
+      <div class="history-title">
+        <span>Lịch sử tra cứu gần đây</span>
+        <button class="btn-clear-history" id="btnClearHistory">Xóa lịch sử</button>
+      </div>
+      <ul class="history-list" id="historyList"></ul>
     </div>
   </div>
 
-  <div id="video-background">
-    <video autoplay muted loop id="myVideo">
-      <source src="./assets/back/default.mp4" type="video/mp4">
-      Your browser does not support HTML5 video.
-    </video>
+  <div class="toast" id="toast">Thông báo</div>
 
-    <div id="audio-background">
-      <div id="music-controls">
-        <input type="range" id="volume-slider" min="0" max="100" value="50">
-        <div id="progress-container">
-          <div id="progress-bar"></div>
-        </div>
-      </div>
-    </div>
+  <script>
+    const fbInput = document.getElementById('fbInput');
+    const btnGet = document.getElementById('btnGet');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const resultBox = document.getElementById('resultBox');
+    const resUid = document.getElementById('resUid');
+    const resAvatar = document.getElementById('resAvatar');
+    const resTarget = document.getElementById('resTarget');
+    const btnCopy = document.getElementById('btnCopy');
+    const toast = document.getElementById('toast');
+    const historyCard = document.getElementById('historyCard');
+    const historyList = document.getElementById('historyList');
+    const btnClearHistory = document.getElementById('btnClearHistory');
 
-    </div>
-    <div id="video-overlay"></div>
-    <div id="blurred-box" class="tilt-element">
-      <img id="profile-picture" src="./assets/pfp/default.png" alt="Profile Picture">
-      <img id="avatar-frame" src="" alt="Avatar Frame">
-      <p id="username-container" style="color: white; font-weight: bold; font-size: 32px;">
-        <span id="username">c0mplex</span>
-        <span id="typing-cursor">|</span>
-      </p>
-      <div class="badges-container">
-        <img src="./assets/badge/developer.png" alt="dev badge">
-        <img src="./assets/badge/love.png" alt="heart badge">
-        <img src="./assets/badge/music.png" alt="music badge">
-        <img src="./assets/badge/verified.png" alt="verified badge">
-      </div>
-      <div class="lang-container">
-        <img src="./assets/logo/c.png" alt="c">
-        <img src="./assets/logo/cplusplus.png" alt="cplusplus">
-        <img src="./assets/logo/matlab.png" alt="matlab">
-        <img src="./assets/logo/python.png" alt="python">
-        <img src="./assets/logo/csharp.png" alt="csharp">
-        <img src="./assets/logo/java.png" alt="java">
-      </div>
+    // Hiện toast thông báo
+    function showToast(msg) {
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
 
-      <div class="user-description">
-        <p id="user-description" style="color: white;">
-          Hi everyone, I’m c0mplex<br>I have a deep interest in exploring Internet of Things<br>I’m eager to connect with others and keep learning from new experiences
-        </p>
-      </div>
+    // Trích xuất username hoặc UID có sẵn từ URL
+    function extractIdentifier(input) {
+      let raw = input.trim();
+      if (!raw) return null;
 
-      <div class="discord-widget">
-        <div class="discord-content">
-          <div class="discord-icon">
-            <img id="discord-avatar" src="" alt="Discord Avatar" draggable="false" loading="lazy">
-          </div>
-          <div class="discord-meta">
-            <b id="discord-username"></b>
-            <div>
-              <span id="discord-status-dot"></span>
-              <span id="discord-status-text"></span>
-            </div>
-          </div>
-        </div>
-        <div class="discord-activity">
-          <div id="discord-activity-info">
-            <div id="discord-album-art"></div>
-            <div class="discord-activity-content">
-              <div id="discord-activity-name"></div>
-              <div id="discord-activity-details"></div>
-              <div id="discord-activity-state"></div>
-            </div>
-          </div>
-          <div id="discord-no-activity">I'm not currently doing anything!</div>
-        </div>
-      </div>
+      // Xóa đuôi query/parameter rác
+      raw = raw.replace(/[?&](ref|mibextid|rdid|set|fref)=.*/g, '');
 
-      <div class="links"> 
-        <a href="https://www.facebook.com/c0mplexisreal" target="_blank">
-          <i class="fab fa-facebook"></i> 
-        </a> 
-        <a href="https://github.com/c0mplex07" target="_blank">
-          <i class="fa-brands fa-github"></i>
-        </a> 
-        <a href="https://www.tiktok.com/@c0mplex07" target="_blank">
-          <i class="fa-brands fa-tiktok"></i>
-        </a> 
-        <a href="https://x.com/c0mplex_vn" target="_blank">
-          <i class="fa-brands fa-twitter"></i>
-        </a> 
-        <a href="mailto:enou456xq@gmail.com" target="_blank">
-          <i class="fa-brands fa-google mail"></i>
-        </a> 
-      </div>
-    </div>
-  </div>
-  
-  <script src="./assets/js/lanyard.js"></script>
-  <script src="./assets/js/discord.js"></script>
-  <script src="./assets/js/script.js"></script>
-  <script src="./assets/js/title.js"></script>
-  <script src="./assets/js/username-animation.js"></script>
-  <script src="./assets/js/tilt-effect.js"></script>
-  <script src="./assets/js/audio-visualizer.js"></script>
-  <script src="./assets/js/neko.js"></script>
-  <script src="./assets/js/neko-init.js"></script>
-  <script src="./assets/js/music.js"></script>
+      // TH1: Dạng link profile.php?id=1000xxxx
+      let matchId = raw.match(/id=([0-9]{4,30})/);
+      if (matchId) return { type: 'uid', value: matchId[1] };
+
+      // TH2: Người dùng gõ trực tiếp dãy số UID
+      if (/^[0-9]{4,30}$/.test(raw)) {
+        return { type: 'uid', value: raw };
+      }
+
+      // TH3: Link dạng facebook.com/username hoặc facebook.com/people/Name/1000xxx
+      let matchPeople = raw.match(/people\/[^\/]+\/([0-9]{4,30})/);
+      if (matchPeople) return { type: 'uid', value: matchPeople[1] };
+
+      let matchUsername = raw.match(/(?:facebook\.com|fb\.me|fb\.com)\/([a-zA-Z0-9\._-]+)/);
+      if (matchUsername) {
+        let u = matchUsername[1];
+        if (u !== 'profile.php' && u !== 'people') {
+          return { type: 'username', value: u };
+        }
+      }
+
+      // TH4: Nhập thẳng username đơn thuần (không có dấu cách)
+      if (/^[a-zA-Z0-9\._-]{3,50}$/.test(raw)) {
+        return { type: 'username', value: raw };
+      }
+
+      return null;
+    }
+
+    // Gọi API lookup từ username sang UID
+    async function resolveUsernameToUID(target) {
+      // Endpoint lookup công khai không yêu cầu token bảo mật
+      const apiUrl = `https://lookup-id.com/#`; 
+      // Fallback API công khai xử lý CORS thông qua proxy an toàn
+      const lookupEndpoint = `https://api.allorigins.win/get?url=${encodeURIComponent('https://lookup-id.com/')}`;
+
+      // Ở đây ta gọi dịch vụ lookup ID public
+      const formData = new FormData();
+      formData.append('fburl', target);
+      formData.append('check', 'Lookup');
+
+      const response = await fetch('https://lookup-id.com/', {
+        method: 'POST',
+        body: formData
+      });
+      const html = await response.text();
+      
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const codeSpan = doc.querySelector('#code');
+      if (codeSpan && codeSpan.innerText.trim()) {
+        const uid = codeSpan.innerText.trim();
+        if (/^[0-9]+$/.test(uid)) return uid;
+      }
+      return null;
+    }
+
+    // Xử lý sự kiện tra cứu
+    async function handleLookup() {
+      const val = fbInput.value.trim();
+      if (!val) {
+        showToast("⚠️ Vui lòng nhập link hoặc username");
+        return;
+      }
+
+      const parsed = extractIdentifier(val);
+      if (!parsed) {
+        showToast("❌ Không nhận diện được link/username");
+        return;
+      }
+
+      // Bật trạng thái loading
+      btnGet.disabled = true;
+      btnSpinner.style.display = 'block';
+      btnText.innerText = 'Đang xử lý...';
+      resultBox.style.display = 'none';
+
+      try {
+        let finalUID = null;
+
+        if (parsed.type === 'uid') {
+          finalUID = parsed.value;
+        } else {
+          // Là username -> Resolve sang UID
+          const fullUrl = `https://www.facebook.com/${parsed.value}`;
+          try {
+            finalUID = await resolveUsernameToUID(fullUrl);
+          } catch (e) {
+            finalUID = null;
+          }
+        }
+
+        if (finalUID) {
+          // Render kết quả
+          resUid.innerText = finalUID;
+          resTarget.innerText = parsed.value;
+          // Hiển thị ảnh đại diện công khai thông qua Graph API avatar link
+          resAvatar.src = `https://graph.facebook.com/${finalUID}/picture?type=large&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
+          resultBox.style.display = 'block';
+
+          saveHistory(parsed.value, finalUID);
+          showToast("🎉 Lấy UID thành công!");
+        } else {
+          showToast("❌ Không thể phân giải UID cho username này");
+        }
+      } catch (err) {
+        showToast("❌ Lỗi mạng hoặc server không phản hồi");
+      } finally {
+        btnGet.disabled = false;
+        btnSpinner.style.display = 'none';
+        btnText.innerText = 'Tra cứu ngay';
+      }
+    }
+
+    // Sao chép kết quả
+    btnCopy.addEventListener('click', () => {
+      navigator.clipboard.writeText(resUid.innerText);
+      showToast("📋 Đã sao chép UID vào clipboard!");
+    });
+
+    btnGet.addEventListener('click', handleLookup);
+    fbInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleLookup();
+    });
+
+    // Quản lý LocalStorage History
+    function getHistory() {
+      return JSON.parse(localStorage.getItem('fb_uid_history') || '[]');
+    }
+
+    function saveHistory(target, uid) {
+      let list = getHistory();
+      list = list.filter(item => item.uid !== uid);
+      list.unshift({ target, uid, time: new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}) });
+      if (list.length > 5) list.pop();
+      localStorage.setItem('fb_uid_history', JSON.stringify(list));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const list = getHistory();
+      if (list.length === 0) {
+        historyCard.style.display = 'none';
+        return;
+      }
+      historyCard.style.display = 'block';
+      historyList.innerHTML = list.map(item => `
+        <li class="history-item">
+          <span style="color: var(--text-muted);">${item.target}</span>
+          <span class="history-uid" style="cursor:pointer;" onclick="navigator.clipboard.writeText('${item.uid}'); showToast('📋 Đã chép: ${item.uid}');">${item.uid} 📋</span>
+        </li>
+      `).join('');
+    }
+
+    btnClearHistory.addEventListener('click', () => {
+      localStorage.removeItem('fb_uid_history');
+      renderHistory();
+      showToast("Đã xóa lịch sử");
+    });
+
+    // Khởi tạo
+    renderHistory();
+  </script>
 </body>
 </html>
