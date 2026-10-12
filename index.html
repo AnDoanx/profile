@@ -447,43 +447,43 @@
     const historyList = document.getElementById('historyList');
     const btnClearHistory = document.getElementById('btnClearHistory');
 
-    // Hiện toast thông báo
     function showToast(msg) {
       toast.innerText = msg;
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    // Trích xuất username hoặc UID có sẵn từ URL
+    // 1. Phân tích đầu vào & bóc tách UID/Username
     function extractIdentifier(input) {
       let raw = input.trim();
       if (!raw) return null;
 
-      // Xóa đuôi query/parameter rác
-      raw = raw.replace(/[?&](ref|mibextid|rdid|set|fref)=.*/g, '');
+      // Xóa query param rác (mibextid, rdid, ref, ...)
+      raw = raw.replace(/[?&](ref|mibextid|rdid|set|fref|locale)=.*/g, '');
 
-      // TH1: Dạng link profile.php?id=1000xxxx
-      let matchId = raw.match(/id=([0-9]{4,30})/);
+      // TH1: Chứa profile.php?id=1000xxx
+      let matchId = raw.match(/[?&]id=([0-9]{4,30})/);
       if (matchId) return { type: 'uid', value: matchId[1] };
 
-      // TH2: Người dùng gõ trực tiếp dãy số UID
+      // TH2: Nhập trực tiếp dãy số UID
       if (/^[0-9]{4,30}$/.test(raw)) {
         return { type: 'uid', value: raw };
       }
 
-      // TH3: Link dạng facebook.com/username hoặc facebook.com/people/Name/1000xxx
+      // TH3: Link dạng facebook.com/people/Name/1000xxx
       let matchPeople = raw.match(/people\/[^\/]+\/([0-9]{4,30})/);
       if (matchPeople) return { type: 'uid', value: matchPeople[1] };
 
+      // TH4: Link profile thông thường
       let matchUsername = raw.match(/(?:facebook\.com|fb\.me|fb\.com)\/([a-zA-Z0-9\._-]+)/);
       if (matchUsername) {
         let u = matchUsername[1];
-        if (u !== 'profile.php' && u !== 'people') {
+        if (!['profile.php', 'people', 'sharer', 'groups', 'pages'].includes(u)) {
           return { type: 'username', value: u };
         }
       }
 
-      // TH4: Nhập thẳng username đơn thuần (không có dấu cách)
+      // TH5: Nhập trực tiếp username (vd: zuck)
       if (/^[a-zA-Z0-9\._-]{3,50}$/.test(raw)) {
         return { type: 'username', value: raw };
       }
@@ -491,34 +491,45 @@
       return null;
     }
 
-    // Gọi API lookup từ username sang UID
-    async function resolveUsernameToUID(target) {
-      // Endpoint lookup công khai không yêu cầu token bảo mật
-      const apiUrl = `https://lookup-id.com/#`; 
-      // Fallback API công khai xử lý CORS thông qua proxy an toàn
-      const lookupEndpoint = `https://api.allorigins.win/get?url=${encodeURIComponent('https://lookup-id.com/')}`;
+    // 2. Phân giải username sang UID (Crawl thông tin qua CORS Proxy)
+    async function resolveUsernameToUID(username) {
+      const cleanUsername = username.replace(/\/$/, '');
 
-      // Ở đây ta gọi dịch vụ lookup ID public
-      const formData = new FormData();
-      formData.append('fburl', target);
-      formData.append('check', 'Lookup');
+      try {
+        const targetFb = `https://www.facebook.com/${cleanUsername}`;
+        const proxyFetch = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetFb)}`, {
+          signal: AbortSignal.timeout(7000)
+        });
+        
+        if (!proxyFetch.ok) return null;
+        
+        const data = await proxyFetch.json();
+        const content = data.contents || '';
 
-      const response = await fetch('https://lookup-id.com/', {
-        method: 'POST',
-        body: formData
-      });
-      const html = await response.text();
-      
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      const codeSpan = doc.querySelector('#code');
-      if (codeSpan && codeSpan.innerText.trim()) {
-        const uid = codeSpan.innerText.trim();
-        if (/^[0-9]+$/.test(uid)) return uid;
+        // Trích xuất các mẫu nhận diện UID trong HTML Facebook trả về
+        const patterns = [
+          /fb:\/\/profile\/([0-9]{5,30})/,
+          /"userID":"([0-9]{5,30})"/,
+          /"target_id":"([0-9]{5,30})"/,
+          /entity_id=([0-9]{5,30})/,
+          /al:android:url".*?id=([0-9]{5,30})/,
+          /"owner_id":"([0-9]{5,30})"/
+        ];
+
+        for (let pat of patterns) {
+          const match = content.match(pat);
+          if (match && match[1]) {
+            return match[1];
+          }
+        }
+      } catch (err) {
+        console.warn('Lỗi phân giải qua proxy:', err);
       }
+
       return null;
     }
 
-    // Xử lý sự kiện tra cứu
+    // 3. Xử lý tra cứu
     async function handleLookup() {
       const val = fbInput.value.trim();
       if (!val) {
@@ -532,10 +543,9 @@
         return;
       }
 
-      // Bật trạng thái loading
       btnGet.disabled = true;
       btnSpinner.style.display = 'block';
-      btnText.innerText = 'Đang xử lý...';
+      btnText.innerText = 'Đang tra cứu...';
       resultBox.style.display = 'none';
 
       try {
@@ -544,30 +554,22 @@
         if (parsed.type === 'uid') {
           finalUID = parsed.value;
         } else {
-          // Là username -> Resolve sang UID
-          const fullUrl = `https://www.facebook.com/${parsed.value}`;
-          try {
-            finalUID = await resolveUsernameToUID(fullUrl);
-          } catch (e) {
-            finalUID = null;
-          }
+          finalUID = await resolveUsernameToUID(parsed.value);
         }
 
         if (finalUID) {
-          // Render kết quả
           resUid.innerText = finalUID;
           resTarget.innerText = parsed.value;
-          // Hiển thị ảnh đại diện công khai thông qua Graph API avatar link
-          resAvatar.src = `https://graph.facebook.com/${finalUID}/picture?type=large&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
+          resAvatar.src = `https://graph.facebook.com/${finalUID}/picture?type=large`;
           resultBox.style.display = 'block';
 
           saveHistory(parsed.value, finalUID);
           showToast("🎉 Lấy UID thành công!");
         } else {
-          showToast("❌ Không thể phân giải UID cho username này");
+          showToast("❌ Không thể phân giải UID (Profile này chặn tra cứu hoặc mạng chậm)");
         }
       } catch (err) {
-        showToast("❌ Lỗi mạng hoặc server không phản hồi");
+        showToast("❌ Lỗi kết nối mạng, vui lòng thử lại!");
       } finally {
         btnGet.disabled = false;
         btnSpinner.style.display = 'none';
@@ -575,10 +577,9 @@
       }
     }
 
-    // Sao chép kết quả
     btnCopy.addEventListener('click', () => {
       navigator.clipboard.writeText(resUid.innerText);
-      showToast("📋 Đã sao chép UID vào clipboard!");
+      showToast("📋 Đã sao chép UID!");
     });
 
     btnGet.addEventListener('click', handleLookup);
@@ -586,7 +587,6 @@
       if (e.key === 'Enter') handleLookup();
     });
 
-    // Quản lý LocalStorage History
     function getHistory() {
       return JSON.parse(localStorage.getItem('fb_uid_history') || '[]');
     }
@@ -621,7 +621,6 @@
       showToast("Đã xóa lịch sử");
     });
 
-    // Khởi tạo
     renderHistory();
   </script>
 </body>
