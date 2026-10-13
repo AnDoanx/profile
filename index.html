@@ -41,7 +41,6 @@
       overflow-x: hidden;
     }
 
-    /* Background Glow Effects */
     .glow-orb {
       position: absolute;
       border-radius: 50%;
@@ -74,7 +73,6 @@
       z-index: 1;
     }
 
-    /* Header */
     .header {
       text-align: center;
       display: flex;
@@ -113,7 +111,6 @@
       line-height: 1.5;
     }
 
-    /* Glass Card */
     .card {
       background: var(--card-bg);
       backdrop-filter: blur(20px);
@@ -124,7 +121,6 @@
       box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
     }
 
-    /* Input Field */
     .input-box {
       display: flex;
       flex-direction: column;
@@ -183,17 +179,12 @@
       box-shadow: 0 12px 24px -4px rgba(37, 99, 235, 0.6);
     }
 
-    .btn-submit:active {
-      transform: translateY(0);
-    }
-
     .btn-submit:disabled {
       opacity: 0.6;
       cursor: not-allowed;
       transform: none;
     }
 
-    /* Spinner */
     .spinner {
       width: 20px;
       height: 20px;
@@ -208,7 +199,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Result Card */
     .result-container {
       display: none;
       margin-top: 24px;
@@ -290,7 +280,6 @@
       border-color: #38bdf8;
     }
 
-    /* History section */
     .history-card {
       padding: 20px 28px;
     }
@@ -340,7 +329,6 @@
       color: #7dd3fc;
     }
 
-    /* Toast Notification */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -378,7 +366,7 @@
         Instant FB Tool
       </div>
       <h1 class="title">Tra Cứu UID Facebook</h1>
-      <p class="subtitle">Dán liên kết trang cá nhân, ID hoặc username để tìm chính xác UID Facebook số trong 1 giây.</p>
+      <p class="subtitle">Hỗ trợ nhận diện link trang cá nhân, username, bài viết hoặc link rút gọn.</p>
     </div>
 
     <!-- Main Tool Card -->
@@ -389,7 +377,7 @@
             type="text" 
             id="fbInput" 
             class="input-field" 
-            placeholder="Ví dụ: https://www.facebook.com/zuck hoặc zuck"
+            placeholder="Ví dụ: zuck hoặc https://facebook.com/zuck"
             autocomplete="off"
             spellcheck="false"
           >
@@ -450,96 +438,94 @@
     function showToast(msg) {
       toast.innerText = msg;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
+      setTimeout(() => toast.classList.remove('show'), 2800);
     }
 
-    // 1. Phân tích đầu vào & bóc tách UID/Username
-    function extractIdentifier(input) {
+    // Bóc tách UID ngay nếu link đã có sẵn số
+    function extractDirectUID(input) {
       let raw = input.trim();
       if (!raw) return null;
 
-      // Xóa query param rác (mibextid, rdid, ref, ...)
-      raw = raw.replace(/[?&](ref|mibextid|rdid|set|fref|locale)=.*/g, '');
+      // 1. Nhập dãy số UID thuần
+      if (/^[0-9]{4,30}$/.test(raw)) return raw;
 
-      // TH1: Chứa profile.php?id=1000xxx
-      let matchId = raw.match(/[?&]id=([0-9]{4,30})/);
-      if (matchId) return { type: 'uid', value: matchId[1] };
+      // 2. Dạng profile.php?id=1000xxx
+      let mId = raw.match(/[?&]id=([0-9]{4,30})/);
+      if (mId) return mId[1];
 
-      // TH2: Nhập trực tiếp dãy số UID
-      if (/^[0-9]{4,30}$/.test(raw)) {
-        return { type: 'uid', value: raw };
-      }
+      // 3. Dạng facebook.com/people/Name/1000xxx
+      let mPeople = raw.match(/people\/[^\/]+\/([0-9]{4,30})/);
+      if (mPeople) return mPeople[1];
 
-      // TH3: Link dạng facebook.com/people/Name/1000xxx
-      let matchPeople = raw.match(/people\/[^\/]+\/([0-9]{4,30})/);
-      if (matchPeople) return { type: 'uid', value: matchPeople[1] };
+      // 4. Link story/post có chứa fbid=
+      let mFbid = raw.match(/fbid=([0-9]{4,30})/);
+      if (mFbid) return mFbid[1];
 
-      // TH4: Link profile thông thường
-      let matchUsername = raw.match(/(?:facebook\.com|fb\.me|fb\.com)\/([a-zA-Z0-9\._-]+)/);
-      if (matchUsername) {
-        let u = matchUsername[1];
-        if (!['profile.php', 'people', 'sharer', 'groups', 'pages'].includes(u)) {
-          return { type: 'username', value: u };
+      return null;
+    }
+
+    // Lọc lấy username hoặc link đầy đủ chuẩn hóa
+    function cleanTargetInput(input) {
+      let raw = input.trim();
+      // Bỏ query param
+      raw = raw.replace(/[?&](ref|mibextid|rdid|set|fref|locale|share).*$/g, '');
+      
+      // Nếu là URL, lấy username ra
+      let mUser = raw.match(/(?:facebook\.com|fb\.me|fb\.com|m\.me)\/([a-zA-Z0-9\._-]+)/);
+      if (mUser) {
+        let u = mUser[1];
+        if (!['profile.php', 'people', 'groups', 'pages', 'watch', 'share'].includes(u)) {
+          return u;
         }
       }
 
-      // TH5: Nhập trực tiếp username (vd: zuck)
+      // Nếu người dùng nhập thẳng username
       if (/^[a-zA-Z0-9\._-]{3,50}$/.test(raw)) {
-        return { type: 'username', value: raw };
+        return raw;
       }
 
-      return null;
+      return raw;
     }
 
-    // 2. Phân giải username sang UID (Crawl thông tin qua CORS Proxy)
-    async function resolveUsernameToUID(username) {
-      const cleanUsername = username.replace(/\/$/, '');
+    // Gọi API qua endpoint giải mã công khai không chặn CORS
+    async function resolveUID(target) {
+      // Chuẩn hóa link để gửi cho resolver
+      const fullUrl = target.startsWith('http') ? target : `https://www.facebook.com/${target}`;
 
+      // API Provider 1: Tra cứu qua gateway mbasic/graph mirror
       try {
-        const targetFb = `https://www.facebook.com/${cleanUsername}`;
-        const proxyFetch = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetFb)}`, {
-          signal: AbortSignal.timeout(7000)
+        const res = await fetch(`https://api.findids.net/api/get-uid?url=${encodeURIComponent(fullUrl)}`, {
+          signal: AbortSignal.timeout(6000)
         });
-        
-        if (!proxyFetch.ok) return null;
-        
-        const data = await proxyFetch.json();
-        const content = data.contents || '';
-
-        // Trích xuất các mẫu nhận diện UID trong HTML Facebook trả về
-        const patterns = [
-          /fb:\/\/profile\/([0-9]{5,30})/,
-          /"userID":"([0-9]{5,30})"/,
-          /"target_id":"([0-9]{5,30})"/,
-          /entity_id=([0-9]{5,30})/,
-          /al:android:url".*?id=([0-9]{5,30})/,
-          /"owner_id":"([0-9]{5,30})"/
-        ];
-
-        for (let pat of patterns) {
-          const match = content.match(pat);
-          if (match && match[1]) {
-            return match[1];
-          }
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.id && /^[0-9]+$/.test(data.id)) return String(data.id);
+          if (data && data.uid && /^[0-9]+$/.test(data.uid)) return String(data.uid);
         }
-      } catch (err) {
-        console.warn('Lỗi phân giải qua proxy:', err);
-      }
+      } catch (e) {}
+
+      // API Provider 2: Proxy qua dịch vụ Lookup ID công khai
+      try {
+        const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent('https://lookup-id.com/')}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ fburl: fullUrl, check: 'Lookup' }),
+          signal: AbortSignal.timeout(6000)
+        });
+        if (res.ok) {
+          const text = await res.text();
+          const match = text.match(/<span id="code">([0-9]+)<\/span>/i) || text.match(/id="code"[^>]*>([0-9]+)</i);
+          if (match && match[1]) return match[1];
+        }
+      } catch (e) {}
 
       return null;
     }
 
-    // 3. Xử lý tra cứu
     async function handleLookup() {
       const val = fbInput.value.trim();
       if (!val) {
-        showToast("⚠️ Vui lòng nhập link hoặc username");
-        return;
-      }
-
-      const parsed = extractIdentifier(val);
-      if (!parsed) {
-        showToast("❌ Không nhận diện được link/username");
+        showToast("⚠️ Vui lòng nhập link hoặc username!");
         return;
       }
 
@@ -549,27 +535,29 @@
       resultBox.style.display = 'none';
 
       try {
-        let finalUID = null;
+        // Bước 1: Kiểm tra xem đã có sẵn UID trong chuỗi chưa (nhanh nhất, ko cần request mạng)
+        let finalUID = extractDirectUID(val);
 
-        if (parsed.type === 'uid') {
-          finalUID = parsed.value;
-        } else {
-          finalUID = await resolveUsernameToUID(parsed.value);
+        // Bước 2: Nếu chưa có UID, gửi request resolve username
+        if (!finalUID) {
+          const target = cleanTargetInput(val);
+          finalUID = await resolveUID(target);
         }
 
         if (finalUID) {
           resUid.innerText = finalUID;
-          resTarget.innerText = parsed.value;
-          resAvatar.src = `https://graph.facebook.com/${finalUID}/picture?type=large`;
+          resTarget.innerText = val.length > 35 ? val.substring(0, 32) + '...' : val;
+          // Dùng link avatar qua redirect trực tiếp không cần token
+          resAvatar.src = `https://graph.facebook.com/${finalUID}/picture?type=large&redirect=true`;
           resultBox.style.display = 'block';
 
-          saveHistory(parsed.value, finalUID);
+          saveHistory(val, finalUID);
           showToast("🎉 Lấy UID thành công!");
         } else {
-          showToast("❌ Không thể phân giải UID (Profile này chặn tra cứu hoặc mạng chậm)");
+          showToast("❌ Không tìm thấy UID (Tài khoản đang khóa bảo vệ hoặc bật riêng tư)");
         }
       } catch (err) {
-        showToast("❌ Lỗi kết nối mạng, vui lòng thử lại!");
+        showToast("❌ Lỗi mạng, vui lòng kiểm tra kết nối!");
       } finally {
         btnGet.disabled = false;
         btnSpinner.style.display = 'none';
@@ -609,7 +597,7 @@
       historyCard.style.display = 'block';
       historyList.innerHTML = list.map(item => `
         <li class="history-item">
-          <span style="color: var(--text-muted);">${item.target}</span>
+          <span style="color: var(--text-muted);">${item.target.length > 25 ? item.target.substring(0, 22) + '...' : item.target}</span>
           <span class="history-uid" style="cursor:pointer;" onclick="navigator.clipboard.writeText('${item.uid}'); showToast('📋 Đã chép: ${item.uid}');">${item.uid} 📋</span>
         </li>
       `).join('');
