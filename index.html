@@ -1,617 +1,896 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lookup Facebook UID | Modern Glassmorphism</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>root@amuse ~ Chill Profile</title>
+  <!-- Google Fonts: JetBrains Mono cho Terminal & Plus Jakarta Sans cho Profile -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
   <style>
     :root {
-      --bg: #090d16;
-      --card-bg: rgba(18, 26, 43, 0.65);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --primary: #3b82f6;
-      --primary-glow: rgba(59, 130, 246, 0.35);
-      --accent: #06b6d4;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --success: #10b981;
-      --error: #ef4444;
+      --bg-dark: #090a10;
+      --card-bg: rgba(18, 19, 28, 0.65);
+      --terminal-bg: rgba(20, 20, 29, 0.88);
+      --terminal-header: rgba(32, 32, 46, 0.95);
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(235, 160, 85, 0.25);
+      --accent-orange: #e59852;
+      --accent-gold: #f3c68f;
+      --accent-red: #b5485d;
+      --text-main: #f0f2f8;
+      --text-muted: #8b8d9e;
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      user-select: none;
     }
 
     body {
-      background-color: var(--bg);
-      color: var(--text);
       min-height: 100vh;
+      background-color: var(--bg-dark);
+      /* Hình nền Anime Lofi Chill ban đêm + Lớp phủ tối */
+      background-image: 
+        radial-gradient(circle at 20% 20%, rgba(229, 152, 82, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(181, 72, 93, 0.15) 0%, transparent 50%),
+        linear-gradient(to bottom, rgba(9, 10, 16, 0.55), rgba(9, 10, 16, 0.88)),
+        url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-main);
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 40px 16px;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    .glow-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(120px);
-      z-index: -1;
-      opacity: 0.45;
-      pointer-events: none;
-    }
-    .orb-1 {
-      width: 420px;
-      height: 420px;
-      background: #2563eb;
-      top: -80px;
-      left: 10%;
-    }
-    .orb-2 {
-      width: 360px;
-      height: 360px;
-      background: #06b6d4;
-      bottom: 10%;
-      right: 10%;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 640px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      z-index: 1;
-    }
-
-    .header {
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(59, 130, 246, 0.12);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      color: #60a5fa;
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
-
-    .title {
-      font-size: 32px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #ffffff 30%, #93c5fd 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.5px;
-    }
-
-    .subtitle {
-      color: var(--text-muted);
-      font-size: 14px;
-      max-width: 440px;
-      line-height: 1.5;
-    }
-
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-    }
-
-    .input-box {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .input-field {
-      width: 100%;
-      padding: 16px 18px;
-      background: rgba(13, 20, 36, 0.85);
-      border: 1.5px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      color: #fff;
-      font-size: 15px;
-      outline: none;
-      transition: all 0.25s ease;
-    }
-
-    .input-field:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px var(--primary-glow);
-      background: rgba(13, 20, 36, 0.95);
-    }
-
-    .input-field::placeholder {
-      color: #475569;
-    }
-
-    .btn-submit {
-      margin-top: 14px;
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #2563eb, #0ea5e9);
-      color: #fff;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
       justify-content: center;
-      gap: 10px;
-      transition: all 0.2s ease;
-      box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.4);
+      align-items: center;
+      padding: 24px;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px -4px rgba(37, 99, 235, 0.6);
+    /* Hiệu ứng hạt bụi lấp lánh bay lơ lửng */
+    #particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .btn-submit:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .spinner {
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      display: none;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .result-container {
-      display: none;
-      margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px dashed rgba(255, 255, 255, 0.1);
-      animation: fadeIn 0.3s ease;
+    /* Khung chứa chính */
+    .main-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .profile-meta {
+    /* ================= CARD PROFILE ================= */
+    .profile-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass);
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .profile-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .profile-top {
       display: flex;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
+      gap: 18px;
     }
 
-    .avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 2px solid var(--accent);
+    .avatar-box {
+      position: relative;
+      width: 78px;
+      height: 78px;
+      flex-shrink: 0;
+    }
+
+    .avatar-box img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      background: #1e293b;
+      border-radius: 50%;
+      border: 2px solid var(--accent-orange);
+      padding: 3px;
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 20px rgba(229, 152, 82, 0.3);
     }
 
-    .profile-info h3 {
-      font-size: 16px;
+    .status-dot {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 15px;
+      height: 15px;
+      background: #4ade80;
+      border: 3px solid #13141f;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #4ade80;
+    }
+
+    .profile-info h1 {
+      font-size: 1.35rem;
       font-weight: 700;
-      color: #fff;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .profile-info span {
-      font-size: 13px;
+    .verified-badge {
+      color: var(--accent-orange);
+      font-size: 0.95rem;
+    }
+
+    .profile-handle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 4px 10px;
+      background: rgba(229, 152, 82, 0.12);
+      border: 1px solid rgba(229, 152, 82, 0.25);
+      border-radius: 99px;
+      font-size: 0.75rem;
+      color: var(--accent-gold);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .bio {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: #c4c6d4;
+    }
+
+    /* Tags kỹ năng / sở thích */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
       color: var(--text-muted);
     }
 
-    .uid-badge-card {
-      background: rgba(13, 20, 36, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 16px;
+    /* Nút mạng xã hội */
+    .social-links {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.25s ease;
+    }
+
+    .social-btn:hover {
+      background: rgba(229, 152, 82, 0.15);
+      border-color: var(--accent-orange);
+      color: var(--accent-gold);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(229, 152, 82, 0.15);
+    }
+
+    /* ================= TERMINAL MUSIC PLAYER (CHUẨN ẢNH MẪU) ================= */
+    .terminal-window {
+      background: var(--terminal-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(0, 0, 0, 0.6),
+        0 0 35px rgba(229, 152, 82, 0.08);
+      font-family: 'JetBrains Mono', monospace;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .terminal-window:hover {
+      box-shadow: 
+        0 28px 65px rgba(0, 0, 0, 0.85),
+        0 0 25px rgba(229, 152, 82, 0.15);
+    }
+
+    /* Thanh tiêu đề cửa sổ root@amuse */
+    .terminal-titlebar {
+      background: var(--terminal-header);
+      padding: 11px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
     }
 
-    .uid-text {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 18px;
-      font-weight: 700;
-      color: #38bdf8;
-      letter-spacing: 1px;
-      word-break: break-all;
-    }
-
-    .btn-copy {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
+    .titlebar-spacer {
+      width: 68px; /* Cân bằng với cụm nút bên phải để chữ root@amuse nằm chính giữa */
       display: flex;
       align-items: center;
       gap: 6px;
-      white-space: nowrap;
-      transition: 0.2s;
     }
 
-    .btn-copy:hover {
-      background: rgba(255, 255, 255, 0.16);
-      border-color: #38bdf8;
-    }
-
-    .history-card {
-      padding: 20px 28px;
-    }
-
-    .history-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
+    /* Sóng nhạc mini trên góc trái thanh tiêu đề */
+    .mini-eq {
       display: flex;
-      justify-content: space-between;
+      align-items: flex-end;
+      gap: 2.5px;
+      height: 12px;
+      opacity: 0.75;
+    }
+
+    .mini-eq span {
+      width: 2.5px;
+      background: var(--accent-orange);
+      border-radius: 2px;
+      height: 3px;
+      transition: height 0.2s ease;
+    }
+
+    .mini-eq.playing span:nth-child(1) { animation: eq 0.8s ease-in-out infinite; }
+    .mini-eq.playing span:nth-child(2) { animation: eq 0.6s ease-in-out infinite 0.2s; }
+    .mini-eq.playing span:nth-child(3) { animation: eq 0.9s ease-in-out infinite 0.4s; }
+
+    @keyframes eq {
+      0%, 100% { height: 3px; }
+      50% { height: 12px; }
+    }
+
+    .terminal-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #e4e6f0;
+      letter-spacing: 0.4px;
+    }
+
+    /* Cụm nút cửa sổ (- □ x) giống hệt Linux/Ubuntu trong ảnh */
+    .window-controls {
+      display: flex;
       align-items: center;
+      gap: 12px;
+      color: #9ca0b3;
+      font-size: 0.85rem;
     }
 
-    .btn-clear-history {
-      background: none;
-      border: none;
-      color: #ef4444;
-      font-size: 12px;
-      font-weight: 600;
+    .win-btn {
       cursor: pointer;
+      transition: color 0.2s;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .history-list {
-      list-style: none;
+    .win-btn:hover {
+      color: #ffffff;
+    }
+
+    .win-close {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-red);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(181, 72, 93, 0.4);
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .win-close:hover {
+      filter: brightness(1.15);
+      transform: scale(1.06);
+    }
+
+    /* Nội dung bên trong Terminal */
+    .terminal-body {
+      padding: 22px 22px 18px;
+      font-size: 0.96rem;
+      line-height: 1.75;
+    }
+
+    .cmd-line {
+      margin-bottom: 4px;
+      word-break: break-all;
+    }
+
+    .prompt-user {
+      color: var(--accent-orange);
+      font-weight: 600;
+    }
+
+    .prompt-cmd {
+      color: var(--accent-gold);
+    }
+
+    .prompt-flag {
+      color: #8b8d9e;
+    }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background: var(--accent-orange);
+      vertical-align: middle;
+      margin-left: 4px;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .track-meta {
+      color: #f0f2f8;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .track-meta span.label {
+      color: #c9ccd8;
+    }
+
+    /* Thanh ASCII Progress Bar [#####-----] */
+    .ascii-progress-wrapper {
+      margin: 6px 0 4px;
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      padding: 2px 0;
+      width: 100%;
+    }
+
+    .ascii-progress-wrapper:hover .ascii-filled {
+      text-shadow: 0 0 10px rgba(229, 152, 82, 0.75);
+    }
+
+    .ascii-bracket {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .ascii-filled {
+      color: var(--accent-orange);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      transition: text-shadow 0.2s ease;
+    }
+
+    .ascii-empty {
+      color: #c8cad4;
+      letter-spacing: 0.5px;
+    }
+
+    /* Hàng hiển thị thời gian & Nút điều khiển nhanh */
+    .terminal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .time-display {
+      color: #e2e4f0;
+      font-weight: 600;
+      font-size: 0.94rem;
+    }
+
+    /* Cụm nút điều khiển CLI tinh tế */
+    .cli-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cli-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #c4c6d4;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      padding: 4px 9px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .cli-btn:hover {
+      background: rgba(229, 152, 82, 0.18);
+      border-color: var(--accent-orange);
+      color: #ffffff;
+    }
+
+    .cli-btn.active-play {
+      background: rgba(229, 152, 82, 0.2);
+      border-color: rgba(229, 152, 82, 0.5);
+      color: var(--accent-gold);
+    }
+
+    /* Danh sách nhạc thu gọn bên dưới Terminal */
+    .playlist-drawer {
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      margin-top: 14px;
+      padding-top: 12px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      max-height: 180px;
-      overflow-y: auto;
+      gap: 6px;
     }
 
-    .history-item {
+    .playlist-header {
+      font-size: 0.75rem;
+      color: var(--text-muted);
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 10px 14px;
-      background: rgba(13, 20, 36, 0.5);
-      border-radius: 10px;
-      font-size: 13px;
+      margin-bottom: 4px;
     }
 
-    .history-uid {
-      font-family: 'JetBrains Mono', monospace;
-      color: #7dd3fc;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: #1e293b;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #fff;
-      padding: 12px 24px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 600;
+    .playlist-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      z-index: 1000;
+      justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: #9ca0b3;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
 
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
+    .playlist-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+    }
+
+    .playlist-item.active {
+      background: rgba(229, 152, 82, 0.12);
+      color: var(--accent-gold);
+      border-left: 2px solid var(--accent-orange);
+    }
+
+    .upload-label {
+      cursor: pointer;
+      color: var(--accent-orange);
+      text-decoration: underline;
+      font-size: 0.75rem;
+    }
+
+    .upload-label:hover {
+      color: var(--accent-gold);
+    }
+
+    @media (max-width: 480px) {
+      .terminal-body {
+        padding: 16px;
+        font-size: 0.84rem;
+      }
+      .social-links {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="glow-orb orb-1"></div>
-  <div class="glow-orb orb-2"></div>
+  <!-- Canvas hạt mưa / đom đóm đêm chill -->
+  <canvas id="particles"></canvas>
 
-  <div class="container">
-    <div class="header">
-      <div class="badge">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        Multi-Source Resolver
-      </div>
-      <h1 class="title">Tra Cứu UID Facebook</h1>
-      <p class="subtitle">Hỗ trợ tra cứu tất cả các định dạng liên kết trang cá nhân, ID và username.</p>
-    </div>
-
-    <div class="card">
-      <div class="input-box">
-        <div class="input-wrapper">
-          <input 
-            type="text" 
-            id="fbInput" 
-            class="input-field" 
-            placeholder="Dán link profile hoặc username vào đây..."
-            autocomplete="off"
-            spellcheck="false"
-          >
+  <main class="main-wrapper">
+    
+    <!-- PHẦN 1: PROFILE CARD CHILL UI -->
+    <section class="profile-card">
+      <div class="profile-top">
+        <div class="avatar-box">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop" alt="Avatar" />
+          <span class="status-dot" title="Online & Chilling"></span>
         </div>
-        <button id="btnGet" class="btn-submit">
-          <div class="spinner" id="btnSpinner"></div>
-          <span id="btnText">Tra cứu ngay</span>
-        </button>
+        <div class="profile-info">
+          <h1>
+            Amuse Dev
+            <i class="fa-solid fa-circle-check verified-badge" title="Verified"></i>
+          </h1>
+          <div class="profile-handle">@root_amuse • VietNam</div>
+          <div class="status-pill">
+            <i class="fa-solid fa-headphones"></i> Vibing to Lofi & Indie
+          </div>
+        </div>
       </div>
 
-      <div id="resultBox" class="result-container">
-        <div class="profile-meta">
-          <img id="resAvatar" class="avatar" src="" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=FB&background=1e293b&color=fff'">
-          <div class="profile-info">
-            <h3 id="resTitle">Đã tìm thấy UID</h3>
-            <span id="resTarget">facebook.com/...</span>
+      <p class="bio">
+        Code vào ban đêm, nghe nhạc Indie và ngắm mưa rơi qua khung cửa sổ terminal. 🌧️☕
+      </p>
+
+      <div class="tags">
+        <span class="tag">#Fullstack</span>
+        <span class="tag">#LinuxRicing</span>
+        <span class="tag">#UIUX</span>
+        <span class="tag">#NightOwl</span>
+      </div>
+
+      <div class="social-links">
+        <a href="#" class="social-btn"><i class="fa-brands fa-github"></i> GitHub</a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-discord"></i> Discord</a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-facebook"></i> FB</a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-spotify"></i> Spotify</a>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: TERMINAL MUSIC PLAYER (CHUẨN GIAO DIỆN ẢNH MẪU) -->
+    <section class="terminal-window">
+      <!-- Thanh Titlebar -->
+      <div class="terminal-titlebar">
+        <div class="titlebar-spacer">
+          <div class="mini-eq" id="miniEq">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="terminal-title">root@amuse</div>
+        <div class="window-controls">
+          <span class="win-btn" title="Minimize">_</span>
+          <span class="win-btn" title="Maximize">□</span>
+          <span class="win-btn win-close" title="Close">×</span>
+        </div>
+      </div>
+
+      <!-- Nội dung Terminal -->
+      <div class="terminal-body">
+        <div class="cmd-line">
+          <span class="prompt-user">root@amuse&gt;</span><span class="prompt-cmd">./amuse</span>
+          <span class="prompt-flag">--nowplaying</span><span class="cursor-blink"></span>
+        </div>
+
+        <div class="track-meta">
+          <span class="label">Title:</span> <span id="trackTitle">10 Ngàn Năm</span>
+        </div>
+        <div class="track-meta">
+          <span class="label">Artist:</span> <span id="trackArtist">PC</span>
+        </div>
+
+        <!-- Thanh tiến trình ASCII [###################-----] (Click để tua nhạc) -->
+        <div class="ascii-progress-wrapper" id="progressWrapper" title="Click để tua nhạc">
+          <span class="ascii-bracket">[</span><span class="ascii-filled" id="asciiFilled">########################</span><span class="ascii-empty" id="asciiEmpty">-----</span><span class="ascii-bracket">]</span>
+        </div>
+
+        <!-- Thời gian & Điều khiển -->
+        <div class="terminal-footer">
+          <div class="time-display">
+            <span id="currentTime">03:22</span> - <span id="totalTime">04:00</span>
+          </div>
+
+          <div class="cli-controls">
+            <button class="cli-btn" id="prevBtn" title="Bài trước">
+              <i class="fa-solid fa-backward-step"></i>
+            </button>
+            <button class="cli-btn active-play" id="playPauseBtn" title="Phát / Tạm dừng">
+              <i class="fa-solid fa-play" id="playIcon"></i>
+              <span id="playText">play</span>
+            </button>
+            <button class="cli-btn" id="nextBtn" title="Bài tiếp">
+              <i class="fa-solid fa-forward-step"></i>
+            </button>
           </div>
         </div>
 
-        <div class="uid-badge-card">
-          <span class="uid-text" id="resUid">100000000000000</span>
-          <button class="btn-copy" id="btnCopy">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Sao chép
-          </button>
+        <!-- Danh sách bài hát & Chọn file MP3 từ máy -->
+        <div class="playlist-drawer">
+          <div class="playlist-header">
+            <span>// playlist.sh</span>
+            <label class="upload-label">
+              + tải nhạc (.mp3) từ máy
+              <input type="file" id="fileUpload" accept="audio/*" hidden />
+            </label>
+          </div>
+          <div id="playlistContainer"></div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="card history-card" id="historyCard" style="display: none;">
-      <div class="history-title">
-        <span>Lịch sử tra cứu gần đây</span>
-        <button class="btn-clear-history" id="btnClearHistory">Xóa lịch sử</button>
-      </div>
-      <ul class="history-list" id="historyList"></ul>
-    </div>
-  </div>
+  </main>
 
-  <div class="toast" id="toast">Thông báo</div>
+  <!-- Thẻ Audio ẩn -->
+  <audio id="audioPlayer" preload="metadata"></audio>
 
   <script>
-    const fbInput = document.getElementById('fbInput');
-    const btnGet = document.getElementById('btnGet');
-    const btnText = document.getElementById('btnText');
-    const btnSpinner = document.getElementById('btnSpinner');
-    const resultBox = document.getElementById('resultBox');
-    const resUid = document.getElementById('resUid');
-    const resAvatar = document.getElementById('resAvatar');
-    const resTarget = document.getElementById('resTarget');
-    const btnCopy = document.getElementById('btnCopy');
-    const toast = document.getElementById('toast');
-    const historyCard = document.getElementById('historyCard');
-    const historyList = document.getElementById('historyList');
-    const btnClearHistory = document.getElementById('btnClearHistory');
+    // Danh sách nhạc mặc định (Có thể thay link mp3 của bạn vào đây)
+    const tracks = [
+      {
+        title: "10 Ngàn Năm",
+        artist: "PC",
+        // Audio Lofi Chill mẫu để chạy mượt ngay khi mở web
+        src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3",
+        defaultCurrent: 202, // 03:22 giống ảnh mẫu khi chưa bấm play
+        defaultDuration: 240 // 04:00 giống ảnh mẫu
+      },
+      {
+        title: "Midnight Coding Session",
+        artist: "Chillhop Music",
+        src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=empty-mind-118973.mp3"
+      },
+      {
+        title: "Rainy Tokyo Terminal",
+        artist: "Amuse Lofi",
+        src: "https://cdn.pixabay.com/download/audio/2021/11/25/audio_91b32e02f9.mp3?filename=chill-abstract-intention-12099.mp3"
+      }
+    ];
 
-    function showToast(msg) {
-      toast.innerText = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2800);
+    const TOTAL_BAR_CHARS = 29; // Tổng số ký tự '#' + '-' giống tỷ lệ trong ảnh (24 '#' + 5 '-')
+    let currentTrackIndex = 0;
+    let isPlaying = false;
+    let initialDemoState = true; // Giữ đúng trạng thái 03:22 - 04:00 như ảnh khi mới vào trang
+
+    const audio = document.getElementById("audioPlayer");
+    const trackTitle = document.getElementById("trackTitle");
+    const trackArtist = document.getElementById("trackArtist");
+    const asciiFilled = document.getElementById("asciiFilled");
+    const asciiEmpty = document.getElementById("asciiEmpty");
+    const currentTimeEl = document.getElementById("currentTime");
+    const totalTimeEl = document.getElementById("totalTime");
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const playIcon = document.getElementById("playIcon");
+    const playText = document.getElementById("playText");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const progressWrapper = document.getElementById("progressWrapper");
+    const playlistContainer = document.getElementById("playlistContainer");
+    const fileUpload = document.getElementById("fileUpload");
+    const miniEq = document.getElementById("miniEq");
+
+    // Hàm định dạng giây -> MM:SS
+    function formatTime(sec) {
+      if (!sec || isNaN(sec)) return "00:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
     }
 
-    // 1. Phân tích chuỗi đầu vào
-    function extractDirectUID(input) {
-      let raw = input.trim();
-      if (!raw) return null;
-
-      // Nhập trực tiếp dãy số UID
-      if (/^[0-9]{4,30}$/.test(raw)) return raw;
-
-      // Link dạng profile.php?id=1000xxx
-      let mId = raw.match(/[?&]id=([0-9]{4,30})/);
-      if (mId) return mId[1];
-
-      // Link dạng people/Ten/1000xxx
-      let mPeople = raw.match(/people\/[^\/]+\/([0-9]{4,30})/);
-      if (mPeople) return mPeople[1];
-
-      // Link bài viết hoặc ảnh có fbid=
-      let mFbid = raw.match(/[?&](?:fbid|story_fbid)=([0-9]{4,30})/);
-      if (mFbid) return mFbid[1];
-
-      return null;
+    // Hàm vẽ thanh [###################-----]
+    function updateAsciiBar(current, total) {
+      const ratio = total > 0 ? Math.min(Math.max(current / total, 0), 1) : 0;
+      const filledCount = Math.round(ratio * TOTAL_BAR_CHARS);
+      const emptyCount = TOTAL_BAR_CHARS - filledCount;
+      asciiFilled.textContent = "#".repeat(filledCount);
+      asciiEmpty.textContent = "-".repeat(emptyCount);
     }
 
-    function sanitizeInput(input) {
-      let raw = input.trim();
-      raw = raw.replace(/[?#].*$/g, '').replace(/\/+$/, '');
-      return raw;
-    }
-
-    // 2. Bộ phân giải đa kênh (Fallback 3 máy chủ)
-    async function resolveUIDMultiSource(input) {
-      const clean = sanitizeInput(input);
-      let targetUrl = clean.startsWith('http') ? clean : `https://www.facebook.com/${clean}`;
-
-      // NGUỒN 1: TraoDoiSub Resolver API (Rất ổn định, không chặn CORS)
-      try {
-        const bodyData = new URLSearchParams();
-        bodyData.append('link', targetUrl);
-
-        const res1 = await fetch('https://id.traodoisub.net/api.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: bodyData,
-          signal: AbortSignal.timeout(6000)
+    // Render danh sách bài hát
+    function renderPlaylist() {
+      playlistContainer.innerHTML = "";
+      tracks.forEach((t, idx) => {
+        const item = document.createElement("div");
+        item.className = `playlist-item ${idx === currentTrackIndex ? "active" : ""}`;
+        item.innerHTML = `
+          <span>${idx === currentTrackIndex ? "▸ " : ""}${t.title} - ${t.artist}</span>
+          <span>0${idx + 1}</span>
+        `;
+        item.addEventListener("click", () => {
+          initialDemoState = false;
+          loadTrack(idx, true);
         });
-
-        if (res1.ok) {
-          const data = await res1.json();
-          if (data && data.code === 200 && data.id) {
-            return String(data.id);
-          }
-        }
-      } catch (e) {
-        console.warn('Source 1 failed:', e);
-      }
-
-      // NGUỒN 2: Graph API Username Lookup
-      try {
-        let username = clean.split('/').filter(Boolean).pop();
-        if (username) {
-          const res2 = await fetch(`https://graph.facebook.com/${encodeURIComponent(username)}?fields=id&access_token=6628568379|c1e620fa708a1d5696fb991c1bde5662`, {
-            signal: AbortSignal.timeout(5000)
-          });
-          if (res2.ok) {
-            const data2 = await res2.json();
-            if (data2 && data2.id) return String(data2.id);
-          }
-        }
-      } catch (e) {
-        console.warn('Source 2 failed:', e);
-      }
-
-      // NGUỒN 3: FTool Open Gateway
-      try {
-        const res3 = await fetch(`https://api.findids.net/api/get-uid?url=${encodeURIComponent(targetUrl)}`, {
-          signal: AbortSignal.timeout(6000)
-        });
-        if (res3.ok) {
-          const data3 = await res3.json();
-          if (data3 && (data3.id || data3.uid)) return String(data3.id || data3.uid);
-        }
-      } catch (e) {
-        console.warn('Source 3 failed:', e);
-      }
-
-      return null;
+        playlistContainer.appendChild(item);
+      });
     }
 
-    async function handleLookup() {
-      const val = fbInput.value.trim();
-      if (!val) {
-        showToast("⚠️ Vui lòng nhập link hoặc username!");
-        return;
+    // Tải bài hát
+    function loadTrack(index, autoPlay = false) {
+      currentTrackIndex = index;
+      const track = tracks[index];
+      trackTitle.textContent = track.title;
+      trackArtist.textContent = track.artist;
+      audio.src = track.src;
+
+      if (initialDemoState && index === 0) {
+        // Hiển thị chuẩn 100% giống bức ảnh của bạn khi vừa vào
+        currentTimeEl.textContent = "03:22";
+        totalTimeEl.textContent = "04:00";
+        updateAsciiBar(24, 29);
+      } else {
+        currentTimeEl.textContent = "00:00";
+        totalTimeEl.textContent = "--:--";
+        updateAsciiBar(0, 1);
       }
 
-      btnGet.disabled = true;
-      btnSpinner.style.display = 'block';
-      btnText.innerText = 'Đang tra cứu...';
-      resultBox.style.display = 'none';
-
-      try {
-        // Kiểm tra UID có sẵn trong link
-        let finalUID = extractDirectUID(val);
-
-        // Nếu chưa có, kích hoạt bộ phân giải đa kênh
-        if (!finalUID) {
-          finalUID = await resolveUIDMultiSource(val);
-        }
-
-        if (finalUID && /^[0-9]+$/.test(finalUID)) {
-          resUid.innerText = finalUID;
-          resTarget.innerText = val.length > 32 ? val.substring(0, 30) + '...' : val;
-          resAvatar.src = `https://graph.facebook.com/${finalUID}/picture?type=large`;
-          resultBox.style.display = 'block';
-
-          saveHistory(val, finalUID);
-          showToast("🎉 Lấy UID thành công!");
-        } else {
-          showToast("❌ Không thể tra cứu (Hãy thử gửi link bài viết của người này)");
-        }
-      } catch (err) {
-        showToast("❌ Lỗi kết nối mạng, vui lòng thử lại!");
-      } finally {
-        btnGet.disabled = false;
-        btnSpinner.style.display = 'none';
-        btnText.innerText = 'Tra cứu ngay';
+      renderPlaylist();
+      if (autoPlay) {
+        playAudio();
       }
     }
 
-    btnCopy.addEventListener('click', () => {
-      navigator.clipboard.writeText(resUid.innerText);
-      showToast("📋 Đã sao chép UID!");
+    function playAudio() {
+      initialDemoState = false;
+      audio.play().then(() => {
+        isPlaying = true;
+        playIcon.className = "fa-solid fa-pause";
+        playText.textContent = "pause";
+        miniEq.classList.add("playing");
+      }).catch(err => console.log("Cần tương tác để phát nhạc:", err));
+    }
+
+    function pauseAudio() {
+      audio.pause();
+      isPlaying = false;
+      playIcon.className = "fa-solid fa-play";
+      playText.textContent = "play";
+      miniEq.classList.remove("playing");
+    }
+
+    // Sự kiện nút Play/Pause
+    playPauseBtn.addEventListener("click", () => {
+      if (isPlaying) {
+        pauseAudio();
+      } else {
+        playAudio();
+      }
     });
 
-    btnGet.addEventListener('click', handleLookup);
-    fbInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') handleLookup();
+    prevBtn.addEventListener("click", () => {
+      initialDemoState = false;
+      const nextIdx = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+      loadTrack(nextIdx, true);
     });
 
-    function getHistory() {
-      return JSON.parse(localStorage.getItem('fb_uid_history') || '[]');
-    }
+    nextBtn.addEventListener("click", () => {
+      initialDemoState = false;
+      const nextIdx = (currentTrackIndex + 1) % tracks.length;
+      loadTrack(nextIdx, true);
+    });
 
-    function saveHistory(target, uid) {
-      let list = getHistory();
-      list = list.filter(item => item.uid !== uid);
-      list.unshift({ target, uid, time: new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}) });
-      if (list.length > 5) list.pop();
-      localStorage.setItem('fb_uid_history', JSON.stringify(list));
-      renderHistory();
-    }
-
-    function renderHistory() {
-      const list = getHistory();
-      if (list.length === 0) {
-        historyCard.style.display = 'none';
-        return;
+    // Cập nhật tiến trình theo nhạc thực tế
+    audio.addEventListener("loadedmetadata", () => {
+      if (!initialDemoState) {
+        totalTimeEl.textContent = formatTime(audio.duration);
       }
-      historyCard.style.display = 'block';
-      historyList.innerHTML = list.map(item => `
-        <li class="history-item">
-          <span style="color: var(--text-muted);">${item.target.length > 25 ? item.target.substring(0, 22) + '...' : item.target}</span>
-          <span class="history-uid" style="cursor:pointer;" onclick="navigator.clipboard.writeText('${item.uid}'); showToast('📋 Đã chép: ${item.uid}');">${item.uid} 📋</span>
-        </li>
-      `).join('');
-    }
-
-    btnClearHistory.addEventListener('click', () => {
-      localStorage.removeItem('fb_uid_history');
-      renderHistory();
-      showToast("Đã xóa lịch sử");
     });
 
-    renderHistory();
+    audio.addEventListener("timeupdate", () => {
+      if (initialDemoState) return;
+      currentTimeEl.textContent = formatTime(audio.currentTime);
+      totalTimeEl.textContent = formatTime(audio.duration);
+      updateAsciiBar(audio.currentTime, audio.duration);
+    });
+
+    audio.addEventListener("ended", () => {
+      nextBtn.click();
+    });
+
+    // Cho phép click vào thanh [#####-----] để tua nhạc
+    progressWrapper.addEventListener("click", (e) => {
+      if (!audio.duration) return;
+      initialDemoState = false;
+      const rect = progressWrapper.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const ratio = Math.min(Math.max(clickX / rect.width, 0), 1);
+      audio.currentTime = ratio * audio.duration;
+      if (!isPlaying) playAudio();
+    });
+
+    // Cho phép người dùng tải file MP3 từ máy lên nghe thử ngay
+    fileUpload.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      const cleanName = file.name.replace(/\.[^/.]+$/, "");
+      tracks.unshift({
+        title: cleanName,
+        artist: "Local Track",
+        src: url
+      });
+      initialDemoState = false;
+      loadTrack(0, true);
+    });
+
+    // Khởi tạo lần đầu
+    loadTrack(0, false);
+
+    // ================= HIỆU ỨNG ĐOM ĐÓM / HẠT CHILL NỀN =================
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+    let particlesArray = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedY = -(Math.random() * 0.4 + 0.1);
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.alpha = Math.random() * 0.6 + 0.1;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        if (this.y < 0) {
+          this.y = canvas.height;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+      draw() {
+        ctx.fillStyle = `rgba(243, 198, 143, ${this.alpha})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 45; i++) {
+      particlesArray.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particlesArray.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
   </script>
 </body>
 </html>
